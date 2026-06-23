@@ -101,10 +101,10 @@ export default function Footer() {
               <li className="flex items-start gap-3">
                 <Mail className="w-4 h-4 text-[#BCD8D4] flex-shrink-0 mt-0.5" />
                 <a
-                  href="mailto:nandie@farirainandipa.co.zw"
+                  href="mailto:admin@farirainandipa.co.zw"
                   className="font-['Inter'] text-sm text-white/75 hover:text-[#BCD8D4] transition-colors duration-200 break-all"
                 >
-                  nandie@farirainandipa.co.zw
+                  admin@farirainandipa.co.zw
                 </a>
               </li>
               <li className="flex items-center gap-3">

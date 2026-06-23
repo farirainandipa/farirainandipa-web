@@ -33,6 +33,26 @@ const highlights = [
   'Niche Partners Fellow — MICE Research & Business Development',
 ];
 
+// PLACEHOLDER: Replace with real team member photos and bios
+const teamMembers = [
+  {
+    name: 'Team Member Name',
+    role: 'Event Coordinator',
+    bio: 'An experienced event coordinator with a background in conference logistics, vendor management, and delegate services across Southern Africa.',
+    // PLACEHOLDER: Replace with real headshot URL
+    photo: 'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=400',
+    photoAlt: 'Event Coordinator — Farirai Nandipa Events',
+  },
+  {
+    name: 'Team Member Name',
+    role: 'Program Coordinator',
+    bio: 'A dedicated program coordinator specialising in speaker management, event programming, and stakeholder liaison for MICE events throughout Africa.',
+    // PLACEHOLDER: Replace with real headshot URL
+    photo: 'https://images.pexels.com/photos/1181695/pexels-photo-1181695.jpeg?auto=compress&cs=tinysrgb&w=400',
+    photoAlt: 'Program Coordinator — Farirai Nandipa Events',
+  },
+];
+
 export default function About() {
   return (
     <div>
@@ -55,7 +75,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* Founder Bio Section */}
+      {/* (a) Meet the Founder */}
       <section className="bg-white py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -66,7 +86,7 @@ export default function About() {
                   {/* PLACEHOLDER: Replace with professional headshot of Farirai Nandipa */}
                   <img
                     src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=800"
-                    alt="Farirai Nandipa - Professional headshot"
+                    alt="Farirai Nandipa — Founder, Farirai Nandipa Events"
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -86,10 +106,10 @@ export default function About() {
 
               <ScrollFade delay={300}>
                 <p className="font-['Inter'] text-base text-[#3A3A3A] leading-relaxed mb-6">
-                  Farirai Nandipa is a distinguished MICE consultant with over 15 years of experience
-                  in the events industry. As the founder of the Institute of Events Professionals in
-                  Zimbabwe (IEPZ), she has been instrumental in professionalizing the events sector
-                  and establishing industry standards across the country.
+                  Farirai Nandipa is a distinguished events management and MICE consultant with over
+                  15 years of experience in the industry. As the founder of the Institute of Events
+                  Professionals in Zimbabwe (IEPZ), she has been instrumental in professionalizing
+                  the events sector and establishing industry standards across the country.
                 </p>
               </ScrollFade>
 
@@ -117,26 +137,107 @@ export default function About() {
         </div>
       </section>
 
-      {/* Certifications */}
-      <section className="bg-[#BCD8D4]/30 py-16 lg:py-24">
+      {/* (b) Memberships & Certifications — directly under Meet the Founder */}
+      <section className="bg-[#BCD8D4]/20 py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollFade>
             <h2 className="font-['Cormorant_Garamond'] text-3xl lg:text-4xl font-semibold text-[#21436A] text-center mb-12">
-              Certifications
+              Memberships & Certifications
             </h2>
           </ScrollFade>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Certifications */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             {credentials.map((cert, index) => (
               <ScrollFade key={cert.title} delay={index * 100}>
-                <div className="bg-white p-8 rounded-lg shadow-sm text-center">
-                  <div className="w-14 h-14 bg-[#21436A] rounded-full flex items-center justify-center mx-auto mb-4">
-                    <cert.icon className="w-7 h-7 text-white" />
+                <div className="bg-white p-6 rounded-lg shadow-sm text-center">
+                  <div className="w-12 h-12 bg-[#21436A] rounded-full flex items-center justify-center mx-auto mb-4">
+                    <cert.icon className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="font-['Cormorant_Garamond'] text-xl font-semibold text-[#21436A] mb-2">
+                  <h3 className="font-['Cormorant_Garamond'] text-lg font-semibold text-[#21436A] mb-1">
                     {cert.title}
                   </h3>
                   <p className="font-['Inter'] text-sm text-[#3A3A3A]">{cert.description}</p>
+                </div>
+              </ScrollFade>
+            ))}
+          </div>
+
+          {/* Memberships */}
+          <ScrollFade delay={200}>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+              {memberships.map((membership) => (
+                <div
+                  key={membership.name}
+                  className="bg-white border border-[#BCD8D4]/60 p-5 rounded-lg text-center hover:border-[#21436A]/30 transition-colors duration-200"
+                >
+                  <p className="font-['Inter'] text-sm font-bold text-[#21436A] mb-1">
+                    {membership.name}
+                  </p>
+                  <p className="font-['Inter'] text-xs text-[#3A3A3A]/70">{membership.fullName}</p>
+                </div>
+              ))}
+            </div>
+          </ScrollFade>
+        </div>
+      </section>
+
+      {/* (c) Our Team */}
+      <section className="bg-white py-16 lg:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollFade>
+            <h2 className="font-['Cormorant_Garamond'] text-3xl lg:text-4xl font-semibold text-[#21436A] mb-4">
+              Our Team
+            </h2>
+            <p className="font-['Inter'] text-base text-[#3A3A3A] mb-12 max-w-2xl">
+              Behind every seamless event is a dedicated team. Meet the professionals who bring
+              Farirai Nandipa Events to life.
+            </p>
+          </ScrollFade>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Founder card */}
+            <ScrollFade delay={0}>
+              <div className="group text-center">
+                <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-4 mx-auto max-w-[200px]">
+                  {/* PLACEHOLDER: Replace with professional headshot of Farirai Nandipa */}
+                  <img
+                    src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400"
+                    alt="Farirai Nandipa — Founder"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <h3 className="font-['Cormorant_Garamond'] text-xl font-semibold text-[#21436A]">
+                  Farirai Nandipa
+                </h3>
+                <p className="font-['Inter'] text-sm text-[#BCD8D4] font-medium mb-2">Founder & Lead Consultant</p>
+                <p className="font-['Inter'] text-sm text-[#3A3A3A]/80 leading-relaxed">
+                  MICE consultant and events strategist with 15+ years of Pan-African experience.
+                </p>
+              </div>
+            </ScrollFade>
+
+            {/* Placeholder team members */}
+            {teamMembers.map((member, index) => (
+              <ScrollFade key={member.role} delay={(index + 1) * 100}>
+                <div className="group text-center">
+                  <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-4 mx-auto max-w-[200px]">
+                    {/* PLACEHOLDER: Replace src with real team member headshot */}
+                    <img
+                      src={member.photo}
+                      alt={member.photoAlt}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+                  {/* PLACEHOLDER: Replace with real team member name */}
+                  <h3 className="font-['Cormorant_Garamond'] text-xl font-semibold text-[#21436A]">
+                    {member.name}
+                  </h3>
+                  <p className="font-['Inter'] text-sm text-[#BCD8D4] font-medium mb-2">{member.role}</p>
+                  {/* PLACEHOLDER: Replace with real team member bio */}
+                  <p className="font-['Inter'] text-sm text-[#3A3A3A]/80 leading-relaxed">
+                    {member.bio}
+                  </p>
                 </div>
               </ScrollFade>
             ))}
@@ -145,16 +246,21 @@ export default function About() {
       </section>
 
       {/* Mission & Approach */}
-      <section className="bg-white py-16 lg:py-24">
+      <section className="bg-[#21436A] py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollFade>
+            <h2 className="font-['Cormorant_Garamond'] text-3xl lg:text-4xl font-semibold text-white text-center mb-12">
+              Our Approach
+            </h2>
+          </ScrollFade>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <ScrollFade delay={0}>
-              <div className="border border-gray-200 p-8 rounded-lg hover:border-[#BCD8D4] transition-colors duration-300">
+              <div className="border border-white/20 p-8 rounded-lg hover:border-[#BCD8D4]/60 transition-colors duration-300">
                 <Globe className="w-10 h-10 text-[#BCD8D4] mb-4" />
-                <h3 className="font-['Cormorant_Garamond'] text-2xl font-semibold text-[#21436A] mb-3">
+                <h3 className="font-['Cormorant_Garamond'] text-2xl font-semibold text-white mb-3">
                   Global Best Practices
                 </h3>
-                <p className="font-['Inter'] text-base text-[#3A3A3A] leading-relaxed">
+                <p className="font-['Inter'] text-base text-white/75 leading-relaxed">
                   Bringing international MICE standards and methodologies to African destinations,
                   ensuring world-class event delivery.
                 </p>
@@ -162,12 +268,12 @@ export default function About() {
             </ScrollFade>
 
             <ScrollFade delay={100}>
-              <div className="border border-gray-200 p-8 rounded-lg hover:border-[#BCD8D4] transition-colors duration-300">
+              <div className="border border-white/20 p-8 rounded-lg hover:border-[#BCD8D4]/60 transition-colors duration-300">
                 <Users className="w-10 h-10 text-[#BCD8D4] mb-4" />
-                <h3 className="font-['Cormorant_Garamond'] text-2xl font-semibold text-[#21436A] mb-3">
+                <h3 className="font-['Cormorant_Garamond'] text-2xl font-semibold text-white mb-3">
                   Pan-African Perspective
                 </h3>
-                <p className="font-['Inter'] text-base text-[#3A3A3A] leading-relaxed">
+                <p className="font-['Inter'] text-base text-white/75 leading-relaxed">
                   Deep understanding of African markets, cultures, and opportunities — positioning
                   the continent as a premier MICE destination.
                 </p>
@@ -175,45 +281,18 @@ export default function About() {
             </ScrollFade>
 
             <ScrollFade delay={200}>
-              <div className="border border-gray-200 p-8 rounded-lg hover:border-[#BCD8D4] transition-colors duration-300">
+              <div className="border border-white/20 p-8 rounded-lg hover:border-[#BCD8D4]/60 transition-colors duration-300">
                 <Leaf className="w-10 h-10 text-[#BCD8D4] mb-4" />
-                <h3 className="font-['Cormorant_Garamond'] text-2xl font-semibold text-[#21436A] mb-3">
+                <h3 className="font-['Cormorant_Garamond'] text-2xl font-semibold text-white mb-3">
                   Sustainability Focus
                 </h3>
-                <p className="font-['Inter'] text-base text-[#3A3A3A] leading-relaxed">
+                <p className="font-['Inter'] text-base text-white/75 leading-relaxed">
                   Integrating environmental and social responsibility into all MICE projects,
                   building events that create lasting positive impact.
                 </p>
               </div>
             </ScrollFade>
           </div>
-        </div>
-      </section>
-
-      {/* Memberships */}
-      <section className="bg-[#21436A] py-16 lg:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ScrollFade>
-            <h2 className="font-['Cormorant_Garamond'] text-3xl lg:text-4xl font-semibold text-white text-center mb-12">
-              Memberships
-            </h2>
-          </ScrollFade>
-
-          <ScrollFade delay={200}>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
-              {memberships.map((membership) => (
-                <div
-                  key={membership.name}
-                  className="bg-white/10 border border-white/20 p-6 rounded-lg text-center hover:bg-white/15 transition-colors duration-200"
-                >
-                  <p className="font-['Inter'] text-sm font-bold text-white mb-1">
-                    {membership.name}
-                  </p>
-                  <p className="font-['Inter'] text-xs text-white/70">{membership.fullName}</p>
-                </div>
-              ))}
-            </div>
-          </ScrollFade>
         </div>
       </section>
     </div>

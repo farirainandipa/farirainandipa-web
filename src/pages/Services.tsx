@@ -11,6 +11,7 @@ import {
   ChevronDown,
   ChevronUp,
   MessageSquare,
+  ExternalLink,
   LucideIcon,
 } from 'lucide-react';
 import { supabase, Service, ServiceItem } from '../lib/supabase';
@@ -77,13 +78,25 @@ function ServiceCard({ category }: { category: ServiceWithItems }) {
                   </li>
                 ))}
             </ul>
-            <Link
-              to={`/contact?service=${category.category_key}`}
-              className="inline-flex items-center gap-2 text-[#21436A] font-['Inter'] text-sm font-medium hover:text-[#BCD8D4] transition-colors duration-200"
-            >
-              <MessageSquare className="w-4 h-4" />
-              Discuss this service
-            </Link>
+            {category.category_key === 'training' ? (
+              <a
+                href="https://iepz.org.zw"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-[#21436A] font-['Inter'] text-sm font-medium hover:text-[#BCD8D4] transition-colors duration-200"
+              >
+                <ExternalLink className="w-4 h-4" />
+                Visit IEPZ — Institute of Events Professionals in Zimbabwe
+              </a>
+            ) : (
+              <Link
+                to={`/contact?service=${category.category_key}`}
+                className="inline-flex items-center gap-2 text-[#21436A] font-['Inter'] text-sm font-medium hover:text-[#BCD8D4] transition-colors duration-200"
+              >
+                <MessageSquare className="w-4 h-4" />
+                Discuss this service
+              </Link>
+            )}
           </div>
         )}
       </div>
