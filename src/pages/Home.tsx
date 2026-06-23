@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import ScrollFade from '../components/ScrollFade';
 import {
-  Users,
+  CalendarCheck,
   Target,
   BarChart3,
   MapPin,
@@ -11,14 +11,14 @@ import {
 
 const expertiseAreas = [
   {
+    icon: CalendarCheck,
+    title: 'Event Management Services',
+    description: 'Full-service events management from concept through to delivery',
+  },
+  {
     icon: Target,
     title: 'Bid Development',
     description: 'Strategic bid preparation for event hosting opportunities',
-  },
-  {
-    icon: Users,
-    title: 'Stakeholder Engagement',
-    description: 'Building partnerships across government, industry, and tourism bodies',
   },
   {
     icon: BarChart3,
@@ -37,75 +37,94 @@ const expertiseAreas = [
   },
 ];
 
-const certifications = [
-  'IAEE Member',
-  'CEM Certified',
-  'CEPA',
-  'MPI Member',
-  'AAXO Member',
-  'SA Events Council',
+// PLACEHOLDER: Replace each logo entry with a real client logo.
+// Set `logo` to the image URL (e.g. "/logos/client-name.png") and update `name`.
+// Logos are displayed in greyscale and scaled uniformly.
+const pastClients = [
+  { name: 'Client Logo 1', logo: '' },
+  { name: 'Client Logo 2', logo: '' },
+  { name: 'Client Logo 3', logo: '' },
+  { name: 'Client Logo 4', logo: '' },
+  { name: 'Client Logo 5', logo: '' },
+  { name: 'Client Logo 6', logo: '' },
+  { name: 'Client Logo 7', logo: '' },
+  { name: 'Client Logo 8', logo: '' },
 ];
+
+function LogoPlaceholder({ name }: { name: string }) {
+  return (
+    <div className="flex-shrink-0 h-10 w-36 flex items-center justify-center bg-gray-100 rounded border border-gray-200">
+      <span className="font-['Inter'] text-xs text-gray-400 font-medium tracking-wide">{name}</span>
+    </div>
+  );
+}
 
 export default function Home() {
   return (
     <div>
-      {/* Hero Section */}
+      {/* Hero Section — left-aligned content */}
       <section className="relative bg-white min-h-[85vh] flex items-center overflow-hidden">
-        {/* Background hero image */}
+        {/* Background image */}
         <div className="absolute inset-0 z-0">
-          {/* PLACEHOLDER: Replace with professional conference/event venue photo showing delegates or African convention space */}
+          {/* PLACEHOLDER: Replace with professional conference or exhibition floor photo, minimum 1920px wide */}
           <img
-            src="https://images.pexels.com/photos/2774197/pexels-photo-2774197.jpeg?auto=compress&cs=tinysrgb&w=1920"
-            alt="Professional conference setting"
-            className="w-full h-full object-cover opacity-10"
+            src="https://images.pexels.com/photos/1587014/pexels-photo-1587014.jpeg?auto=compress&cs=tinysrgb&w=1920"
+            alt="Business conference session with delegates"
+            className="w-full h-full object-cover opacity-12"
           />
+          {/* Gradient: strong on left (where content sits), fades right */}
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/20" />
         </div>
-        {/* Watermark */}
-        <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
+
+        {/* Watermark — right side */}
+        <div className="absolute right-8 lg:right-20 top-1/2 -translate-y-1/2 z-0 pointer-events-none">
           <img
             src="/FN_MICE_(1920_x_1080_px).png"
             alt=""
             aria-hidden="true"
-            className="w-[55%] max-w-2xl opacity-[0.04]"
+            className="w-64 lg:w-96 opacity-[0.04]"
           />
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
-          <ScrollFade>
-            {/* Logo in hero */}
-            <div className="mb-8">
-              <img
-                src="/FN_MICE_(1920_x_1080_px).png"
-                alt="Farirai Nandipa Events"
-                className="h-20 lg:h-28 w-auto"
-              />
-              <p className="font-['Cormorant_Garamond'] text-sm lg:text-base tracking-[0.3em] uppercase text-[#3A3A3A] mt-2">
-                Events Management & MICE Agency
+        {/* Content — pinned left */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 xl:px-24 py-24 lg:py-32">
+          <div className="max-w-xl lg:max-w-2xl">
+            <ScrollFade>
+              <div className="mb-8">
+                <img
+                  src="/FN_MICE_(1920_x_1080_px).png"
+                  alt="Farirai Nandipa Events"
+                  className="h-20 lg:h-28 w-auto"
+                />
+                <p className="font-['Cormorant_Garamond'] text-sm lg:text-base tracking-[0.3em] uppercase text-[#3A3A3A] mt-2">
+                  Events Management & MICE Agency
+                </p>
+              </div>
+            </ScrollFade>
+
+            <ScrollFade delay={200}>
+              <h1 className="font-['Cormorant_Garamond'] text-4xl lg:text-6xl font-semibold text-[#21436A] mb-6">
+                Strategic partners in the business of events
+              </h1>
+            </ScrollFade>
+
+            <ScrollFade delay={400}>
+              <p className="font-['Inter'] text-lg text-[#3A3A3A] mb-8 leading-relaxed">
+                Expert events management and MICE consultancy across the full value chain —
+                from bid development to execution — with a Pan-African perspective on business tourism.
               </p>
-            </div>
-          </ScrollFade>
+            </ScrollFade>
 
-          <ScrollFade delay={200}>
-            <h1 className="font-['Cormorant_Garamond'] text-4xl lg:text-6xl font-semibold text-[#21436A] mb-6 max-w-3xl">
-              Strategic partners in the business of events
-            </h1>
-          </ScrollFade>
-
-          <ScrollFade delay={400}>
-            <p className="font-['Inter'] text-lg lg:text-xl text-[#3A3A3A] mb-8 max-w-2xl leading-relaxed">
-              Expert events management and MICE consultancy across the value chain — from bid development to full event execution — with a Pan-African perspective on business tourism.
-            </p>
-          </ScrollFade>
-
-          <ScrollFade delay={600}>
-            <Link
-              to="/contact"
-              className="inline-flex items-center gap-2 bg-[#21436A] text-white px-8 py-3.5 font-['Inter'] text-sm font-medium rounded hover:bg-[#1a3456] transition-colors duration-200"
-            >
-              Make an Enquiry
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </ScrollFade>
+            <ScrollFade delay={600}>
+              <Link
+                to="/contact"
+                className="inline-flex items-center gap-2 bg-[#21436A] text-white px-8 py-3.5 font-['Inter'] text-sm font-medium rounded hover:bg-[#1a3456] transition-colors duration-200"
+              >
+                Make an Enquiry
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </ScrollFade>
+          </div>
         </div>
       </section>
 
@@ -141,7 +160,7 @@ export default function Home() {
               Our Expertise
             </h2>
             <p className="font-['Inter'] text-base text-[#3A3A3A] text-center mb-12 max-w-2xl mx-auto">
-              Delivering comprehensive MICE solutions for organisations across Africa and beyond.
+              Delivering comprehensive events management and MICE solutions for organisations across Africa and beyond.
             </p>
           </ScrollFade>
 
@@ -181,28 +200,47 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Credibility Strip */}
-      <section className="bg-white py-12 lg:py-16 border-y border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Past Clients — infinite scrolling marquee */}
+      <section className="bg-white py-12 lg:py-16 border-y border-gray-100 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
           <ScrollFade>
-            <p className="font-['Inter'] text-sm text-[#3A3A3A] text-center mb-8 uppercase tracking-wider">
-              Certifications & Memberships
+            <p className="font-['Inter'] text-sm text-[#3A3A3A] text-center uppercase tracking-wider">
+              Past Clients
             </p>
           </ScrollFade>
-          <ScrollFade delay={200}>
-            <div className="flex flex-wrap justify-center items-center gap-6 lg:gap-10">
-              {certifications.map((cert) => (
-                <div
-                  key={cert}
-                  className="bg-gray-50 px-5 py-3 rounded border border-gray-200 hover:border-[#BCD8D4] transition-colors duration-200"
-                >
-                  <span className="font-['Inter'] text-xs sm:text-sm text-[#21436A] font-medium">
-                    {cert}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </ScrollFade>
+        </div>
+
+        {/* Marquee track — duplicated for seamless loop, pauses on hover */}
+        <div className="relative overflow-hidden">
+          <div className="marquee-track flex items-center gap-10 w-max">
+            {/* First copy */}
+            {pastClients.map((client, i) =>
+              client.logo ? (
+                <img
+                  key={`a-${i}`}
+                  src={client.logo}
+                  alt={client.name}
+                  className="flex-shrink-0 h-10 w-auto object-contain grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all duration-300"
+                />
+              ) : (
+                <LogoPlaceholder key={`a-${i}`} name={client.name} />
+              )
+            )}
+            {/* Duplicate for seamless infinite loop */}
+            {pastClients.map((client, i) =>
+              client.logo ? (
+                <img
+                  key={`b-${i}`}
+                  src={client.logo}
+                  alt={client.name}
+                  className="flex-shrink-0 h-10 w-auto object-contain grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all duration-300"
+                  aria-hidden="true"
+                />
+              ) : (
+                <LogoPlaceholder key={`b-${i}`} name={client.name} />
+              )
+            )}
+          </div>
         </div>
       </section>
 

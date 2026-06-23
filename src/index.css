@@ -22,3 +22,17 @@ body {
   background-color: #BCD8D4;
   color: #21436A;
 }
+
+/* Infinite scrolling marquee for Past Clients strip */
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  animation: marquee-scroll 30s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}

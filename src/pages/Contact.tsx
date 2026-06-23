@@ -160,14 +160,14 @@ export default function Contact() {
                     </div>
                   </a>
 
-                  <a href="mailto:nandie@farirainandipa.co.zw" className="flex items-center gap-4 group">
+                  <a href="mailto:admin@farirainandipa.co.zw" className="flex items-center gap-4 group">
                     <div className="w-12 h-12 bg-[#BCD8D4] rounded-lg flex items-center justify-center group-hover:bg-[#21436A] transition-colors duration-200">
                       <Mail className="w-5 h-5 text-[#21436A] group-hover:text-white transition-colors duration-200" />
                     </div>
                     <div>
                       <p className="font-['Inter'] text-sm text-[#3A3A3A]/60">Email</p>
                       <p className="font-['Inter'] text-base text-[#21436A] font-medium group-hover:text-[#BCD8D4] transition-colors duration-200">
-                        nandie@farirainandipa.co.zw
+                        admin@farirainandipa.co.zw
                       </p>
                     </div>
                   </a>
