@@ -41,7 +41,7 @@ export default function Header() {
             <img
               src="/FN_MICE_(1920_x_1080_px).png"
               alt="Farirai Nandipa Events — Events Management & MICE Agency"
-              className="h-12 w-auto"
+              className="h-[62px] w-auto"
             />
           </Link>
 

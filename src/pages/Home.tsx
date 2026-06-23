@@ -76,16 +76,6 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/20" />
         </div>
 
-        {/* Watermark — right side */}
-        <div className="absolute right-8 lg:right-20 top-1/2 -translate-y-1/2 z-0 pointer-events-none">
-          <img
-            src="/FN_MICE_(1920_x_1080_px).png"
-            alt=""
-            aria-hidden="true"
-            className="w-64 lg:w-96 opacity-[0.04]"
-          />
-        </div>
-
         {/* Content — pinned left */}
         <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 xl:px-24 py-24 lg:py-32">
           <div className="max-w-xl lg:max-w-2xl">
@@ -94,7 +84,7 @@ export default function Home() {
                 <img
                   src="/FN_MICE_(1920_x_1080_px).png"
                   alt="Farirai Nandipa Events"
-                  className="h-20 lg:h-28 w-auto"
+                  className="h-[120px] lg:h-[168px] w-auto"
                 />
                 <p className="font-['Cormorant_Garamond'] text-sm lg:text-base tracking-[0.3em] uppercase text-[#3A3A3A] mt-2">
                   Events Management & MICE Agency
@@ -145,15 +135,6 @@ export default function Home() {
 
       {/* Expertise Highlights */}
       <section className="bg-white py-20 lg:py-28 relative overflow-hidden">
-        {/* Section watermark */}
-        <div className="absolute inset-0 flex items-center justify-end pointer-events-none pr-8 opacity-[0.035]">
-          <img
-            src="/FN_MICE_(1920_x_1080_px).png"
-            alt=""
-            aria-hidden="true"
-            className="w-[40%] max-w-xl"
-          />
-        </div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollFade>
             <h2 className="font-['Cormorant_Garamond'] text-3xl lg:text-4xl font-semibold text-[#21436A] text-center mb-4">
@@ -246,14 +227,6 @@ export default function Home() {
 
       {/* Closing CTA Band */}
       <section className="bg-[#21436A] py-16 lg:py-20 relative overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.06]">
-          <img
-            src="/FN_MICE_(1920_x_1080_px).png"
-            alt=""
-            aria-hidden="true"
-            className="w-[50%] max-w-lg brightness-0 invert"
-          />
-        </div>
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <ScrollFade>
             <h2 className="font-['Cormorant_Garamond'] text-2xl lg:text-3xl font-semibold text-white mb-4">
