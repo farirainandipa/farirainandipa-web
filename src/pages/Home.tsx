@@ -38,7 +38,7 @@ const expertiseAreas = [
 ];
 
 const pastClients = [
-  { name: 'Mzurrie Flowers', logo: '/logos/mzurrie-flowers.jpg' },
+  { name: 'Mzurrie Flowers', logo: '/logos/mzurrie-flowers-logo.png' },
   { name: 'Interplant Roses', logo: '/logos/interplant-roses.svg' },
   { name: 'Tambuzi', logo: '/logos/tambuzi.svg' },
   { name: 'Hazendal Wines', logo: '/logos/hazendal-wines.svg' },
