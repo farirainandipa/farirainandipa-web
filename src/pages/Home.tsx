@@ -40,11 +40,10 @@ const expertiseAreas = [
 const pastClients = [
   { name: 'Mzurrie Flowers', logo: '/logos/mzurrie-flowers-logo.webp' },
   { name: 'Interplant Roses', logo: '/logos/interplant-roses.svg' },
-  { name: 'Tambuzi', logo: '/logos/tambuzi.svg' },
+  { name: 'Tambuzi', logo: '/logos/tambuzi.jpg' },
   { name: 'Hazendal Wines', logo: '/logos/hazendal-wines.svg' },
   { name: 'LumaSky Drone Show', logo: '/logos/lumasky.svg' },
   { name: 'Kvant Events', logo: '/logos/kvant.png' },
-  { name: 'Gobo Guy', logo: '' },
   { name: 'ZB Bank', logo: '/logos/zb-bank.png' },
   { name: 'Zimbabwe National Chamber of Commerce', logo: '/logos/zncc.png' },
   { name: 'Environmental Management Agency', logo: '/logos/ema.png' },
@@ -53,7 +52,7 @@ const pastClients = [
 
 function LogoPlaceholder({ name }: { name: string }) {
   return (
-    <div className="flex-shrink-0 h-10 w-36 flex items-center justify-center bg-gray-100 rounded border border-gray-200">
+    <div className="flex-shrink-0 h-[70px] w-36 flex items-center justify-center bg-gray-100 rounded border border-gray-200">
       <span className="font-['Inter'] text-xs text-gray-400 font-medium tracking-wide">{name}</span>
     </div>
   );
@@ -186,7 +185,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
           <ScrollFade>
             <p className="font-['Inter'] text-sm text-[#3A3A3A] text-center uppercase tracking-wider">
-              Past Clients
+              Who we have worked with
             </p>
           </ScrollFade>
         </div>
@@ -201,7 +200,7 @@ export default function Home() {
                   key={`a-${i}`}
                   src={client.logo}
                   alt={client.name}
-                  className="flex-shrink-0 h-10 w-auto object-contain grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all duration-300"
+                  className="flex-shrink-0 h-[70px] w-auto object-contain grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all duration-300"
                 />
               ) : (
                 <LogoPlaceholder key={`a-${i}`} name={client.name} />
@@ -214,7 +213,7 @@ export default function Home() {
                   key={`b-${i}`}
                   src={client.logo}
                   alt={client.name}
-                  className="flex-shrink-0 h-10 w-auto object-contain grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all duration-300"
+                  className="flex-shrink-0 h-[70px] w-auto object-contain grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all duration-300"
                   aria-hidden="true"
                 />
               ) : (
