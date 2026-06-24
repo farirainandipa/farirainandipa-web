@@ -37,18 +37,18 @@ const expertiseAreas = [
   },
 ];
 
-// PLACEHOLDER: Replace each logo entry with a real client logo.
-// Set `logo` to the image URL (e.g. "/logos/client-name.png") and update `name`.
-// Logos are displayed in greyscale and scaled uniformly.
 const pastClients = [
-  { name: 'Client Logo 1', logo: '' },
-  { name: 'Client Logo 2', logo: '' },
-  { name: 'Client Logo 3', logo: '' },
-  { name: 'Client Logo 4', logo: '' },
-  { name: 'Client Logo 5', logo: '' },
-  { name: 'Client Logo 6', logo: '' },
-  { name: 'Client Logo 7', logo: '' },
-  { name: 'Client Logo 8', logo: '' },
+  { name: 'Mzurrie Flowers', logo: '/logos/mzurrie-flowers.jpg' },
+  { name: 'Interplant Roses', logo: '/logos/interplant-roses.svg' },
+  { name: 'Tambuzi', logo: '/logos/tambuzi.svg' },
+  { name: 'Hazendal Wines', logo: '/logos/hazendal-wines.svg' },
+  { name: 'LumaSky Drone Show', logo: '/logos/lumasky.svg' },
+  { name: 'Kvant Events', logo: '/logos/kvant.png' },
+  { name: 'Gobo Guy', logo: '' },
+  { name: 'ZB Bank', logo: '/logos/zb-bank.png' },
+  { name: 'Zimbabwe National Chamber of Commerce', logo: '/logos/zncc.png' },
+  { name: 'Environmental Management Agency', logo: '/logos/ema.png' },
+  { name: 'Zimbabwe Tourism Authority', logo: '/logos/zta.png' },
 ];
 
 function LogoPlaceholder({ name }: { name: string }) {
