@@ -38,16 +38,16 @@ const expertiseAreas = [
 ];
 
 const pastClients = [
-  { name: 'Mzurrie Flowers', logo: '/logos/mzurrie-flowers-logo.webp' },
+  { name: 'Mzurrie Flowers', logo: '/logos/mzurrie-flowers-logo.webp', height: 140 },
   { name: 'Interplant Roses', logo: '/logos/interplant-roses.svg' },
   { name: 'Tambuzi', logo: '/logos/tambuzi.jpg' },
   { name: 'Hazendal Wines', logo: '/logos/hazendal-wines.svg' },
-  { name: 'LumaSky Drone Show', logo: '/logos/lumasky.svg' },
+  { name: 'LumaSky Drone Show', logo: '/logos/lumasky.svg', height: 154 },
   { name: 'Kvant Events', logo: '/logos/kvant.png' },
   { name: 'ZB Bank', logo: '/logos/zb-bank.png' },
   { name: 'Zimbabwe National Chamber of Commerce', logo: '/logos/zncc.png' },
-  { name: 'Environmental Management Agency', logo: '/logos/ema.png' },
-  { name: 'Zimbabwe Tourism Authority', logo: '/logos/zta.png' },
+  { name: 'Environmental Management Agency', logo: '/logos/ema.png', height: 122 },
+  { name: 'Zimbabwe Tourism Authority', logo: '/logos/zta.png', height: 122 },
 ];
 
 function LogoPlaceholder({ name }: { name: string }) {
@@ -200,7 +200,8 @@ export default function Home() {
                   key={`a-${i}`}
                   src={client.logo}
                   alt={client.name}
-                  className="flex-shrink-0 h-[70px] w-auto object-contain grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all duration-300"
+                  style={{ height: `${client.height ?? 70}px` }}
+                  className="flex-shrink-0 w-auto object-contain grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all duration-300"
                 />
               ) : (
                 <LogoPlaceholder key={`a-${i}`} name={client.name} />
