@@ -78,9 +78,6 @@ export default function Home() {
         {/* Content — pinned left */}
         <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 xl:px-24 py-24 lg:py-32">
           <div className="max-w-xl lg:max-w-2xl">
-            <ScrollFade>
-            </ScrollFade>
-
             <ScrollFade delay={200}>
               <h1 className="font-['Cormorant_Garamond'] text-4xl lg:text-6xl font-semibold text-[#21436A] mb-6">
                 Strategic partners in the business of events
