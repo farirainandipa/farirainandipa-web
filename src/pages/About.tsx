@@ -33,39 +33,12 @@ const highlights = [
   'Niche Partners Fellow, MICE Research and Business Development',
 ];
 
-// PLACEHOLDER: Replace with real team member photos and bios
-const teamMembers = [
-  {
-    name: 'Team Member Name',
-    role: 'Event Coordinator',
-    bio: 'An experienced event coordinator with a background in conference logistics, vendor management, and delegate services across Southern Africa.',
-    // PLACEHOLDER: Replace with real headshot URL
-    photo: 'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=400',
-    photoAlt: 'Event Coordinator, Farirai Nandipa Events',
-  },
-  {
-    name: 'Team Member Name',
-    role: 'Program Coordinator',
-    bio: 'A dedicated program coordinator specialising in speaker management, event programming, and stakeholder liaison for MICE events throughout Africa.',
-    // PLACEHOLDER: Replace with real headshot URL
-    photo: 'https://images.pexels.com/photos/1181695/pexels-photo-1181695.jpeg?auto=compress&cs=tinysrgb&w=400',
-    photoAlt: 'Program Coordinator, Farirai Nandipa Events',
-  },
-];
 
 export default function About() {
   return (
     <div>
       {/* Hero Section */}
       <section className="bg-[#BCD8D4]/20 py-16 lg:py-24 relative overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-end pointer-events-none pr-12 opacity-[0.05]">
-          <img
-            src="/FN_MICE_(1920_x_1080_px).png"
-            alt=""
-            aria-hidden="true"
-            className="w-[35%] max-w-sm"
-          />
-        </div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollFade>
             <nav className="font-['Inter'] text-sm mb-8">
@@ -91,11 +64,10 @@ export default function About() {
             <ScrollFade direction="right">
               <div className="relative">
                 <div className="aspect-[4/5] bg-gray-100 rounded-lg overflow-hidden">
-                  {/* PLACEHOLDER: Replace with professional headshot of Farirai Nandipa */}
                   <img
-                    src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=800"
+                    src="/farirai-nandipa.png"
                     alt="Farirai Nandipa, Founder, Farirai Nandipa Events"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-top"
                   />
                 </div>
                 <div className="absolute -bottom-4 -right-4 bg-[#21436A] text-white px-6 py-3 rounded">
@@ -187,69 +159,6 @@ export default function About() {
               ))}
             </div>
           </ScrollFade>
-        </div>
-      </section>
-
-      {/* (c) Our Team */}
-      <section className="bg-white py-16 lg:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ScrollFade>
-            <h2 className="font-['Cormorant_Garamond'] text-3xl lg:text-4xl font-semibold text-[#21436A] mb-4">
-              Our Team
-            </h2>
-            <p className="font-['Inter'] text-base text-[#3A3A3A] mb-12 max-w-2xl">
-              Behind every seamless event is a dedicated team. Meet the professionals who bring
-              Farirai Nandipa Events to life.
-            </p>
-          </ScrollFade>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Founder card */}
-            <ScrollFade delay={0}>
-              <div className="group text-center">
-                <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-4 mx-auto max-w-[200px]">
-                  {/* PLACEHOLDER: Replace with professional headshot of Farirai Nandipa */}
-                  <img
-                    src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400"
-                    alt="Farirai Nandipa, Founder"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-                <h3 className="font-['Cormorant_Garamond'] text-xl font-semibold text-[#21436A]">
-                  Farirai Nandipa
-                </h3>
-                <p className="font-['Inter'] text-sm text-[#BCD8D4] font-medium mb-2">Founder & Lead Consultant</p>
-                <p className="font-['Inter'] text-sm text-[#3A3A3A]/80 leading-relaxed">
-                  MICE consultant and events strategist with 15+ years of Pan-African experience.
-                </p>
-              </div>
-            </ScrollFade>
-
-            {/* Placeholder team members */}
-            {teamMembers.map((member, index) => (
-              <ScrollFade key={member.role} delay={(index + 1) * 100}>
-                <div className="group text-center">
-                  <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-4 mx-auto max-w-[200px]">
-                    {/* PLACEHOLDER: Replace src with real team member headshot */}
-                    <img
-                      src={member.photo}
-                      alt={member.photoAlt}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  </div>
-                  {/* PLACEHOLDER: Replace with real team member name */}
-                  <h3 className="font-['Cormorant_Garamond'] text-xl font-semibold text-[#21436A]">
-                    {member.name}
-                  </h3>
-                  <p className="font-['Inter'] text-sm text-[#BCD8D4] font-medium mb-2">{member.role}</p>
-                  {/* PLACEHOLDER: Replace with real team member bio */}
-                  <p className="font-['Inter'] text-sm text-[#3A3A3A]/80 leading-relaxed">
-                    {member.bio}
-                  </p>
-                </div>
-              </ScrollFade>
-            ))}
-          </div>
         </div>
       </section>
 

@@ -67,9 +67,9 @@ export default function Home() {
         <div className="absolute inset-0 z-0">
           {/* PLACEHOLDER: Replace with professional conference or exhibition floor photo, minimum 1920px wide */}
           <img
-            src="https://images.pexels.com/photos/1587014/pexels-photo-1587014.jpeg?auto=compress&cs=tinysrgb&w=1920"
-            alt="Business conference session with delegates"
-            className="w-full h-full object-cover opacity-12"
+            src="https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=1920"
+            alt="Strategic event planning meeting with African business professionals"
+            className="w-full h-full object-cover opacity-20"
           />
           {/* Gradient: strong on left (where content sits), fades right */}
           <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/20" />
@@ -170,9 +170,9 @@ export default function Home() {
       <section className="bg-white py-12 lg:py-16 border-y border-gray-100 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
           <ScrollFade>
-            <p className="font-['Inter'] text-sm text-[#3A3A3A] text-center uppercase tracking-wider">
-              Who we have worked with
-            </p>
+            <h2 className="font-['Cormorant_Garamond'] text-2xl lg:text-3xl font-semibold text-[#21436A] text-center">
+              Who We Have Worked With
+            </h2>
           </ScrollFade>
         </div>
 

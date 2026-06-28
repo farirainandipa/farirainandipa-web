@@ -173,14 +173,6 @@ export default function Packages() {
     <div>
       {/* Hero Section */}
       <section className="bg-[#BCD8D4]/20 py-16 lg:py-24 relative overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-end pointer-events-none pr-12 opacity-[0.05]">
-          <img
-            src="/FN_MICE_(1920_x_1080_px).png"
-            alt=""
-            aria-hidden="true"
-            className="w-[35%] max-w-sm"
-          />
-        </div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollFade>
             <nav className="font-['Inter'] text-sm mb-8">
@@ -386,14 +378,6 @@ export default function Packages() {
 
       {/* CTA Band */}
       <section className="bg-[#21436A] py-16 lg:py-20 relative overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.06]">
-          <img
-            src="/FN_MICE_(1920_x_1080_px).png"
-            alt=""
-            aria-hidden="true"
-            className="w-[50%] max-w-lg brightness-0 invert"
-          />
-        </div>
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <ScrollFade>
             <h2 className="font-['Cormorant_Garamond'] text-2xl lg:text-3xl font-semibold text-white mb-4">
