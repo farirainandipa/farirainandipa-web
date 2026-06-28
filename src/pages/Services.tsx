@@ -86,7 +86,7 @@ function ServiceCard({ category }: { category: ServiceWithItems }) {
                 className="inline-flex items-center gap-2 text-[#21436A] font-['Inter'] text-sm font-medium hover:text-[#BCD8D4] transition-colors duration-200"
               >
                 <ExternalLink className="w-4 h-4" />
-                Visit IEPZ — Institute of Events Professionals in Zimbabwe
+                Visit IEPZ, Institute of Events Professionals in Zimbabwe
               </a>
             ) : (
               <Link
@@ -154,7 +154,7 @@ export default function Services() {
               Our Services
             </h1>
             <p className="font-['Inter'] text-lg text-[#3A3A3A] max-w-2xl">
-              Comprehensive MICE services tailored to meet your unique needs — from strategic
+              Comprehensive MICE services tailored to meet your unique needs, from strategic
               consulting to hands-on event management.
             </p>
           </ScrollFade>

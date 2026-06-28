@@ -44,7 +44,7 @@ const conferencePackages = [
     country: 'Zimbabwe / Zambia',
     region: 'Southern Africa',
     description:
-      'A unique bush conference destination at one of the world\'s natural wonders — combining world-class meeting facilities with a memorable African experience.',
+      'A unique bush conference destination at one of the world\'s natural wonders, combining world-class meeting facilities with a memorable African experience.',
     capacity: 'Up to 500 delegates',
     image: 'https://images.pexels.com/photos/1114425/pexels-photo-1114425.jpeg?auto=compress&cs=tinysrgb&w=600',
   },
@@ -61,7 +61,7 @@ const conferencePackages = [
 
 const incentivePackages = [
   {
-    destination: 'Victoria Falls — Zimbabwe & Zambia',
+    destination: 'Victoria Falls, Zimbabwe and Zambia',
     duration: '4 Nights / 5 Days',
     highlights: [
       'Sunset cruise on the Zambezi River',
@@ -72,7 +72,7 @@ const incentivePackages = [
     image: 'https://images.pexels.com/photos/1108572/pexels-photo-1108572.jpeg?auto=compress&cs=tinysrgb&w=600',
   },
   {
-    destination: 'Cape Winelands & Garden Route — South Africa',
+    destination: 'Cape Winelands and Garden Route, South Africa',
     duration: '5 Nights / 6 Days',
     highlights: [
       'Private wine estate experiences',
@@ -83,7 +83,7 @@ const incentivePackages = [
     image: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=600',
   },
   {
-    destination: 'Zanzibar Island — Tanzania',
+    destination: 'Zanzibar Island, Tanzania',
     duration: '5 Nights / 6 Days',
     highlights: [
       'Private beach resort buyout',
@@ -94,7 +94,7 @@ const incentivePackages = [
     image: 'https://images.pexels.com/photos/1430676/pexels-photo-1430676.jpeg?auto=compress&cs=tinysrgb&w=600',
   },
   {
-    destination: 'Serengeti & Ngorongoro — Tanzania',
+    destination: 'Serengeti and Ngorongoro, Tanzania',
     duration: '6 Nights / 7 Days',
     highlights: [
       'Private game drive vehicles',
@@ -105,7 +105,7 @@ const incentivePackages = [
     image: 'https://images.pexels.com/photos/1108101/pexels-photo-1108101.jpeg?auto=compress&cs=tinysrgb&w=600',
   },
   {
-    destination: 'Okavango Delta — Botswana',
+    destination: 'Okavango Delta, Botswana',
     duration: '4 Nights / 5 Days',
     highlights: [
       'Exclusive mokoro (canoe) expeditions',
@@ -120,7 +120,7 @@ const incentivePackages = [
 const exhibitionTours = [
   {
     sector: 'Mining & Resources',
-    exhibition: 'Mining Indaba — Cape Town, South Africa',
+    exhibition: 'Mining Indaba, Cape Town, South Africa',
     region: 'Southern Africa',
     description:
       'Africa\'s largest and most influential mining investment conference. We curate hosted buyer tours connecting mining professionals with project developers and investors.',
@@ -128,7 +128,7 @@ const exhibitionTours = [
   },
   {
     sector: 'Tourism & Hospitality',
-    exhibition: 'Africa\'s Travel Indaba — Durban, South Africa',
+    exhibition: 'Africa\'s Travel Indaba, Durban, South Africa',
     region: 'Southern Africa',
     description:
       'Southern Africa\'s premier travel trade show. We facilitate exhibition tours for tourism boards, hotel groups, and tour operators seeking African market access.',
@@ -136,7 +136,7 @@ const exhibitionTours = [
   },
   {
     sector: 'Agriculture & Agribusiness',
-    exhibition: 'Agra Agricultural Show — Namibia',
+    exhibition: 'Agra Agricultural Show, Namibia',
     region: 'Southern Africa',
     description:
       'Southern Africa\'s leading agricultural exhibition. Ideal for agribusiness companies seeking market intelligence and trade connections across SADC.',
@@ -144,7 +144,7 @@ const exhibitionTours = [
   },
   {
     sector: 'Technology & Innovation',
-    exhibition: 'Africa Tech Festival — Cape Town, South Africa',
+    exhibition: 'Africa Tech Festival, Cape Town, South Africa',
     region: 'Southern Africa',
     description:
       'The continent\'s leading technology, mobile, and fintech event. We coordinate delegation tours for tech companies, start-ups, and digital economy stakeholders.',
@@ -152,7 +152,7 @@ const exhibitionTours = [
   },
   {
     sector: 'Trade & Commerce',
-    exhibition: 'Zimbabwe International Trade Fair (ZITF) — Bulawayo',
+    exhibition: 'Zimbabwe International Trade Fair (ZITF), Bulawayo',
     region: 'Zimbabwe / SADC',
     description:
       'Zimbabwe\'s flagship trade show attracting exhibitors and buyers from across Africa. We provide comprehensive support for international delegations attending ZITF.',
@@ -160,7 +160,7 @@ const exhibitionTours = [
   },
   {
     sector: 'Real Estate & Infrastructure',
-    exhibition: 'AfriCities Summit — Various African Cities',
+    exhibition: 'AfriCities Summit, Various African Cities',
     region: 'Pan-African',
     description:
       'A continental platform for African city leaders, developers, and investors. We organise delegation packages for mayors, urban planners, and infrastructure companies.',
@@ -192,7 +192,7 @@ export default function Packages() {
               Packages
             </h1>
             <p className="font-['Inter'] text-lg text-[#3A3A3A] max-w-2xl leading-relaxed">
-              From conference hosting to incentive travel and exhibition tours — Farirai Nandipa Events
+              From conference hosting to incentive travel and exhibition tours, Farirai Nandipa Events
               offers curated packages across Africa and beyond. Browse our offerings below and send us
               an enquiry to discuss your requirements.
             </p>
@@ -213,7 +213,7 @@ export default function Packages() {
               </h2>
             </div>
             <p className="font-['Inter'] text-base text-[#3A3A3A] max-w-3xl mb-12 leading-relaxed">
-              We work with leading conference venues across Africa — supporting bid development,
+              We work with leading conference venues across Africa, supporting bid development,
               programme design, delegate logistics, and full event management. Below are destination
               and venue options we regularly work with.
             </p>
@@ -227,7 +227,7 @@ export default function Packages() {
                     {/* PLACEHOLDER: Replace with real venue/destination photo */}
                     <img
                       src={pkg.image}
-                      alt={`${pkg.venue} — ${pkg.country}`}
+                      alt={`${pkg.venue}, ${pkg.country}`}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>
@@ -349,7 +349,7 @@ export default function Packages() {
                     {/* PLACEHOLDER: Replace with real exhibition/sector photo */}
                     <img
                       src={tour.image}
-                      alt={`${tour.sector} — ${tour.exhibition}`}
+                      alt={`${tour.sector}, ${tour.exhibition}`}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute top-3 left-3">

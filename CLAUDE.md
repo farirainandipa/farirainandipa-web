@@ -96,3 +96,10 @@ in Netlify's site environment variables — the build will fail without them.
 - Icons: use `lucide-react` only (per `.bolt/prompt`); don't add another icon
   library.
 - No test suite currently exists.
+
+## Copy style
+
+- No em dashes (—) anywhere in user-facing text. Use a comma, or rephrase.
+- No Oxford colons (a colon before a list or explanatory clause in running
+  prose, e.g. "We offer: planning, logistics"). Work the list into the
+  sentence naturally instead.

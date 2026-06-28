@@ -26,7 +26,7 @@ export default function Footer() {
               Events Management & MICE Agency
             </p>
             <p className="font-['Inter'] text-sm text-white/70 leading-relaxed">
-              Strategic partners in the business of events — building Africa's MICE capacity through expertise and collaboration.
+              Strategic partners in the business of events, building Africa's MICE capacity through expertise and collaboration.
             </p>
           </div>
 
@@ -142,7 +142,7 @@ export default function Footer() {
         {/* Copyright */}
         <div className="mt-12 pt-8 border-t border-white/20 text-center">
           <p className="font-['Inter'] text-sm text-white/50">
-            © {new Date().getFullYear()} Farirai Nandipa Events — Events Management & MICE Agency
+            © {new Date().getFullYear()} Farirai Nandipa Events. Events Management & MICE Agency
           </p>
         </div>
       </div>

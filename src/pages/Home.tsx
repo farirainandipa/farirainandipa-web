@@ -79,16 +79,6 @@ export default function Home() {
         <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 xl:px-24 py-24 lg:py-32">
           <div className="max-w-xl lg:max-w-2xl">
             <ScrollFade>
-              <div className="mb-8">
-                <img
-                  src="/FN_MICE_(1920_x_1080_px).png"
-                  alt="Farirai Nandipa Events"
-                  className="h-[120px] lg:h-[168px] w-auto"
-                />
-                <p className="font-['Cormorant_Garamond'] text-sm lg:text-base tracking-[0.3em] uppercase text-[#3A3A3A] mt-2">
-                  Events Management & MICE Agency
-                </p>
-              </div>
             </ScrollFade>
 
             <ScrollFade delay={200}>
@@ -99,8 +89,7 @@ export default function Home() {
 
             <ScrollFade delay={400}>
               <p className="font-['Inter'] text-lg text-[#3A3A3A] mb-8 leading-relaxed">
-                Expert events management and MICE consultancy across the full value chain —
-                from bid development to execution — with a Pan-African perspective on business tourism.
+                Expert events management and MICE consultancy across the full value chain, from bid development to execution, with a Pan-African perspective on business tourism.
               </p>
             </ScrollFade>
 
@@ -172,7 +161,7 @@ export default function Home() {
               How We Help
             </h2>
             <p className="font-['Inter'] text-base lg:text-lg text-[#3A3A3A] leading-relaxed">
-              We support event organizers across Africa and beyond, both on-site and remotely — from
+              We support event organizers across Africa and beyond, both on-site and remotely, from
               leading a conference bid and curating a trade exhibition, to facilitating incentive travel
               programs and assisting with MICE policy development.
             </p>

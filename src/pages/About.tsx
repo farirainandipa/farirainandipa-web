@@ -30,7 +30,7 @@ const memberships = [
 const highlights = [
   'Founder of the Institute of Events Professionals in Zimbabwe (IEPZ)',
   '15+ years of experience in the events industry',
-  'Niche Partners Fellow — MICE Research & Business Development',
+  'Niche Partners Fellow, MICE Research and Business Development',
 ];
 
 // PLACEHOLDER: Replace with real team member photos and bios
@@ -41,7 +41,7 @@ const teamMembers = [
     bio: 'An experienced event coordinator with a background in conference logistics, vendor management, and delegate services across Southern Africa.',
     // PLACEHOLDER: Replace with real headshot URL
     photo: 'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=400',
-    photoAlt: 'Event Coordinator — Farirai Nandipa Events',
+    photoAlt: 'Event Coordinator, Farirai Nandipa Events',
   },
   {
     name: 'Team Member Name',
@@ -49,7 +49,7 @@ const teamMembers = [
     bio: 'A dedicated program coordinator specialising in speaker management, event programming, and stakeholder liaison for MICE events throughout Africa.',
     // PLACEHOLDER: Replace with real headshot URL
     photo: 'https://images.pexels.com/photos/1181695/pexels-photo-1181695.jpeg?auto=compress&cs=tinysrgb&w=400',
-    photoAlt: 'Program Coordinator — Farirai Nandipa Events',
+    photoAlt: 'Program Coordinator, Farirai Nandipa Events',
   },
 ];
 
@@ -94,7 +94,7 @@ export default function About() {
                   {/* PLACEHOLDER: Replace with professional headshot of Farirai Nandipa */}
                   <img
                     src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=800"
-                    alt="Farirai Nandipa — Founder, Farirai Nandipa Events"
+                    alt="Farirai Nandipa, Founder, Farirai Nandipa Events"
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -211,7 +211,7 @@ export default function About() {
                   {/* PLACEHOLDER: Replace with professional headshot of Farirai Nandipa */}
                   <img
                     src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400"
-                    alt="Farirai Nandipa — Founder"
+                    alt="Farirai Nandipa, Founder"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
@@ -282,7 +282,7 @@ export default function About() {
                   Pan-African Perspective
                 </h3>
                 <p className="font-['Inter'] text-base text-white/75 leading-relaxed">
-                  Deep understanding of African markets, cultures, and opportunities — positioning
+                  Deep understanding of African markets, cultures, and opportunities, positioning
                   the continent as a premier MICE destination.
                 </p>
               </div>
