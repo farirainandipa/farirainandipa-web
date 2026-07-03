@@ -48,6 +48,7 @@ const pastClients = [
   { name: 'Zimbabwe National Chamber of Commerce', logo: '/logos/zncc.png' },
   { name: 'Environmental Management Agency', logo: '/logos/ema.png', height: 122 },
   { name: 'Zimbabwe Tourism Authority', logo: '/logos/zta.png', height: 122 },
+  { name: 'RSVP Events', logo: '/logos/rsvp.png' },
 ];
 
 function LogoPlaceholder({ name }: { name: string }) {
