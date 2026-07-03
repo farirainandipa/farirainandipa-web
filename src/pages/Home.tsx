@@ -38,11 +38,11 @@ const expertiseAreas = [
 ];
 
 const pastClients = [
-  { name: 'Mzurrie Flowers', logo: '/logos/mzurrie-flowers-logo.webp', height: 350 },
+  { name: 'Mzurrie Flowers', logo: '/logos/mzurrie-flowers-logo.webp', height: 1050 },
   { name: 'Interplant Roses', logo: '/logos/interplant-roses.svg' },
-  { name: 'Tambuzi', logo: '/logos/tambuzi.jpg' },
+  { name: 'Tambuzi', logo: '/logos/tambuzi.jpg', height: 210 },
   { name: 'Hazendal Wines', logo: '/logos/hazendal-wines.svg' },
-  { name: 'LumaSky Drone Show', logo: '/logos/lumasky.svg', height: 385 },
+  { name: 'LumaSky Drone Show', logo: '/logos/lumasky.jpeg', height: 385 },
   { name: 'Kvant Events', logo: '/logos/kvant.png' },
   { name: 'ZB Bank', logo: '/logos/zb-bank.png' },
   { name: 'Zimbabwe National Chamber of Commerce', logo: '/logos/zncc.png' },
