@@ -38,16 +38,17 @@ const expertiseAreas = [
 ];
 
 const pastClients = [
-  { name: 'Mzurrie Flowers', logo: '/logos/mzurrie-flowers-logo.webp', height: 350 },
+  { name: 'Mzurrie Flowers', logo: '/logos/mzurrie-flowers-logo.webp', height: 700 },
   { name: 'Interplant Roses', logo: '/logos/interplant-roses.svg' },
-  { name: 'Tambuzi', logo: '/logos/tambuzi.jpg' },
+  { name: 'Tambuzi', logo: '/logos/tambuzi.jpg', height: 210 },
   { name: 'Hazendal Wines', logo: '/logos/hazendal-wines.svg' },
-  { name: 'LumaSky Drone Show', logo: '/logos/lumasky.svg', height: 385 },
+  { name: 'LumaSky Drone Show', logo: '/logos/lumasky.jpeg', height: 257 },
   { name: 'Kvant Events', logo: '/logos/kvant.png' },
   { name: 'ZB Bank', logo: '/logos/zb-bank.png' },
   { name: 'Zimbabwe National Chamber of Commerce', logo: '/logos/zncc.png' },
   { name: 'Environmental Management Agency', logo: '/logos/ema.png', height: 122 },
   { name: 'Zimbabwe Tourism Authority', logo: '/logos/zta.png', height: 122 },
+  { name: 'RSVP Events', logo: '/logos/rsvp.png' },
 ];
 
 function LogoPlaceholder({ name }: { name: string }) {
@@ -178,33 +179,39 @@ export default function Home() {
 
         {/* Marquee track — duplicated for seamless loop, pauses on hover */}
         <div className="relative overflow-hidden">
-          <div className="marquee-track flex items-center gap-10 w-max">
+          <div className="marquee-track flex items-center w-max">
             {/* First copy */}
             {pastClients.map((client, i) =>
               client.logo ? (
-                <img
-                  key={`a-${i}`}
-                  src={client.logo}
-                  alt={client.name}
-                  style={{ height: `${client.height ?? 70}px` }}
-                  className="flex-shrink-0 w-auto object-contain grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all duration-300"
-                />
+                <div key={`a-${i}`} className="flex-shrink-0 flex items-center px-10">
+                  <img
+                    src={client.logo}
+                    alt={client.name}
+                    style={{ height: `${client.height ?? 70}px` }}
+                    className="w-auto object-contain grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all duration-300"
+                  />
+                </div>
               ) : (
-                <LogoPlaceholder key={`a-${i}`} name={client.name} />
+                <div key={`a-${i}`} className="flex-shrink-0 px-10">
+                  <LogoPlaceholder name={client.name} />
+                </div>
               )
             )}
             {/* Duplicate for seamless infinite loop */}
             {pastClients.map((client, i) =>
               client.logo ? (
-                <img
-                  key={`b-${i}`}
-                  src={client.logo}
-                  alt={client.name}
-                  className="flex-shrink-0 h-[70px] w-auto object-contain grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all duration-300"
-                  aria-hidden="true"
-                />
+                <div key={`b-${i}`} className="flex-shrink-0 flex items-center px-10" aria-hidden="true">
+                  <img
+                    src={client.logo}
+                    alt={client.name}
+                    style={{ height: `${client.height ?? 70}px` }}
+                    className="w-auto object-contain grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all duration-300"
+                  />
+                </div>
               ) : (
-                <LogoPlaceholder key={`b-${i}`} name={client.name} />
+                <div key={`b-${i}`} className="flex-shrink-0 px-10" aria-hidden="true">
+                  <LogoPlaceholder name={client.name} />
+                </div>
               )
             )}
           </div>
