@@ -39,16 +39,15 @@ const expertiseAreas = [
 
 const pastClients = [
   { name: 'Mzurrie Flowers', logo: '/logos/mzurrie-flowers-logo.webp', height: 140 },
-  { name: 'Interplant Roses', logo: '/logos/interplant-roses.svg' },
   { name: 'Tambuzi', logo: '/logos/tambuzi.jpg', height: 105 },
   { name: 'Hazendal Wines', logo: '/logos/hazendal-wines.svg' },
   { name: 'LumaSky Drone Show', logo: '/logos/lumasky.jpeg', height: 110 },
   { name: 'Kvant Events', logo: '/logos/kvant.png' },
   { name: 'ZB Bank', logo: '/logos/zb-bank.png' },
   { name: 'Zimbabwe National Chamber of Commerce', logo: '/logos/zncc.png' },
-  { name: 'Environmental Management Agency', logo: '/logos/ema.png' },
-  { name: 'Zimbabwe Tourism Authority', logo: '/logos/zta.png' },
-  { name: 'RSVP Events', logo: '/logos/rsvp.png' },
+  { name: 'Environmental Management Agency', logo: '/logos/ema.png', height: 120 },
+  { name: 'Zimbabwe Tourism Authority', logo: '/logos/zta.png', height: 120 },
+  { name: 'RSVP Events', logo: '/logos/rsvp.png', height: 120 },
 ];
 
 function LogoPlaceholder({ name }: { name: string }) {
