@@ -193,33 +193,39 @@ export default function Home() {
 
         {/* Marquee track — duplicated for seamless loop, pauses on hover */}
         <div className="relative overflow-hidden">
-          <div className="marquee-track flex items-center gap-10 w-max">
+          <div className="marquee-track flex items-center w-max">
             {/* First copy */}
             {pastClients.map((client, i) =>
               client.logo ? (
-                <img
-                  key={`a-${i}`}
-                  src={client.logo}
-                  alt={client.name}
-                  style={{ height: `${client.height ?? 70}px` }}
-                  className="flex-shrink-0 w-auto object-contain grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all duration-300"
-                />
+                <div key={`a-${i}`} className="flex-shrink-0 flex items-center px-10">
+                  <img
+                    src={client.logo}
+                    alt={client.name}
+                    style={{ height: `${client.height ?? 70}px` }}
+                    className="w-auto object-contain grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all duration-300"
+                  />
+                </div>
               ) : (
-                <LogoPlaceholder key={`a-${i}`} name={client.name} />
+                <div key={`a-${i}`} className="flex-shrink-0 px-10">
+                  <LogoPlaceholder name={client.name} />
+                </div>
               )
             )}
             {/* Duplicate for seamless infinite loop */}
             {pastClients.map((client, i) =>
               client.logo ? (
-                <img
-                  key={`b-${i}`}
-                  src={client.logo}
-                  alt={client.name}
-                  className="flex-shrink-0 h-[70px] w-auto object-contain grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all duration-300"
-                  aria-hidden="true"
-                />
+                <div key={`b-${i}`} className="flex-shrink-0 flex items-center px-10" aria-hidden="true">
+                  <img
+                    src={client.logo}
+                    alt={client.name}
+                    style={{ height: `${client.height ?? 70}px` }}
+                    className="w-auto object-contain grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all duration-300"
+                  />
+                </div>
               ) : (
-                <LogoPlaceholder key={`b-${i}`} name={client.name} />
+                <div key={`b-${i}`} className="flex-shrink-0 px-10" aria-hidden="true">
+                  <LogoPlaceholder name={client.name} />
+                </div>
               )
             )}
           </div>
