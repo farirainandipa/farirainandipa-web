@@ -24,13 +24,13 @@ const memberships = [
   { name: 'MPI', fullName: 'Meeting Professionals International' },
   { name: 'AAXO', fullName: 'Association of African Exhibition Organisers' },
   { name: 'CEPA', fullName: 'Council of Events Professionals Africa' },
-  { name: 'SA Events Council', fullName: 'South Africa Events Council' },
 ];
 
 const highlights = [
   'Founder of the Institute of Events Professionals in Zimbabwe (IEPZ)',
   '15+ years of experience in the events industry',
   'Niche Partners Fellow, MICE Research and Business Development',
+  'Council Member, Africa Business Events Council',
 ];
 
 
@@ -62,7 +62,7 @@ export default function About() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Photo */}
             <ScrollFade direction="right">
-              <div className="relative">
+              <div className="relative max-w-xs mx-auto lg:max-w-sm lg:mx-0">
                 <div className="aspect-[4/5] bg-gray-100 rounded-lg overflow-hidden">
                   <img
                     src="/farirai-nandipa.png"
@@ -88,8 +88,8 @@ export default function About() {
                 <p className="font-['Inter'] text-base text-[#3A3A3A] leading-relaxed mb-6">
                   Farirai Nandipa is a distinguished events management and MICE consultant with over
                   15 years of experience in the industry. As the founder of the Institute of Events
-                  Professionals in Zimbabwe (IEPZ), she has been instrumental in professionalizing
-                  the events sector and establishing industry standards across the country.
+                  Professionals in Zimbabwe (IEPZ), she has been instrumental in spearheading the
+                  professionalisation of the events sector in Zimbabwe.
                 </p>
               </ScrollFade>
 
@@ -108,8 +108,9 @@ export default function About() {
                 <p className="font-['Inter'] text-base text-[#3A3A3A] leading-relaxed">
                   With certifications spanning exhibitions management, sustainable tourism, and
                   African events professionalism, Farirai brings a unique blend of global best
-                  practices and deep Pan-African expertise. Her work spans from leading conference
-                  bids to developing MICE policy frameworks for destinations across the continent.
+                  practices and deep Pan-African expertise. Her work covers event planning and
+                  execution, event support for regional and international organisers, bid
+                  development and exhibitor training programs.
                 </p>
               </ScrollFade>
             </div>
