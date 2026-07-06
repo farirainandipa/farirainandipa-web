@@ -146,7 +146,7 @@ export default function About() {
 
           {/* Memberships */}
           <ScrollFade delay={200}>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto">
               {memberships.map((membership) => (
                 <div
                   key={membership.name}
