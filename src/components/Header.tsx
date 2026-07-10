@@ -65,7 +65,7 @@ export default function Header() {
               href="/pipeline"
               className="font-['Inter'] text-sm font-medium text-[#21436A] hover:text-[#BCD8D4] transition-colors duration-200"
             >
-              Bid Dashboard Login
+              Client Login
             </a>
             <Link
               to="/contact"
@@ -107,7 +107,7 @@ export default function Header() {
                 href="/pipeline"
                 className="font-['Inter'] text-sm font-medium py-2 text-[#21436A] hover:text-[#BCD8D4] transition-colors duration-200"
               >
-                Bid Dashboard Login
+                Client Login
               </a>
               <Link
                 to="/contact"
