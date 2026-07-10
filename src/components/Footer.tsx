@@ -20,6 +20,9 @@ export default function Footer() {
             <img
               src="/FN_MICE_(1920_x_1080_px).png"
               alt="Farirai Nandipa Events"
+              width={1920}
+              height={1080}
+              loading="lazy"
               className="h-[67px] w-auto mb-4 brightness-0 invert"
             />
             <p className="font-['Cormorant_Garamond'] text-sm tracking-[0.2em] uppercase text-white/70 mb-3">

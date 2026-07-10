@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import Seo from '../components/Seo';
 import ScrollFade from '../components/ScrollFade';
 import { MapPin, Clock, ArrowRight, Building2, Briefcase, Landmark } from 'lucide-react';
 
@@ -171,6 +172,11 @@ const exhibitionTours = [
 export default function Packages() {
   return (
     <div>
+      <Seo
+        title="Event Packages | Farirai Nandipa Events"
+        description="Curated conference, incentive travel, and exhibition packages across Africa from Farirai Nandipa Events. Browse offerings and enquire about your MICE requirements."
+        path="/packages"
+      />
       {/* Hero Section */}
       <section className="bg-[#BCD8D4]/20 py-16 lg:py-24 relative overflow-hidden">
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -220,6 +226,7 @@ export default function Packages() {
                     <img
                       src={pkg.image}
                       alt={`${pkg.venue}, ${pkg.country}`}
+                      loading="lazy"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>
@@ -280,6 +287,7 @@ export default function Packages() {
                     <img
                       src={pkg.image}
                       alt={pkg.destination}
+                      loading="lazy"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>
@@ -342,6 +350,7 @@ export default function Packages() {
                     <img
                       src={tour.image}
                       alt={`${tour.sector}, ${tour.exhibition}`}
+                      loading="lazy"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute top-3 left-3">

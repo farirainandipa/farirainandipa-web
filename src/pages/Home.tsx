@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import Seo from '../components/Seo';
 import ScrollFade from '../components/ScrollFade';
 import {
   CalendarCheck,
@@ -39,15 +40,15 @@ const expertiseAreas = [
 
 const pastClients = [
   { name: 'Mzurrie Flowers', logo: '/logos/mzurrie-flowers-logo.webp', height: 140 },
-  { name: 'Tambuzi', logo: '/logos/tambuzi.jpg', height: 105 },
+  { name: 'Tambuzi', logo: '/logos/tambuzi.webp', height: 105 },
   { name: 'Hazendal Wines', logo: '/logos/hazendal-wines.svg' },
   { name: 'LumaSky Drone Show', logo: '/logos/lumasky.jpeg', height: 110 },
   { name: 'Kvant Events', logo: '/logos/kvant.png' },
   { name: 'ZB Bank', logo: '/logos/zb-bank.png' },
   { name: 'Zimbabwe National Chamber of Commerce', logo: '/logos/zncc.png' },
   { name: 'Environmental Management Agency', logo: '/logos/ema.png', height: 120 },
-  { name: 'Zimbabwe Tourism Authority', logo: '/logos/zta.png', height: 120 },
-  { name: 'RSVP Events', logo: '/logos/rsvp.png', height: 120 },
+  { name: 'Zimbabwe Tourism Authority', logo: '/logos/zta.webp', height: 120 },
+  { name: 'RSVP Events', logo: '/logos/rsvp.webp', height: 120 },
 ];
 
 function LogoPlaceholder({ name }: { name: string }) {
@@ -61,14 +62,23 @@ function LogoPlaceholder({ name }: { name: string }) {
 export default function Home() {
   return (
     <div>
+      <Seo
+        title="Farirai Nandipa Events | Events Management & MICE Agency"
+        description="Farirai Nandipa Events is a Zimbabwe-based events management and MICE agency offering strategic planning, bid development, and full-service consultancy across Africa."
+        path="/"
+      />
       {/* Hero Section — left-aligned content */}
       <section className="relative bg-white min-h-[85vh] flex items-center overflow-hidden">
         {/* Background image */}
         <div className="absolute inset-0 z-0">
-          {/* PLACEHOLDER: Replace with professional conference or exhibition floor photo, minimum 1920px wide */}
           <img
-            src="https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=1920"
+            src="/hero-events.webp"
             alt="Strategic event planning meeting with African business professionals"
+            width={1920}
+            height={1280}
+            loading="eager"
+            // @ts-expect-error fetchpriority isn't in React 18's JSX types but is valid HTML/DOM
+            fetchpriority="high"
             className="w-full h-full object-cover opacity-20"
           />
           {/* Gradient: strong on left (where content sits), fades right */}
@@ -186,6 +196,7 @@ export default function Home() {
                   <img
                     src={client.logo}
                     alt={client.name}
+                    loading="lazy"
                     style={{ height: `${client.height ?? 70}px` }}
                     className="w-auto object-contain grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all duration-300"
                   />
@@ -203,6 +214,7 @@ export default function Home() {
                   <img
                     src={client.logo}
                     alt={client.name}
+                    loading="lazy"
                     style={{ height: `${client.height ?? 70}px` }}
                     className="w-auto object-contain grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all duration-300"
                   />
