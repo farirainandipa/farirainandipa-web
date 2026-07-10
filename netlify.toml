@@ -2,6 +2,15 @@
   command = "npm run build"
   publish = "dist"
 
+# Serve the standalone Bid Pipeline dashboard (static file, outside the React SPA).
+# This rule comes before the SPA catch-all so /pipeline resolves to the static
+# document and is not rewritten to the app shell.
+[[redirects]]
+  from = "/pipeline"
+  to = "/pipeline/index.html"
+  status = 200
+
+# SPA fallback: every other path renders the React app shell.
 [[redirects]]
   from = "/*"
   to = "/index.html"

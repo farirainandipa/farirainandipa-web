@@ -60,6 +60,13 @@ export default function Header() {
                 {link.name}
               </Link>
             ))}
+            {/* Standalone dashboard served outside the SPA, so use a plain anchor for a full page load */}
+            <a
+              href="/pipeline"
+              className="font-['Inter'] text-sm font-medium text-[#21436A] hover:text-[#BCD8D4] transition-colors duration-200"
+            >
+              Bid Dashboard Login
+            </a>
             <Link
               to="/contact"
               className="bg-[#21436A] text-white px-5 py-2.5 font-['Inter'] text-sm font-medium rounded hover:bg-[#1a3456] transition-colors duration-200"
@@ -95,6 +102,13 @@ export default function Header() {
                   {link.name}
                 </Link>
               ))}
+              {/* Standalone dashboard served outside the SPA, so use a plain anchor for a full page load */}
+              <a
+                href="/pipeline"
+                className="font-['Inter'] text-sm font-medium py-2 text-[#21436A] hover:text-[#BCD8D4] transition-colors duration-200"
+              >
+                Bid Dashboard Login
+              </a>
               <Link
                 to="/contact"
                 className="bg-[#21436A] text-white px-6 py-2.5 font-['Inter'] text-sm font-medium rounded text-center hover:bg-[#1a3456] transition-colors duration-200"
