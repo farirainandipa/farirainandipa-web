@@ -1,13 +1,8 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import App from './App.tsx';
+import { ViteReactSSG } from 'vite-react-ssg';
+import { routes } from './App';
 import './index.css';
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </StrictMode>
-);
+// vite-react-ssg provides the Router and react-helmet-async HelmetProvider
+// on both the server (prerender) and the client (hydration), so no manual
+// BrowserRouter/HelmetProvider wrapper is needed here.
+export const createRoot = ViteReactSSG({ routes });

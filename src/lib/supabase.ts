@@ -3,11 +3,20 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
+// During the static build/prerender (import.meta.env.SSR) there is no data
+// fetching, so we tolerate missing env vars and fall back to a harmless
+// placeholder client. In the browser the vars are required, so we still fail
+// loudly there to surface a misconfiguration.
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables');
+  if (!import.meta.env.SSR) {
+    throw new Error('Missing Supabase environment variables');
+  }
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(
+  supabaseUrl || 'https://placeholder.supabase.co',
+  supabaseAnonKey || 'placeholder-anon-key'
+);
 
 // Type definitions
 export interface Article {

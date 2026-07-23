@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import Seo from '../components/Seo';
 import ScrollFade from '../components/ScrollFade';
 import { Calendar, ArrowRight } from 'lucide-react';
 import { supabase, Article } from '../lib/supabase';
@@ -41,6 +42,11 @@ export default function Insights() {
 
   return (
     <div>
+      <Seo
+        title="Insights & Thought Leadership | Farirai Nandipa Events"
+        description="Perspectives on MICE, business tourism, sustainability, and destination development across Africa from Farirai Nandipa Events."
+        path="/insights"
+      />
       {/* Hero Section */}
       <section className="bg-[#BCD8D4]/20 py-16 lg:py-24 relative overflow-hidden">
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -92,6 +98,7 @@ export default function Insights() {
                         <img
                           src={article.image_url}
                           alt={article.title}
+                          loading="lazy"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       </div>

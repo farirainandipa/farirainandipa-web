@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /pipeline
+
+Sitemap: https://www.farirainandipa.co.zw/sitemap.xml

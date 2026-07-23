@@ -7,4 +7,12 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
+  ssgOptions: {
+    // The Vite entry that exports `createRoot` (default is src/main.ts).
+    entry: 'src/main.tsx',
+    // /about -> dist/about/index.html (unambiguous with Netlify static serving).
+    dirStyle: 'nested',
+    // Load the hydration script without blocking first paint.
+    script: 'async',
+  },
 });

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import Seo from '../components/Seo';
 import ScrollFade from '../components/ScrollFade';
 import { Calendar, ChevronLeft, ArrowLeft } from 'lucide-react';
 import { supabase, Article } from '../lib/supabase';
@@ -67,6 +68,11 @@ export default function ArticleDetail() {
   if (error || !article) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
+        <Seo
+          title="Article Not Found | Farirai Nandipa Events"
+          description="The article you're looking for doesn't exist or has been removed. Browse our latest insights on MICE and business tourism in Africa."
+          path={`/insights/${slug ?? ''}`}
+        />
         <div className="text-center">
           <h1 className="font-['Cormorant_Garamond'] text-3xl text-[#21436A] mb-4">
             Article Not Found
@@ -88,6 +94,13 @@ export default function ArticleDetail() {
 
   return (
     <div>
+      <Seo
+        title={`${article.title} | Farirai Nandipa Events`}
+        description={article.excerpt}
+        path={`/insights/${article.slug}`}
+        image={article.image_url}
+        type="article"
+      />
       {/* Hero Section */}
       <section className="relative">
         <div className="absolute inset-0 h-96 lg:h-[28rem]">

@@ -1,3 +1,4 @@
+import Seo from '../components/Seo';
 import ScrollFade from '../components/ScrollFade';
 import { Award, Globe, Leaf, Users } from 'lucide-react';
 
@@ -37,6 +38,11 @@ const highlights = [
 export default function About() {
   return (
     <div>
+      <Seo
+        title="About Us | Farirai Nandipa Events"
+        description="Meet Farirai Nandipa Events, a strategic events management and MICE agency advancing business tourism across Africa with 15+ years of industry experience."
+        path="/about"
+      />
       {/* Hero Section */}
       <section className="bg-[#BCD8D4]/20 py-16 lg:py-24 relative overflow-hidden">
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -65,8 +71,10 @@ export default function About() {
               <div className="relative max-w-xs mx-auto lg:max-w-sm lg:mx-0">
                 <div className="aspect-[4/5] bg-gray-100 rounded-lg overflow-hidden">
                   <img
-                    src="/farirai-nandipa.png"
+                    src="/farirai-nandipa.webp"
                     alt="Farirai Nandipa, Founder, Farirai Nandipa Events"
+                    width={896}
+                    height={958}
                     className="w-full h-full object-cover object-top"
                   />
                 </div>

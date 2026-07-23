@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import Seo from '../components/Seo';
 import ScrollFade from '../components/ScrollFade';
 import {
   Phone,
@@ -107,6 +108,11 @@ export default function Contact() {
 
   return (
     <div>
+      <Seo
+        title="Contact Us | Farirai Nandipa Events"
+        description="Ready to discuss your event or MICE needs? Send Farirai Nandipa Events an enquiry and our team will be in touch shortly to plan your next business event."
+        path="/contact"
+      />
       {/* Hero Section */}
       <section className="bg-[#BCD8D4]/20 py-16 lg:py-24 relative overflow-hidden">
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
