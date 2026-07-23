@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Head } from 'vite-react-ssg';
 import Seo from '../components/Seo';
 import ScrollFade from '../components/ScrollFade';
 import {
@@ -67,6 +68,10 @@ export default function Home() {
         description="Farirai Nandipa Events is a Zimbabwe-based events management and MICE agency offering strategic planning, bid development, and full-service consultancy across Africa."
         path="/"
       />
+      {/* Preload the LCP hero image on the home page only */}
+      <Head>
+        <link rel="preload" as="image" href="/hero-events.webp" fetchPriority="high" />
+      </Head>
       {/* Hero Section — left-aligned content */}
       <section className="relative bg-white min-h-[85vh] flex items-center overflow-hidden">
         {/* Background image */}

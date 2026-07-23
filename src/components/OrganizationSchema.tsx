@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+import { Head } from 'vite-react-ssg';
 
 const organizationSchema = {
   '@context': 'https://schema.org',
@@ -14,8 +14,8 @@ const organizationSchema = {
 
 export default function OrganizationSchema() {
   return (
-    <Helmet defer={false}>
+    <Head>
       <script type="application/ld+json">{JSON.stringify(organizationSchema)}</script>
-    </Helmet>
+    </Head>
   );
 }

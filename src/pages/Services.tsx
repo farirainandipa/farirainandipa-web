@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Seo from '../components/Seo';
+import ServicesSchema from '../components/ServicesSchema';
 import ScrollFade from '../components/ScrollFade';
 import {
   Users,
@@ -139,6 +140,7 @@ export default function Services() {
         description="Comprehensive MICE services from Farirai Nandipa Events, including strategic consulting, bid development, and hands-on event management across Africa."
         path="/services"
       />
+      <ServicesSchema />
       {/* Hero Section */}
       <section className="bg-[#BCD8D4]/20 py-16 lg:py-24 relative overflow-hidden">
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
