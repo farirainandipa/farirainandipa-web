@@ -7,7 +7,7 @@
 <title>Africa MICE Bid Pipeline · Farirai Nandipa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <style>
 :root{
   --ink:#1f2222; --muted:#5f6a6b; --bg:#eeeeee; --card:#ffffff; --line:#e8e8e8;
@@ -26,17 +26,25 @@ button{font-family:inherit;cursor:pointer}
 .brandLogo{margin:6px auto 20px;text-align:center}
 .brandLogo img{display:block;width:min(280px,82%);margin:0 auto}
 .brandLogo .fnSub{display:block;text-align:center;font-family:'IBM Plex Sans','Inter',sans-serif;font-size:10.5px;letter-spacing:.42em;text-indent:.42em;color:#3f3f3d;margin-top:2px}
-.authCard h1{text-align:center}
-.authCard p.sub{text-align:center}
-.authCard h1{font-size:22px;margin-bottom:4px}
-.authCard p.sub{color:var(--muted);margin-bottom:22px;font-size:13px}
+.authCard h1{text-align:center;font-size:22px;margin-bottom:4px}
+.authCard p.sub{text-align:center;color:var(--muted);margin-bottom:22px;font-size:13px}
 .field{margin-bottom:14px}
 .field label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
-.field input{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:#fbfbfa}
-.field input:focus{outline:2px solid var(--green2);border-color:transparent}
-.btn{display:inline-flex;align-items:center;gap:7px;border:none;border-radius:9px;padding:11px 18px;font-size:14px;font-weight:600}
-.btn.primary{background:var(--green);color:#fff;width:100%;justify-content:center}
+.field input,.field select,.field textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:#fbfbfa}
+.field textarea{min-height:80px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{outline:2px solid var(--green2);border-color:transparent}
+.field .hint{font-size:11.5px;color:var(--muted);margin-top:4px}
+.frow{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:0 14px}
+.checks{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px;font-size:13px}
+.checks label{display:flex;align-items:center;gap:6px}
+.btn{display:inline-flex;align-items:center;gap:7px;border:none;border-radius:9px;padding:10px 16px;font-size:13.5px;font-weight:600}
+.btn.primary{background:var(--green);color:#fff}
 .btn.primary:hover{background:var(--green2)}
+.btn.ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}
+.btn.ghost:hover{background:#f4f6f6}
+.btn.sm{padding:5px 10px;font-size:12px;border-radius:7px}
+.btn.danger{background:#fbeae7;color:var(--red)}
+#btnLogin{width:100%;justify-content:center}
 .authErr{background:#fbeae7;color:var(--red);border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:14px}
 .authNote{font-size:12px;color:var(--muted);margin-top:16px;text-align:center}
 /* ---------- shell ---------- */
@@ -47,7 +55,7 @@ header.top .mark{width:32px;height:32px;border-radius:9px;background:rgba(255,25
 header.top .brand b{font-family:'IBM Plex Serif',serif;font-size:16px;font-weight:600;letter-spacing:.01em}
 header.top .brand span{display:block;font-size:10.5px;opacity:.75;letter-spacing:.06em;text-transform:uppercase}
 nav.tabs{display:flex;gap:4px;margin-left:10px}
-nav.tabs button{background:none;border:none;color:rgba(255,255,255,.72);padding:8px 14px;border-radius:8px;font-size:13.5px;font-weight:500}
+nav.tabs button{background:none;border:none;color:rgba(255,255,255,.72);padding:8px 12px;border-radius:8px;font-size:13.5px;font-weight:500;white-space:nowrap}
 nav.tabs button.active{background:rgba(255,255,255,.15);color:#fff;font-weight:600}
 nav.tabs button:hover{color:#fff}
 .userChip{margin-left:auto;position:relative}
@@ -55,10 +63,12 @@ nav.tabs button:hover{color:#fff}
 .userMenu{position:absolute;right:0;top:44px;background:#fff;color:var(--ink);border-radius:10px;box-shadow:var(--shadow);min-width:210px;padding:6px;border:1px solid var(--line)}
 .userMenu button{display:block;width:100%;text-align:left;background:none;border:none;padding:9px 11px;border-radius:7px;font-size:13px}
 .userMenu button:hover{background:var(--sand)}
+.previewBar{background:#f7edd3;color:#6b5409;padding:9px 26px;font-size:13px;display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap}
 main{flex:1;max-width:1240px;width:100%;margin:0 auto;padding:26px 26px 70px}
 .pageHead{display:flex;align-items:baseline;justify-content:space-between;gap:14px;margin:6px 0 18px;flex-wrap:wrap}
 .pageHead h2{font-size:24px}
 .pageHead .meta{color:var(--muted);font-size:12.5px}
+.lede{color:var(--muted);font-size:13.5px;margin:-8px 0 18px;max-width:820px}
 /* ---------- widgets ---------- */
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
 .kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 16px 13px;box-shadow:var(--shadow)}
@@ -67,6 +77,9 @@ main{flex:1;max-width:1240px;width:100%;margin:0 auto;padding:26px 26px 70px}
 .kpi.gold .n{color:var(--gold)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:20px;margin-bottom:20px}
 .card h3{font-size:16.5px;margin-bottom:13px}
+.cardHead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.cardHead h3{margin:0}
+.tblWrap{overflow-x:auto}
 table.data{width:100%;border-collapse:collapse}
 table.data th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
 table.data td{padding:10px;border-bottom:1px solid #e8e8e8;vertical-align:top;font-size:13.5px}
@@ -81,6 +94,8 @@ table.data tr.rowlink:hover{background:#f4f6f6}
 .chip.reg{background:#e9f0e4;color:#4c7038}
 .chip.afcfta{background:var(--green);color:#fff}
 .chip.sector{background:var(--sand);color:#3d5457}
+.chip.sec{background:#eef3f2;color:#3d5457;font-weight:500}
+.chip.sec.pri{background:var(--sand);font-weight:600}
 .chip.days{background:#fbeae7;color:var(--red)}
 .chip.days.ok{background:#e3f0e9;color:var(--green2)}
 .chip.prio{background:var(--gold);color:#fff}
@@ -88,11 +103,20 @@ table.data tr.rowlink:hover{background:#f4f6f6}
 .chip.sp{background:#e3f0e9;color:var(--green2)}
 .chip.sig{background:#f7edd3;color:#8a6d10}
 .chip.ns{background:#fbeae7;color:var(--red)}
+.chip.ok{background:#e3f0e9;color:var(--green2)}
+.chip.no{background:#fbeae7;color:var(--red)}
+.chip.lvl{background:#e6eef4;color:#3e5a6e}
+.chip.conf-verified{background:#e3f0e9;color:var(--green2)}
+.chip.conf-estimate{background:#f7edd3;color:#8a6d10}
+.chip.conf-unverified{background:#fbeae7;color:var(--red)}
+.rank{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:11px;font-weight:700;color:#fff;background:var(--green)}
+.rank.r2{background:var(--green2)}.rank.r3{background:#8fa9ac}.rank.r4,.rank.r5{background:#b9c7c8}
 .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
-.filters input[type=search]{padding:9px 13px;border:1px solid var(--line);border-radius:9px;font-size:13.5px;min-width:230px;background:#fff}
-.filters select{padding:9px 11px;border:1px solid var(--line);border-radius:9px;font-size:13.5px;background:#fff}
+.filters input[type=search]{padding:9px 13px;border:1px solid var(--line);border-radius:9px;font-size:13.5px;min-width:230px;background:#fff;flex:1;max-width:420px}
+.filters select{padding:9px 11px;border:1px solid var(--line);border-radius:9px;font-size:13.5px;background:#fff;max-width:260px}
 .filters .toggle{display:flex;align-items:center;gap:7px;font-size:13px;background:#fff;border:1px solid var(--line);border-radius:9px;padding:8px 12px}
 .grid{display:grid;gap:14px}
+.grid.cols2{grid-template-columns:repeat(auto-fill,minmax(420px,1fr))}
 .grid.cols3{grid-template-columns:repeat(auto-fill,minmax(310px,1fr))}
 .grid.cols4{grid-template-columns:repeat(auto-fill,minmax(215px,1fr))}
 .evCard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:9px}
@@ -108,6 +132,8 @@ table.data tr.rowlink:hover{background:#f4f6f6}
 .fitRow .bar{flex:1;height:7px;background:#e8e8e8;border-radius:5px;overflow:hidden}
 .fitRow .bar i{display:block;height:100%;background:var(--green2)}
 .fitRow .sc{width:30px;text-align:right;color:var(--muted);font-weight:600}
+.why{background:#f4f8f7;border-left:3px solid var(--green2);border-radius:6px;padding:9px 11px;font-size:12.5px}
+.why b{color:var(--green)}
 .destCard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:17px;box-shadow:var(--shadow);cursor:pointer;transition:transform .12s}
 .destCard:hover{transform:translateY(-2px)}
 .destCard .fl{font-size:26px}
@@ -122,17 +148,40 @@ table.data tr.rowlink:hover{background:#f4f6f6}
 .prioBand h3{color:#fff;font-size:17px;margin-bottom:3px}
 .prioBand p.s{color:rgba(255,255,255,.75);font-size:12.5px;margin-bottom:15px}
 .prioBand .grid{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+.polCard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 17px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:7px}
+.polCard h4{font-size:15px;line-height:1.35}
+.polCard .meta{font-size:12px;color:var(--muted)}
+.polCard p{font-size:12.8px}
+.polCard .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:3px}
+.polCard.child{margin-left:22px;border-left:3px solid var(--sand)}
+.matrix{border-collapse:collapse;font-size:12px}
+.matrix th{font-weight:600;color:var(--muted);padding:6px;text-align:center;vertical-align:bottom}
+.matrix th.rot{height:150px;white-space:nowrap}
+.matrix th.rot div{transform:rotate(-55deg);transform-origin:left bottom;width:24px;translate:10px 0;text-align:left}
+.matrix td{padding:3px;text-align:center}
+.matrix td.cn{text-align:left;font-weight:600;white-space:nowrap;padding-right:12px}
+.mcell{width:38px;height:32px;border-radius:7px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;line-height:1.05}
+.mcell small{font-size:9.5px;opacity:.85}
+.mcell.r1{background:var(--green);color:#fff}.mcell.r2{background:var(--green2);color:#fff}.mcell.r3{background:#a9c0c2;color:#1f2222}.mcell.r4,.mcell.r5{background:#d5e0e0}
+.mcell.gap{outline:2px dashed var(--red);outline-offset:-2px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:10px;align-items:center}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:14px;height:14px;border-radius:4px;display:inline-block}
+.alignBox{border:1px solid var(--line);border-radius:10px;padding:14px;background:#fafbfb;margin:8px 0}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:10px;font-size:13px;z-index:200;box-shadow:var(--shadow)}
+.pwBox{background:#f4f8f7;border:1px solid var(--sand);border-radius:10px;padding:14px;margin:12px 0;font-size:13px}
+.pwBox code{font-size:15px;font-weight:700;background:#fff;padding:3px 8px;border-radius:6px;border:1px solid var(--line)}
 /* ---------- modal ---------- */
 #modalBack{position:fixed;inset:0;background:rgba(20,20,16,.45);z-index:80;display:flex;align-items:flex-start;justify-content:center;padding:5vh 16px;overflow-y:auto}
-.modal{background:var(--card);border-radius:18px;width:min(880px,100%);box-shadow:0 30px 80px rgba(0,0,0,.35);overflow:hidden;margin-bottom:5vh}
+.modal{background:var(--card);border-radius:18px;width:min(920px,100%);box-shadow:0 30px 80px rgba(0,0,0,.35);overflow:hidden;margin-bottom:5vh}
 .modal .mHead{background:var(--green);color:#fff;padding:22px 26px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 .modal .mHead h3{font-size:21px}
 .modal .mHead .sub{opacity:.75;font-size:12.5px;margin-top:3px}
 .modal .x{background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:8px;width:32px;height:32px;font-size:16px;flex-shrink:0}
-.mTabs{display:flex;gap:2px;background:#3e5a5e;padding:0 20px}
-.mTabs button{background:none;border:none;color:rgba(255,255,255,.65);padding:11px 15px;font-size:13px;font-weight:600;border-bottom:2px solid transparent}
+.mTabs{display:flex;gap:2px;background:#3e5a5e;padding:0 20px;overflow-x:auto}
+.mTabs button{background:none;border:none;color:rgba(255,255,255,.65);padding:11px 15px;font-size:13px;font-weight:600;border-bottom:2px solid transparent;white-space:nowrap}
 .mTabs button.active{color:#fff;border-bottom-color:var(--gold)}
-.mBody{padding:24px 26px;max-height:62vh;overflow-y:auto}
+.mBody{padding:24px 26px;max-height:66vh;overflow-y:auto}
 .kv{display:grid;grid-template-columns:170px 1fr;gap:8px 16px;font-size:13.5px}
 .kv dt{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.03em;padding-top:1px}
 .kv dd{margin:0}
@@ -142,11 +191,12 @@ footer.ft{text-align:center;color:var(--muted);font-size:11.5px;padding:22px;bor
 .loadWrap{display:flex;align-items:center;justify-content:center;min-height:50vh;color:var(--muted);gap:10px}
 .spin{width:18px;height:18px;border:2.5px solid var(--line);border-top-color:var(--green2);border-radius:50%;animation:sp .8s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
-@media(max-width:760px){
+@media(max-width:900px){
   header.top{padding:0 14px;gap:10px;height:auto;flex-wrap:wrap;padding-top:9px;padding-bottom:9px}
-  nav.tabs{order:3;width:100%;overflow-x:auto}
+  nav.tabs{order:3;width:100%;overflow-x:auto;margin-left:0}
   main{padding:18px 14px 60px}
   .kv{grid-template-columns:1fr}
+  .grid.cols2{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -155,7 +205,8 @@ footer.ft{text-align:center;color:var(--muted);font-size:11.5px;padding:22px;bor
 <div id="authView">
   <div class="authCard">
     <div class="brandLogo"><img src="https://upzkvszgoqhoefkiwoep.supabase.co/functions/v1/dashboard/logo" alt="Farirai Nandipa"><span class="fnSub">M.I.C.E AGENCY</span></div>
-    <p class="sub">authorised access only</p>
+    <h1>Africa MICE Bid Pipeline</h1>
+    <p class="sub">Authorised access only, for the agency team and partner convention bureaux</p>
     <div id="authErr" class="authErr hidden"></div>
     <div class="field"><label>Email</label><input type="email" id="inEmail" autocomplete="username"></div>
     <div class="field"><label>Password</label><input type="password" id="inPass" autocomplete="current-password"></div>
@@ -166,13 +217,8 @@ footer.ft{text-align:center;color:var(--muted);font-size:11.5px;padding:22px;bor
 
 <div id="appView" class="hidden">
   <header class="top">
-    <div class="brand"><div class="mark">FN</div><div><b>Africa MICE Bid Pipeline</b><span>Farirai Nandipa MICE Agency</span></div></div>
-    <nav class="tabs" id="navTabs">
-      <button data-v="overview" class="active">Overview</button>
-      <button data-v="pipeline">Bid Pipeline</button>
-      <button data-v="events">Strategic Events</button>
-      <button data-v="destinations">Destinations</button>
-    </nav>
+    <div class="brand"><div class="mark">FN</div><div><b id="brandTitle">Africa MICE Bid Pipeline</b><span id="brandSub">Farirai Nandipa MICE Agency</span></div></div>
+    <nav class="tabs" id="navTabs"></nav>
     <div class="userChip">
       <button id="userBtn"><span id="userEmail"></span> ▾</button>
       <div class="userMenu hidden" id="userMenu">
@@ -181,8 +227,9 @@ footer.ft{text-align:center;color:var(--muted);font-size:11.5px;padding:22px;bor
       </div>
     </div>
   </header>
+  <div id="previewBar" class="previewBar hidden"></div>
   <main id="mainEl"><div class="loadWrap"><div class="spin"></div>Loading pipeline…</div></main>
-  <footer class="ft">Prepared by Farirai Nandipa MICE Agency · Confidential · Key facts verified July 2026; items marked “estimate” pending verification</footer>
+  <footer class="ft" id="footEl">Prepared by Farirai Nandipa MICE Agency · Confidential · Key facts verified July 2026; items marked “estimate” pending verification</footer>
 </div>
 
 <div id="modalBack" class="hidden"><div class="modal" id="modalEl"></div></div>
@@ -191,21 +238,36 @@ footer.ft{text-align:center;color:var(--muted);font-size:11.5px;padding:22px;bor
 const SUPABASE_URL = "https://upzkvszgoqhoefkiwoep.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwemt2c3pnb3Fob2Vma2l3b2VwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxMzg1MjQsImV4cCI6MjA5NzcxNDUyNH0.4RB-5FCWW7JXvGBKs0PlzkYcUeG5kTVxTVdoXUNp8ao";
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const AGENCY_EMAIL = "nandie@farirainandipa.co.zw";
 
 const $ = s => document.querySelector(s);
 const esc = s => (s==null?"":String(s)).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const SECTORS = {trade_industry_resources:"Trade, Industry & Resources", digital_economy_finance:"Digital Economy & Finance", health_education_social:"Health, Education & Social", tourism_transport_creative:"Tourism, Transport & Creative"};
 const SCOPE_CLS = {international:"intl", continental:"cont", regional:"reg"};
 const AF_LABEL = {state_party:["AfCFTA state party","sp"], signatory:["AfCFTA signatory (not ratified)","sig"], non_signatory:["Not an AfCFTA signatory","ns"]};
-const fmtD = d => d? new Date(d+"T00:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}) : "—";
+const VISA_AF = {visa_free_all:"Visa-free for all African nationals", visa_free_most:"Visa-free for most African nationals", mixed:"Mixed, as some African markets need visas", restrictive:"Restrictive, as most visitors need visas in advance"};
+const VISA_AF_SHORT = {visa_free_all:"Visa-free: all Africans", visa_free_most:"Visa-free: most Africans", mixed:"Mixed visa access", restrictive:"Restrictive visas"};
+const LEVELS = {vision:"Long-term vision", national_plan:"National development plan", sector_policy:"Sector policy", strategy:"Sector strategy"};
+const PSTATUS = {in_force:"In force", in_preparation:"In preparation", expired:"Expired"};
+const fmtD = d => d? new Date(d+"T00:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}) : "–";
 const daysLeft = d => d? Math.ceil((new Date(d+"T00:00:00") - new Date())/864e5) : null;
 const flag = iso => iso && iso.length===2 ? String.fromCodePoint(...[...iso.toUpperCase()].map(c=>127397+c.charCodeAt(0))) : "🌍";
 function dlChip(d){ const n=daysLeft(d); if(n==null) return ""; if(n<0) return '<span class="chip closed">passed</span>'; return `<span class="chip days ${n>45?"ok":""}">${n}d left</span>`; }
 function dots(n){ let h='<span class="dots">'; for(let i=1;i<=5;i++) h+=`<i class="${i<=(n||0)?"on":""}"></i>`; return h+"</span>"; }
+const rankDot = r => `<span class="rank r${r||3}" title="Priority rank ${r} (1 = top national priority)">${r||"?"}</span>`;
+const yn = v => v===true?'<span class="chip ok">Yes</span>':v===false?'<span class="chip no">No</span>':'<span class="chip closed">Unknown</span>';
+const period = p => p.period_start||p.period_end ? `${p.period_start||"?"}–${p.period_end||"?"}` : "";
+const lastImport = () => { const ts=(DB.opps||[]).map(o=>o.imported_at).filter(Boolean).sort().pop(); return ts? new Date(ts).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}) : "date unknown"; };
+function toast(msg){ const t=document.createElement("div"); t.className="toast"; t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),3200); }
+const val = id => { const el=document.getElementById(id); return el? (el.type==="checkbox"? el.checked : el.value.trim()) : null; };
+const nz = v => (v===""||v==null)? null : v;
 
-let DB = {}, VIEW="overview", state={pipeStatus:"all", pipeQ:"", evSector:"all", evScope:"all", evAf:false, destQ:""};
+let DB = {}, ME = null, PORTAL = null, MODE = "admin", VIEW = "overview";
+let state = {pipeStatus:"all", pipeQ:"", pipeSector:"all", evSector:"all", evScope:"all", evAf:false, destQ:"", polQ:"", polCountry:"all", polSector:"all", polLevel:"all", bSector:"all"};
 
-/* ---------- auth ---------- */
+/* =====================================================================
+   AUTH
+   ===================================================================== */
 async function init(){
   const {data:{session}} = await sb.auth.getSession();
   if(session) enter(session);
@@ -219,41 +281,50 @@ async function doLogin(){
   if(error){ const el=$("#authErr"); el.textContent = error.message==="Invalid login credentials" ? "Invalid email or password." : error.message; el.classList.remove("hidden"); return; }
   enter(data.session);
 }
+let entered=false;
 async function enter(session){
+  if(entered) return; entered=true;
   $("#authView").classList.add("hidden"); $("#appView").classList.remove("hidden");
   $("#userEmail").textContent = session.user.email;
-  await loadData();
+  const {data:acc, error} = await sb.rpc("my_access");
+  if(error){ $("#mainEl").innerHTML = `<div class="card"><h3>Could not check your access</h3><p>${esc(error.message)}</p></div>`; return; }
+  ME = acc;
+  if(acc.role==="admin"){ MODE="admin"; buildNav(); await loadData(); }
+  else if(acc.role==="bureau"){ MODE="bureau"; VIEW="b_home"; buildNav(); await loadPortal(); }
+  else { $("#navTabs").innerHTML=""; $("#mainEl").innerHTML = `<div class="card"><h3>Account not authorised</h3><p>Your login works but this account has no access yet. Contact ${AGENCY_EMAIL} to be added.</p></div>`; }
 }
 $("#userBtn").onclick = ()=> $("#userMenu").classList.toggle("hidden");
 document.addEventListener("click",e=>{ if(!e.target.closest(".userChip")) $("#userMenu").classList.add("hidden"); });
 $("#btnLogout").onclick = async ()=>{ await sb.auth.signOut(); location.reload(); };
-$("#btnChangePw").onclick = async ()=>{
-  const p = prompt("New password (min 8 characters):"); if(!p) return;
-  if(p.length<8) return alert("Password must be at least 8 characters.");
+$("#btnChangePw").onclick = ()=>{
+  $("#userMenu").classList.add("hidden");
+  showModal(`<div class="mHead"><div><h3>Change password</h3></div><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="mBody"><div class="field"><label>New password (min 8 characters)</label><input type="password" id="pw1"></div>
+  <div class="field"><label>Repeat new password</label><input type="password" id="pw2"></div>
+  <button class="btn primary" onclick="savePw()">Update password</button></div>`);
+};
+window.savePw = async ()=>{
+  const p=$("#pw1").value; if(p.length<8) return toast("Password must be at least 8 characters.");
+  if(p!==$("#pw2").value) return toast("Passwords do not match.");
   const {error} = await sb.auth.updateUser({password:p});
-  alert(error? "Could not change password: "+error.message : "Password updated.");
+  if(error) return toast("Could not change password: "+error.message);
+  closeModal(); toast("Password updated.");
 };
 
-/* ---------- data ---------- */
-async function loadData(){
-  const [c,v,a,p,o,e,m] = await Promise.all([
-    sb.from("countries").select("*").order("name"),
-    sb.from("venues").select("*"),
-    sb.from("airports").select("*"),
-    sb.from("past_events_hosted").select("*").order("year",{ascending:false}),
-    sb.from("bid_opportunities").select("*"),
-    sb.from("events").select("*"),
-    sb.from("country_matches").select("*")
-  ]);
-  const err = [c,v,a,p,o,e,m].find(r=>r.error);
-  if(err){ $("#mainEl").innerHTML = `<div class="card"><h3>Could not load data</h3><p>${esc(err.error.message)}</p></div>`; return; }
-  if(!c.data.length){ $("#mainEl").innerHTML = `<div class="card"><h3>Account not authorised</h3><p>Your login works but this account is not on the access list. Contact nandie@farirainandipa.co.zw to be added.</p></div>`; return; }
-  DB = {countries:c.data, venues:v.data, airports:a.data, past:p.data, opps:o.data, events:e.data, matches:m.data};
-  DB.cById = Object.fromEntries(DB.countries.map(x=>[x.id,x]));
-  render();
+/* =====================================================================
+   NAV
+   ===================================================================== */
+const ADMIN_TABS = [["overview","Overview"],["pipeline","Bid Pipeline"],["events","Strategic Events"],["destinations","Destinations"],["policies","Policy & Sectors"],["access","Bureau Access"]];
+function bureauTabs(){ return [["b_home","Overview"],["b_bids","Bids for "+(PORTAL?.country?.name||"you")],["b_events","Strategic events"],["b_policy","Policy & sectors"],["b_visa","Visa & access"]]; }
+function buildNav(){
+  const tabs = MODE==="admin" ? ADMIN_TABS : bureauTabs();
+  $("#navTabs").innerHTML = tabs.map(([k,l])=>`<button data-v="${k}" class="${k===VIEW?"active":""}">${esc(l)}</button>`).join("");
+  if(MODE==="admin"){ $("#brandTitle").textContent="Africa MICE Bid Pipeline"; $("#brandSub").textContent="Farirai Nandipa MICE Agency"; }
+  else { $("#brandTitle").textContent = (PORTAL?.country?.name||"")+" bid intelligence"; $("#brandSub").textContent="Partner portal · Farirai Nandipa MICE Agency"; }
+  const pb=$("#previewBar");
+  if(MODE==="preview"){ pb.classList.remove("hidden"); pb.innerHTML=`Previewing what the <b>${esc(PORTAL.country.name)}</b> bureau sees. Internal notes, other countries' scores and suggested-host lists are hidden from them. <button class="btn sm ghost" onclick="exitPreview()">Exit preview</button>`; }
+  else pb.classList.add("hidden");
 }
-
-/* ---------- nav ---------- */
 $("#navTabs").addEventListener("click",e=>{
   const b=e.target.closest("button"); if(!b) return;
   VIEW=b.dataset.v;
@@ -261,21 +332,77 @@ $("#navTabs").addEventListener("click",e=>{
   render();
 });
 function render(){
-  if(VIEW==="overview") rOverview();
-  else if(VIEW==="pipeline") rPipeline();
-  else if(VIEW==="events") rEvents();
-  else rDest();
+  const R = {overview:rOverview, pipeline:rPipeline, events:rEvents, destinations:rDest, policies:rPolicies, access:rAccess,
+             b_home:bHome, b_bids:bBids, b_events:bEvents, b_policy:bPolicy, b_visa:bVisa};
+  (R[VIEW]||rOverview)();
   window.scrollTo(0,0);
 }
 
-/* ---------- overview ---------- */
+/* =====================================================================
+   ADMIN DATA
+   ===================================================================== */
+async function loadData(){
+  const q = [
+    sb.from("countries").select("*").order("name"),
+    sb.from("venues").select("*"),
+    sb.from("airports").select("*"),
+    sb.from("past_events_hosted").select("*").order("year",{ascending:false}),
+    sb.from("bid_opportunities").select("*"),
+    sb.from("events").select("*"),
+    sb.from("country_matches").select("*"),
+    sb.from("econ_sectors").select("*").order("sort"),
+    sb.from("policy_frameworks").select("id,country_id,title,short_name,level,econ_sector_id,parent_id,period_start,period_end,issuing_body,status,summary,source_url,document_path,data_confidence,updated_at"),
+    sb.from("country_sectors").select("*"),
+    sb.from("opportunity_sectors").select("*"),
+    sb.from("event_sectors").select("*"),
+    sb.from("bid_alignments").select("*"),
+    sb.from("user_access").select("*").order("created_at",{ascending:false})
+  ];
+  const r = await Promise.all(q);
+  const err = r.find(x=>x.error);
+  if(err){ $("#mainEl").innerHTML = `<div class="card"><h3>Could not load data</h3><p>${esc(err.error.message)}</p></div>`; return; }
+  const [c,v,a,p,o,e,m,s,pf,cs,os,es,ba,ua] = r.map(x=>x.data);
+  DB = {countries:c, venues:v, airports:a, past:p, opps:o, events:e, matches:m, sectors:s, policies:pf, csec:cs, osec:os, esec:es, aligns:ba, access:ua};
+  DB.cById = Object.fromEntries(c.map(x=>[x.id,x]));
+  DB.sById = Object.fromEntries(s.map(x=>[x.id,x]));
+  DB.pById = Object.fromEntries(pf.map(x=>[x.id,x]));
+  render();
+}
+async function reload(keepModal){ await loadData(); if(!keepModal) closeModal(); }
+const secName = id => DB.sById[id]?.name || "?";
+const itemSectors = (kind,id) => (kind==="opportunity"?DB.osec.filter(x=>x.opportunity_id===id):DB.esec.filter(x=>x.event_id===id)).sort((a,b)=>b.is_primary-a.is_primary);
+const secChips = (kind,id,max) => { const l=itemSectors(kind,id); const sh=max?l.slice(0,max):l; return sh.map(x=>`<span class="chip sec ${x.is_primary?"pri":""}">${esc(secName(x.econ_sector_id))}</span>`).join(" ") + (max&&l.length>max?` <span class="chip sec">+${l.length-max}</span>`:""); };
+const isLiveOpp = o => (o.list_status==="open"||o.list_status==="watchlist") && !(o.submission_deadline && daysLeft(o.submission_deadline)<0);
+const isLiveEv = e => !["lost","not_pursued","awarded"].includes(e.bid_status);
+function polLabel(p){ return p ? (p.short_name||p.title) : "–"; }
+
+/* matches of one item against every country's key sectors */
+function countryFits(kind,id){
+  const tags = itemSectors(kind,id).map(x=>x.econ_sector_id);
+  const byC = {};
+  DB.csec.filter(cs=>tags.includes(cs.econ_sector_id)).forEach(cs=>{ (byC[cs.country_id] ||= {country_id:cs.country_id, rows:[]}).rows.push(cs); });
+  const al = DB.aligns.filter(a=> kind==="opportunity"? a.opportunity_id===id : a.event_id===id);
+  al.forEach(a=>{ byC[a.country_id] ||= {country_id:a.country_id, rows:[]}; });
+  return Object.values(byC).map(f=>{
+    f.aligns = al.filter(a=>a.country_id===f.country_id);
+    f.best = f.rows.length? Math.min(...f.rows.map(r=>r.priority_rank||3)) : 9;
+    f.confirmed = f.aligns.some(a=>a.status==="confirmed");
+    f.dismissed = f.aligns.length && f.aligns.every(a=>a.status==="dismissed");
+    return f;
+  }).sort((a,b)=> (b.confirmed-a.confirmed) || (a.dismissed-b.dismissed) || (a.best-b.best));
+}
+
+/* =====================================================================
+   OVERVIEW
+   ===================================================================== */
 function rOverview(){
   const open = DB.opps.filter(o=>o.list_status==="open");
   const closing = open.filter(o=>{const n=daysLeft(o.submission_deadline);return n!=null&&n>=0&&n<=90;});
   const watch = DB.opps.filter(o=>o.list_status==="watchlist");
-  const afEv = DB.events.filter(e=>(e.afcfta_score||0)>=4);
   const nextUp = [...open].filter(o=>daysLeft(o.submission_deadline)>=0).sort((a,b)=>(a.submission_deadline||"9").localeCompare(b.submission_deadline||"9"));
   const prios = DB.countries.filter(c=>c.priority);
+  const confirmed = DB.aligns.filter(a=>a.status==="confirmed").length;
+  const bureaux = DB.access.filter(a=>a.role==="bureau"&&a.active).length;
   $("#mainEl").innerHTML = `
   <div class="pageHead"><h2>Overview</h2><div class="meta">Live from database · ${new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})}</div></div>
   <div class="kpis">
@@ -283,50 +410,57 @@ function rOverview(){
     <div class="kpi gold"><div class="n">${closing.length}</div><div class="l">Closing ≤ 90 days</div></div>
     <div class="kpi"><div class="n">${watch.length}</div><div class="l">On watchlist</div></div>
     <div class="kpi"><div class="n">${DB.events.length}</div><div class="l">Strategic events tracked</div></div>
-    <div class="kpi gold"><div class="n">${afEv.length}</div><div class="l">Strong AfCFTA alignment</div></div>
-    <div class="kpi"><div class="n">${DB.countries.length}</div><div class="l">Destinations covered</div></div>
+    <div class="kpi"><div class="n">${DB.policies.length}</div><div class="l">Policy frameworks</div></div>
+    <div class="kpi gold"><div class="n">${confirmed}</div><div class="l">Confirmed policy links</div></div>
+    <div class="kpi"><div class="n">${bureaux}</div><div class="l">Active bureau logins</div></div>
   </div>
   <div class="card"><h3>Upcoming submission deadlines</h3>
-    ${nextUp.length? `<table class="data"><thead><tr><th>Opportunity</th><th>Issuing body</th><th>Deadline</th><th></th><th>Suggested African hosts</th></tr></thead><tbody>
-    ${nextUp.map(o=>`<tr class="rowlink" onclick="openOpp(${o.id})"><td><b>${esc(o.title)}</b></td><td>${esc(o.issuing_body||"")}</td><td>${fmtD(o.submission_deadline)}</td><td>${dlChip(o.submission_deadline)}</td><td>${esc(o.suggested_hosts||"—")}</td></tr>`).join("")}
-    </tbody></table>` : `<p class="empty">No open deadlines ahead. The weekly scan will surface new calls for bids.</p>`}
+    ${nextUp.length? `<div class="tblWrap"><table class="data"><thead><tr><th>Opportunity</th><th>Issuing body</th><th>Deadline</th><th></th><th>Sectors</th><th>Best-aligned priority markets</th></tr></thead><tbody>
+    ${nextUp.map(o=>{ const fits=countryFits("opportunity",o.id).filter(f=>!f.dismissed && DB.cById[f.country_id]?.priority).slice(0,3);
+      return `<tr class="rowlink" onclick="openOpp(${o.id})"><td><b>${esc(o.title)}</b></td><td>${esc(o.issuing_body||"")}</td><td style="white-space:nowrap">${fmtD(o.submission_deadline)}</td><td>${dlChip(o.submission_deadline)}</td><td>${secChips("opportunity",o.id,2)}</td><td style="font-size:12.5px">${fits.map(f=>`${flag(DB.cById[f.country_id].iso2)} ${esc(DB.cById[f.country_id].name)}${f.confirmed?" ✓":""}`).join("<br>")||"–"}</td></tr>`;}).join("")}
+    </tbody></table></div>` : `<p class="empty">No open deadlines ahead. New calls for bids appear here once they are added to the pipeline.</p>`}
   </div>
   <div class="card"><h3>Priority destinations</h3>
     <div class="grid cols3" style="margin-top:4px">${prios.map(c=>destCardHtml(c)).join("")}</div>
   </div>`;
 }
 
-/* ---------- pipeline ---------- */
+/* =====================================================================
+   PIPELINE
+   ===================================================================== */
+function sectorOptions(sel, allLabel){ return `<option value="all">${allLabel||"All sectors"}</option>`+DB.sectors.map(s=>`<option value="${s.id}" ${String(sel)===String(s.id)?"selected":""}>${esc(s.name)}</option>`).join(""); }
 function rPipeline(){
   let rows = DB.opps.filter(o=> state.pipeStatus==="all" || o.list_status===state.pipeStatus);
   const q = state.pipeQ.toLowerCase();
   if(q) rows = rows.filter(o=> (o.title+" "+(o.issuing_body||"")+" "+(o.summary||"")).toLowerCase().includes(q));
+  if(state.pipeSector!=="all") rows = rows.filter(o=> itemSectors("opportunity",o.id).some(x=>String(x.econ_sector_id)===state.pipeSector));
   rows.sort((a,b)=> (a.list_status===b.list_status?0:a.list_status==="open"?-1:b.list_status==="open"?1:a.list_status==="watchlist"?-1:1) || (a.submission_deadline||"9999").localeCompare(b.submission_deadline||"9999"));
   $("#mainEl").innerHTML = `
-  <div class="pageHead"><h2>Bid Pipeline</h2><div class="meta">${DB.opps.length} tracked RFPs and host-city calls · refreshed by weekly scan</div></div>
+  <div class="pageHead"><h2>Bid Pipeline</h2><div class="meta">${DB.opps.length} tracked RFPs and host-city calls · last updated ${lastImport()}</div></div>
   <div class="filters">
-    <input type="search" placeholder="Search opportunities…" value="${esc(state.pipeQ)}" oninput="state.pipeQ=this.value;rPipeline()">
+    <input type="search" placeholder="Search opportunities…" value="${esc(state.pipeQ)}" oninput="state.pipeQ=this.value;rPipeline();this.focus();this.setSelectionRange(this.value.length,this.value.length)">
     <select onchange="state.pipeStatus=this.value;rPipeline()">
       ${["all","open","watchlist","closed"].map(s=>`<option value="${s}" ${state.pipeStatus===s?"selected":""}>${s==="all"?"All statuses":s[0].toUpperCase()+s.slice(1)}</option>`).join("")}
     </select>
+    <select onchange="state.pipeSector=this.value;rPipeline()">${sectorOptions(state.pipeSector)}</select>
   </div>
-  <div class="card" style="padding:6px 16px 10px">
-    <table class="data"><thead><tr><th>Opportunity</th><th>Issuing body</th><th>Type</th><th>Deadline</th><th>Status</th><th>Suggested hosts</th></tr></thead><tbody>
-    ${rows.map(o=>`<tr class="rowlink" onclick="openOpp(${o.id})">
+  <div class="card tblWrap" style="padding:6px 16px 10px">
+    <table class="data"><thead><tr><th>Opportunity</th><th>Issuing body</th><th>Sectors</th><th>Deadline</th><th>Status</th><th>Policy links</th></tr></thead><tbody>
+    ${rows.map(o=>{ const al=DB.aligns.filter(a=>a.opportunity_id===o.id&&a.status==="confirmed");
+      return `<tr class="rowlink" onclick="openOpp(${o.id})">
       <td style="max-width:280px"><b>${esc(o.title)}</b></td>
-      <td>${esc(o.issuing_body||"—")}</td>
-      <td>${esc(o.event_type||"—")}</td>
+      <td>${esc(o.issuing_body||"–")}</td>
+      <td style="max-width:220px">${secChips("opportunity",o.id,2)||'<span class="chip ns">untagged</span>'}</td>
       <td style="white-space:nowrap">${fmtD(o.submission_deadline)} ${o.list_status==="open"?dlChip(o.submission_deadline):""}</td>
       <td><span class="chip ${o.list_status}">${o.list_status}</span></td>
-      <td style="max-width:230px;font-size:12.5px">${esc(o.suggested_hosts||"—")}</td></tr>`).join("") || `<tr><td colspan="6" class="empty">No matches.</td></tr>`}
+      <td style="font-size:12.5px">${al.map(a=>`${flag(DB.cById[a.country_id]?.iso2)} ${esc(DB.cById[a.country_id]?.name)}`).join("<br>")||"–"}</td></tr>`;}).join("") || `<tr><td colspan="6" class="empty">No matches.</td></tr>`}
     </tbody></table>
   </div>`;
 }
-window.openOpp = id => {
+window.openOpp = (id, tab) => {
   const o = DB.opps.find(x=>x.id===id); if(!o) return;
-  showModal(`
-    <div class="mHead"><div><h3>${esc(o.title)}</h3><div class="sub">${esc(o.issuing_body||"")}</div></div><button class="x" onclick="closeModal()">✕</button></div>
-    <div class="mBody">
+  const tabs = ["Details","Sectors & policy fit"];
+  const body = t => t==="Details" ? `
       <div class="chips" style="margin-bottom:16px">
         <span class="chip ${o.list_status}">${o.list_status}</span>
         ${o.event_type?`<span class="chip sector">${esc(o.event_type)}</span>`:""}
@@ -335,22 +469,116 @@ window.openOpp = id => {
       </div>
       <dl class="kv">
         <dt>Submission deadline</dt><dd>${fmtD(o.submission_deadline)}</dd>
-        <dt>Bid type</dt><dd>${esc(o.bid_type||"—")}</dd>
-        <dt>Eligibility</dt><dd>${esc(o.eligibility||"—")}</dd>
-        <dt>Required documents</dt><dd>${esc(o.required_documents||"—")}</dd>
+        <dt>Bid type</dt><dd>${esc(o.bid_type||"–")}</dd>
+        <dt>Eligibility</dt><dd>${esc(o.eligibility||"–")}</dd>
+        <dt>Required documents</dt><dd>${esc(o.required_documents||"–")}</dd>
         <dt>Budget / value</dt><dd>${esc(o.budget||"Not stated")}</dd>
-        <dt>Suggested hosts</dt><dd>${esc(o.suggested_hosts||"—")}</dd>
+        <dt>Suggested hosts</dt><dd>${esc(o.suggested_hosts||"–")}</dd>
         ${o.host_year?`<dt>Host year</dt><dd>${esc(o.host_year)}</dd>`:""}
         ${o.why_uncertain?`<dt>Why uncertain</dt><dd>${esc(o.why_uncertain)}</dd>`:""}
         ${o.verify_next?`<dt>Verify next</dt><dd>${esc(o.verify_next)}</dd>`:""}
-        <dt>Sources</dt><dd>${o.primary_source_url?`<a href="${esc(o.primary_source_url)}" target="_blank" rel="noopener">Primary source ↗</a>`:"—"} ${o.secondary_url?` · <a href="${esc(o.secondary_url)}" target="_blank" rel="noopener">Secondary ↗</a>`:""}</dd>
+        <dt>Sources</dt><dd>${o.primary_source_url?`<a href="${esc(o.primary_source_url)}" target="_blank" rel="noopener">Primary source ↗</a>`:"–"} ${o.secondary_url?` · <a href="${esc(o.secondary_url)}" target="_blank" rel="noopener">Secondary ↗</a>`:""}</dd>
       </dl>
       ${o.summary?`<h5>Summary</h5><p>${esc(o.summary)}</p>`:""}
-      ${o.verification_note?`<h5>Verification trail</h5><p style="font-size:12.5px;color:var(--muted)">${esc(o.verification_note)}</p>`:""}
-    </div>`);
+      ${o.verification_note?`<h5>Verification trail</h5><p style="font-size:12.5px;color:var(--muted)">${esc(o.verification_note)}</p>`:""}` : alignPanel("opportunity", id);
+  showTabbedModal(`<div><h3>${esc(o.title)}</h3><div class="sub">${esc(o.issuing_body||"")}</div></div>`, tabs, body, tab);
 };
 
-/* ---------- strategic events ---------- */
+/* =====================================================================
+   SECTOR TAGS + POLICY FIT PANEL (shared by bids and events)
+   ===================================================================== */
+function alignPanel(kind, id){
+  const tags = itemSectors(kind,id);
+  const fits = countryFits(kind,id);
+  const otherCountries = DB.countries.filter(c=>!fits.some(f=>f.country_id===c.id));
+  return `
+  <div class="cardHead"><h5 style="margin:0">Sectors this ${kind==="opportunity"?"bid":"event"} serves</h5><button class="btn sm ghost" onclick="editTags('${kind}',${id})">Edit sectors</button></div>
+  <div class="chips" id="tagView">${tags.length? secChips(kind,id) : '<span class="empty">Not tagged yet. Tag sectors to match it against national policies.</span>'}</div>
+  <div id="tagEdit"></div>
+  <h5>Countries whose national policy prioritises these sectors</h5>
+  <p style="font-size:12.5px;color:var(--muted);margin-bottom:10px">Suggested automatically from each country's key sectors. Confirm a link to record which policy it serves and why. Confirmed links (with your rationale) are what the country's bureau sees on its portal. Dismiss to hide the match from that bureau.</p>
+  ${fits.length? `<div class="tblWrap"><table class="data"><thead><tr><th>Country</th><th>Matched priority sectors</th><th>Link</th><th></th></tr></thead><tbody>
+  ${fits.map(f=>{ const c=DB.cById[f.country_id]; const conf=f.aligns.filter(a=>a.status==="confirmed");
+    return `<tr><td style="white-space:nowrap"><b>${flag(c?.iso2)} ${esc(c?.name)}</b>${c?.priority?' <span class="chip prio">priority</span>':""}</td>
+    <td>${f.rows.map(r=>`<div style="margin-bottom:3px">${rankDot(r.priority_rank)} ${esc(secName(r.econ_sector_id))} <span style="color:var(--muted);font-size:12px">· ${esc(polLabel(DB.pById[r.policy_id]))}${r.policy_reference?" · "+esc(r.policy_reference):""}</span></div>`).join("")||'<span style="color:var(--muted)">Manual link</span>'}</td>
+    <td style="font-size:12.5px;max-width:300px">${conf.map(a=>`<div class="why"><b>✓ ${esc(polLabel(DB.pById[a.policy_id]))}</b> · ${esc(secName(a.econ_sector_id))} · strength ${a.strength}/5${a.share_with_bureau?"":" · <i>internal only</i>"}<br>${esc(a.rationale||"")}</div>`).join("") || (f.dismissed?'<span class="chip closed">dismissed</span>':'<span class="chip watchlist">suggested</span>')}</td>
+    <td style="white-space:nowrap"><button class="btn sm primary" onclick="alignForm('${kind}',${id},${f.country_id})">${conf.length?"Edit":"Confirm"}</button> ${f.dismissed?`<button class="btn sm ghost" onclick="undismiss('${kind}',${id},${f.country_id})">Restore</button>`:`<button class="btn sm ghost" onclick="dismiss('${kind}',${id},${f.country_id})">Dismiss</button>`}</td></tr>
+    <tr id="af_${f.country_id}" class="hidden"><td colspan="4"></td></tr>`;}).join("")}
+  </tbody></table></div>` : `<p class="empty">No country lists these sectors among its national priorities yet.</p>`}
+  <div style="display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap">
+    <select id="manualCountry" style="padding:7px 10px;border:1px solid var(--line);border-radius:8px"><option value="">Link another country…</option>${otherCountries.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("")}</select>
+    <button class="btn sm ghost" onclick="const v=$('#manualCountry').value; if(v) alignForm('${kind}',${id},+v,true)">Add link</button>
+  </div>
+  <div id="af_manual"></div>`;
+}
+window.editTags = (kind,id) => {
+  const cur = itemSectors(kind,id);
+  $("#tagEdit").innerHTML = `<div class="alignBox"><div class="grid cols3" style="gap:6px">${DB.sectors.map(s=>{const t=cur.find(x=>x.econ_sector_id===s.id);
+    return `<label style="font-size:13px;display:flex;gap:6px;align-items:center"><input type="checkbox" class="tagCb" value="${s.id}" ${t?"checked":""}> ${esc(s.name)}</label>`;}).join("")}</div>
+    <div class="field" style="margin-top:10px;max-width:320px"><label>Primary sector</label><select id="tagPrimary">${DB.sectors.map(s=>`<option value="${s.id}" ${cur.find(x=>x.is_primary)?.econ_sector_id===s.id?"selected":""}>${esc(s.name)}</option>`).join("")}</select></div>
+    <button class="btn sm primary" onclick="saveTags('${kind}',${id})">Save sectors</button></div>`;
+};
+window.saveTags = async (kind,id) => {
+  const ids = [...document.querySelectorAll(".tagCb:checked")].map(x=>+x.value);
+  const prim = +$("#tagPrimary").value; if(!ids.includes(prim)) ids.push(prim);
+  const tbl = kind==="opportunity"?"opportunity_sectors":"event_sectors", col = kind==="opportunity"?"opportunity_id":"event_id";
+  let r = await sb.from(tbl).delete().eq(col,id); if(r.error) return toast(r.error.message);
+  r = await sb.from(tbl).insert(ids.map(s=>({[col]:id, econ_sector_id:s, is_primary:s===prim}))); if(r.error) return toast(r.error.message);
+  await reload(true); toast("Sectors saved."); reopen(kind,id);
+};
+function reopen(kind,id){ kind==="opportunity"? openOpp(id,"Sectors & policy fit") : openEv(id,"Sectors & policy fit"); }
+window.alignForm = (kind,id,cid,manual) => {
+  const c = DB.cById[cid]; const tags = itemSectors(kind,id).map(x=>x.econ_sector_id);
+  const csRows = DB.csec.filter(cs=>cs.country_id===cid && tags.includes(cs.econ_sector_id)).sort((a,b)=>a.priority_rank-b.priority_rank);
+  const existing = DB.aligns.find(a=>a.country_id===cid && (kind==="opportunity"?a.opportunity_id===id:a.event_id===id) && a.status==="confirmed");
+  const secId = existing?.econ_sector_id || csRows[0]?.econ_sector_id || tags[0] || "";
+  const secPol = DB.policies.find(p=>p.country_id===cid && p.econ_sector_id===secId && p.level!=="national_plan");
+  const polId = existing?.policy_id || secPol?.id || csRows[0]?.policy_id || "";
+  const cPols = DB.policies.filter(p=>p.country_id===cid);
+  const html = `<div class="alignBox">
+    Link this ${kind==="opportunity"?"bid":"event"} to a national or sector policy of <b>${flag(c.iso2)} ${esc(c.name)}</b>
+    <div class="frow" style="margin-top:10px">
+      <div class="field"><label>Sector</label><select id="al_sec">${DB.sectors.map(s=>`<option value="${s.id}" ${s.id===secId?"selected":""}>${esc(s.name)}${tags.includes(s.id)?"":" (not tagged)"}</option>`).join("")}</select></div>
+      <div class="field"><label>Policy it serves</label><select id="al_pol"><option value="">–</option>${cPols.map(p=>`<option value="${p.id}" ${p.id===polId?"selected":""}>${esc(polLabel(p))} · ${esc(LEVELS[p.level])}</option>`).join("")}</select>${cPols.length?"":`<div class="hint">No policies recorded for ${esc(c.name)} yet. Add them under Policy & Sectors.</div>`}</div>
+      <div class="field"><label>Strength of fit</label><select id="al_str">${[5,4,3,2,1].map(n=>`<option ${n===(existing?.strength||4)?"selected":""}>${n}</option>`).join("")}</select></div>
+    </div>
+    <div class="field"><label>Rationale (shown to the bureau when shared)</label><textarea id="al_rat" placeholder="e.g. NDS2 Priority 6 names creative industry and culture as job creators; hosting brings…">${esc(existing?.rationale||"")}</textarea></div>
+    <div class="checks"><label><input type="checkbox" id="al_share" ${existing?.share_with_bureau===false?"":"checked"}> Show on ${esc(c.name)}'s bureau portal</label></div>
+    <button class="btn sm primary" onclick="saveAlign('${kind}',${id},${cid},${existing?.id||"null"})">Save link</button> <button class="btn sm ghost" onclick="this.closest('.alignBox').remove()">Cancel</button>
+    ${existing?` <button class="btn sm danger" onclick="delAlign(${existing.id},'${kind}',${id})">Remove link</button>`:""}
+  </div>`;
+  if(manual){ $("#af_manual").innerHTML = html; return; }
+  const row = document.getElementById("af_"+cid); row.classList.remove("hidden"); row.firstElementChild.innerHTML = html;
+};
+window.saveAlign = async (kind,id,cid,existingId) => {
+  const rec = {country_id:cid, econ_sector_id:+val("al_sec"), policy_id: val("al_pol")? +val("al_pol"):null, strength:+val("al_str"),
+    rationale: nz(val("al_rat")), share_with_bureau: val("al_share"), status:"confirmed",
+    opportunity_id: kind==="opportunity"?id:null, event_id: kind==="event"?id:null};
+  // clear any dismissal for this pair first
+  const dis = DB.aligns.filter(a=>a.country_id===cid && a.status==="dismissed" && (kind==="opportunity"?a.opportunity_id===id:a.event_id===id));
+  for(const d of dis) await sb.from("bid_alignments").delete().eq("id",d.id);
+  const same = DB.aligns.find(a=>a.country_id===cid && a.econ_sector_id===rec.econ_sector_id && (kind==="opportunity"?a.opportunity_id===id:a.event_id===id));
+  const targetId = existingId || same?.id;
+  const r = targetId ? await sb.from("bid_alignments").update(rec).eq("id",targetId) : await sb.from("bid_alignments").insert(rec);
+  if(r.error) return toast(r.error.message);
+  await reload(true); toast("Policy link saved."); reopen(kind,id);
+};
+window.delAlign = async (aid,kind,id) => { const r=await sb.from("bid_alignments").delete().eq("id",aid); if(r.error) return toast(r.error.message); await reload(true); toast("Link removed."); reopen(kind,id); };
+window.dismiss = async (kind,id,cid) => {
+  const r = await sb.from("bid_alignments").insert({country_id:cid, status:"dismissed", econ_sector_id:null, share_with_bureau:false,
+    opportunity_id: kind==="opportunity"?id:null, event_id: kind==="event"?id:null});
+  if(r.error) return toast(r.error.message);
+  await reload(true); toast("Dismissed and hidden from that bureau."); reopen(kind,id);
+};
+window.undismiss = async (kind,id,cid) => {
+  const ids = DB.aligns.filter(a=>a.country_id===cid && a.status==="dismissed" && (kind==="opportunity"?a.opportunity_id===id:a.event_id===id)).map(a=>a.id);
+  if(ids.length){ const r=await sb.from("bid_alignments").delete().in("id",ids); if(r.error) return toast(r.error.message); }
+  await reload(true); reopen(kind,id);
+};
+
+/* =====================================================================
+   STRATEGIC EVENTS
+   ===================================================================== */
 function rEvents(){
   let evs = DB.events.filter(e=>
     (state.evSector==="all"||e.sector===state.evSector) &&
@@ -360,7 +588,7 @@ function rEvents(){
   $("#mainEl").innerHTML = `
   <div class="pageHead"><h2>Strategic Events</h2><div class="meta">Rotating events worth pursuing for Africa, scored for AfCFTA alignment and host fit</div></div>
   <div class="filters">
-    <select onchange="state.evSector=this.value;rEvents()"><option value="all">All sectors</option>${Object.entries(SECTORS).map(([k,v])=>`<option value="${k}" ${state.evSector===k?"selected":""}>${v}</option>`).join("")}</select>
+    <select onchange="state.evSector=this.value;rEvents()"><option value="all">All sector groups</option>${Object.entries(SECTORS).map(([k,v])=>`<option value="${k}" ${state.evSector===k?"selected":""}>${v}</option>`).join("")}</select>
     <select onchange="state.evScope=this.value;rEvents()"><option value="all">All scopes</option>${["international","continental","regional"].map(s=>`<option value="${s}" ${state.evScope===s?"selected":""}>${s[0].toUpperCase()+s.slice(1)}</option>`).join("")}</select>
     <label class="toggle"><input type="checkbox" ${state.evAf?"checked":""} onchange="state.evAf=this.checked;rEvents()"> AfCFTA priority only</label>
   </div>
@@ -368,15 +596,16 @@ function rEvents(){
   ${evs.map(e=>{
     const fits = DB.matches.filter(m=>m.event_id===e.id).sort((a,b)=>b.total_score-a.total_score).slice(0,3);
     const rec = DB.cById[e.recommended_destination_id];
+    const conf = DB.aligns.filter(a=>a.event_id===e.id&&a.status==="confirmed");
     return `<div class="evCard">
       <h4>${esc(e.event_name)}</h4>
       <div class="org">${esc(e.organiser||"")}${e.typical_attendance?` · ~${e.typical_attendance.toLocaleString()} delegates`:""}</div>
       <div class="chips">
         <span class="chip ${SCOPE_CLS[e.scope]||"sector"}">${esc(e.scope)}</span>
-        <span class="chip sector">${SECTORS[e.sector]||esc(e.sector)}</span>
         ${e.edition_year?`<span class="chip sector">${e.edition_year}</span>`:""}
         <span class="chip ${e.bid_status==="bid_open"?"open":e.bid_status==="watching"?"watchlist":"closed"}">${esc((e.bid_status||"").replace("_"," "))}</span>
       </div>
+      <div class="chips">${secChips("event",e.id)}</div>
       <div style="font-size:12.5px;color:var(--muted)">AfCFTA alignment ${dots(e.afcfta_score)} ${e.afcfta_score||0}/5</div>
       ${e.afcfta_relevance?`<div style="font-size:12.5px">${esc(e.afcfta_relevance)}</div>`:""}
       ${e.rotation_pattern?`<div style="font-size:12.5px;color:var(--muted)"><b>Rotation:</b> ${esc(e.rotation_pattern)}</div>`:""}
@@ -384,17 +613,39 @@ function rEvents(){
       <div class="fitList">
         ${fits.map(f=>{const c=DB.cById[f.country_id];return `<div class="fitRow" title="${esc(f.rationale||"")}"><span class="nm">${flag(c?.iso2)} ${esc(c?.name||"?")}</span><span class="bar"><i style="width:${(f.total_score/5)*100}%"></i></span><span class="sc">${Number(f.total_score).toFixed(1)}</span></div>`;}).join("") || '<div class="empty">No host scores yet.</div>'}
         ${rec?`<div style="font-size:12px;margin-top:3px">★ Recommended: <b>${esc(rec.name)}</b></div>`:""}
+        ${conf.length?`<div style="font-size:12px">Policy links: ${conf.map(a=>esc(DB.cById[a.country_id]?.name)).join(", ")}</div>`:""}
       </div>
-      ${e.source_url?`<a href="${esc(e.source_url)}" target="_blank" rel="noopener" style="font-size:12px">Source ↗</a>`:""}
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        ${e.source_url?`<a href="${esc(e.source_url)}" target="_blank" rel="noopener" style="font-size:12px">Source ↗</a>`:"<span></span>"}
+        <button class="btn sm ghost" onclick="openEv(${e.id},'Sectors & policy fit')">Policy fit ›</button>
+      </div>
     </div>`;
   }).join("") || '<div class="card empty">No events match these filters.</div>'}
   </div>`;
 }
+window.openEv = (id, tab) => {
+  const e = DB.events.find(x=>x.id===id); if(!e) return;
+  const body = t => t==="Details" ? `<dl class="kv">
+      <dt>Organiser</dt><dd>${esc(e.organiser||"–")}</dd>
+      <dt>Scope</dt><dd>${esc(e.scope||"–")}</dd>
+      <dt>Typical attendance</dt><dd>${e.typical_attendance?e.typical_attendance.toLocaleString():"–"}</dd>
+      <dt>Rotation</dt><dd>${esc(e.rotation_pattern||"–")}</dd>
+      <dt>Host requirements</dt><dd>${esc(e.host_requirements||"–")}</dd>
+      <dt>Next available edition</dt><dd>${esc(e.next_available_edition||"–")}</dd>
+      <dt>Bid deadline</dt><dd>${fmtD(e.bid_deadline)}</dd>
+      <dt>Status</dt><dd>${esc((e.bid_status||"").replace("_"," "))}</dd>
+      <dt>Source</dt><dd>${e.source_url?`<a href="${esc(e.source_url)}" target="_blank" rel="noopener">Source ↗</a>`:"–"}</dd>
+    </dl>${e.notes?`<h5>Notes</h5><p>${esc(e.notes)}</p>`:""}` : alignPanel("event", id);
+  showTabbedModal(`<div><h3>${esc(e.event_name)}</h3><div class="sub">${esc(e.organiser||"")}</div></div>`, ["Details","Sectors & policy fit"], body, tab);
+};
 
-/* ---------- destinations ---------- */
+/* =====================================================================
+   DESTINATIONS
+   ===================================================================== */
 function destCardHtml(c){
   const vn = DB.venues.filter(v=>v.country_id===c.id);
   const top = vn.filter(v=>v.plenary_capacity).sort((a,b)=>b.plenary_capacity-a.plenary_capacity)[0];
+  const np = DB.policies.filter(p=>p.country_id===c.id).length;
   return `<div class="destCard" onclick="openDest(${c.id})">
     <div style="display:flex;justify-content:space-between;align-items:flex-start"><span class="fl">${flag(c.iso2)}</span>${c.priority?'<span class="chip prio">Priority</span>':""}</div>
     <h4>${esc(c.name)}</h4>
@@ -402,6 +653,8 @@ function destCardHtml(c){
     <div class="chips" style="margin-top:9px">
       ${top?`<span class="chip sector">${esc(top.name.split("(")[0].trim())} · ${top.plenary_capacity.toLocaleString()} pax</span>`:""}
       ${afChip(c)}
+      ${c.visa_africa?`<span class="chip sec">${VISA_AF_SHORT[c.visa_africa]}</span>`:""}
+      ${np?`<span class="chip lvl">${np} polic${np===1?"y":"ies"}</span>`:""}
     </div>
   </div>`;
 }
@@ -414,10 +667,10 @@ function rDest(){
   $("#mainEl").innerHTML = `
   <div class="pageHead"><h2>Destinations</h2><div class="meta">${DB.countries.length} African states and islands · deep inventory on the six priority markets</div></div>
   <div class="prioBand">
-    <h3>Priority destinations</h3><p class="s">Zimbabwe · Zambia · South Africa · Kenya · Rwanda · Malawi: full venue, air, visa and track-record inventory</p>
+    <h3>Priority destinations</h3><p class="s">Zimbabwe · Zambia · South Africa · Kenya · Rwanda · Malawi, with full venue, air, visa, policy and track-record inventory</p>
     <div class="grid">${prios.map(c=>destCardHtml(c)).join("")}</div>
   </div>
-  <div class="filters"><input type="search" placeholder="Find a country…" value="${esc(state.destQ)}" oninput="state.destQ=this.value;rDest()"></div>
+  <div class="filters"><input type="search" placeholder="Find a country…" value="${esc(state.destQ)}" oninput="state.destQ=this.value;rDest();this.focus();this.setSelectionRange(this.value.length,this.value.length)"></div>
   ${regions.map(r=>{
     const cs = rest.filter(c=>c.region===r);
     if(!cs.length) return "";
@@ -427,43 +680,460 @@ function rDest(){
   }).join("")}`;
 }
 function afLabelShort(c){ const a=AF_LABEL[c.afcfta_status]; return a? a[0] : (c.type==="territory"?"Territory":""); }
-window.openDest = id => {
+function visaBlock(c){
+  return `<dl class="kv">
+    <dt>African delegates</dt><dd>${c.visa_africa?`<b>${VISA_AF[c.visa_africa]}</b>`:'<span style="color:var(--muted)">Not yet classified</span>'}</dd>
+    <dt>eVisa / eTA</dt><dd>${yn(c.evisa)}</dd>
+    <dt>Visa on arrival</dt><dd>${yn(c.visa_on_arrival)}</dd>
+    <dt>KAZA UniVisa</dt><dd>${yn(c.univisa)}</dd>
+    <dt>Regime summary</dt><dd>${esc(c.visa_regime||"To be researched.")}</dd>
+    ${c.visa_notes?`<dt>Notes</dt><dd>${esc(c.visa_notes)}</dd>`:""}
+    ${c.visa_events_note?`<dt>For event bids</dt><dd><div class="why">${esc(c.visa_events_note)}</div></dd>`:""}
+    <dt>Official portal</dt><dd>${c.visa_portal_url?`<a href="${esc(c.visa_portal_url)}" target="_blank" rel="noopener">${esc(c.visa_portal_url.replace(/^https?:\/\//,""))} ↗</a>`:"–"}</dd>
+    <dt>Last verified</dt><dd>${fmtD(c.visa_verified_on)}</dd>
+  </dl>`;
+}
+window.openDest = (id, tab) => {
   const c = DB.cById[id]; if(!c) return;
   const all = DB.venues.filter(v=>v.country_id===id);
   const vn = all.filter(v=>!["hotel_conference","resort"].includes(v.category));
   const ht = all.filter(v=>["hotel_conference","resort"].includes(v.category));
   const ap = DB.airports.filter(a=>a.country_id===id);
   const pe = DB.past.filter(p=>p.country_id===id);
-  const tabs = ["Profile","Venues","Hotels","Air access","Past events"];
+  const tabs = ["Profile","Visa","Policy & sectors","Venues","Hotels","Air access","Past events"];
   const body = t => {
     if(t==="Profile") return `
       <dl class="kv">
         <dt>MICE positioning</dt><dd>${esc(c.mice_summary||"To be researched.")}</dd>
-        <dt>Visa regime</dt><dd>${esc(c.visa_regime||"To be researched.")}${c.visa_notes?`<br><span style="color:var(--muted);font-size:12px">${esc(c.visa_notes)}</span>`:""}</dd>
+        <dt>Visa (African delegates)</dt><dd>${c.visa_africa?VISA_AF[c.visa_africa]:esc(c.visa_regime||"To be researched.")} · <a href="#" onclick="event.preventDefault();openDest(${id},'Visa')">full visa profile</a></dd>
         <dt>Transport network</dt><dd>${esc(c.transport_summary||"To be researched.")}</dd>
         <dt>Security context</dt><dd>${esc(c.security_summary||"To be researched.")}</dd>
         <dt>Convention bureau</dt><dd>${esc(c.bureau_name||"None identified")}${c.bureau_url?` · <a href="${esc(c.bureau_url)}" target="_blank" rel="noopener">site ↗</a>`:""}</dd>
-        <dt>AfCFTA status</dt><dd>${afLabelShort(c)||"—"}</dd>
+        <dt>AfCFTA status</dt><dd>${afLabelShort(c)||"–"}</dd>
         <dt>Data confidence</dt><dd>${esc(c.data_confidence||"estimate")}</dd>
       </dl>`;
-    if(t==="Venues") return vn.length? `<table class="data"><thead><tr><th>Venue</th><th>City</th><th>Type</th><th>Plenary</th><th>Expo m²</th><th>Rooms</th></tr></thead><tbody>${vn.map(v=>`<tr><td><b>${esc(v.name)}</b>${v.notes?`<br><span style="font-size:11.5px;color:var(--muted)">${esc(v.notes)}</span>`:""}</td><td>${esc(v.city||"")}</td><td>${esc(v.category.replace("_"," "))}</td><td>${v.plenary_capacity?v.plenary_capacity.toLocaleString():"—"}</td><td>${v.exhibition_sqm?v.exhibition_sqm.toLocaleString():"—"}</td><td>${v.rooms||"—"}</td></tr>`).join("")}</tbody></table>` : `<p class="empty">Venue inventory not yet researched for this destination.</p>`;
-    if(t==="Hotels") return ht.length? `<table class="data"><thead><tr><th>Hotel</th><th>City</th><th>Type</th><th>Rooms</th><th>Conference capacity</th></tr></thead><tbody>${ht.map(v=>`<tr><td><b>${esc(v.name)}</b>${v.notes?`<br><span style="font-size:11.5px;color:var(--muted)">${esc(v.notes)}</span>`:""}</td><td>${esc(v.city||"")}</td><td>${v.category==="resort"?"resort":"conference hotel"}</td><td>${v.rooms||"—"}</td><td>${v.plenary_capacity?v.plenary_capacity.toLocaleString():"—"}</td></tr>`).join("")}</tbody></table>` : `<p class="empty">Hotel inventory not yet researched for this destination.</p>`;
-    if(t==="Air access") return ap.length? `<table class="data"><thead><tr><th>Airport</th><th>City</th><th>IATA</th><th>Connectivity</th></tr></thead><tbody>${ap.map(a=>`<tr><td><b>${esc(a.name)}</b></td><td>${esc(a.city||"")}</td><td>${esc(a.iata||"—")}</td><td>${esc(a.connectivity||"")}</td></tr>`).join("")}</tbody></table>` : `<p class="empty">Airport inventory not yet researched for this destination.</p>`;
-    return pe.length? `<table class="data"><thead><tr><th>Event</th><th>City</th><th>Year</th><th>Sector</th><th>Attendance</th></tr></thead><tbody>${pe.map(p=>`<tr><td><b>${esc(p.event_name)}</b>${p.notes?`<br><span style="font-size:11.5px;color:var(--muted)">${esc(p.notes)}</span>`:""}</td><td>${esc(p.city||"")}</td><td style="white-space:nowrap">${p.year||"recurring"}${(!p.year||p.year>=new Date().getFullYear()-5)?' <span class="chip open" style="font-size:10px">recent</span>':""}</td><td>${esc(p.sector||"")}</td><td>${p.attendance?p.attendance.toLocaleString():"—"}</td></tr>`).join("")}</tbody></table>` : `<p class="empty">No hosted-event records yet for this destination.</p>`;
+    if(t==="Visa") return visaBlock(c) + `<div style="margin-top:16px"><button class="btn sm ghost" onclick="visaForm(${id})">Edit visa profile</button></div><div id="visaEdit"></div>`;
+    if(t==="Policy & sectors") return countryPolicyPanel(id);
+    if(t==="Venues") return vn.length? `<div class="tblWrap"><table class="data"><thead><tr><th>Venue</th><th>City</th><th>Type</th><th>Plenary</th><th>Expo m²</th><th>Rooms</th></tr></thead><tbody>${vn.map(v=>`<tr><td><b>${esc(v.name)}</b>${v.notes?`<br><span style="font-size:11.5px;color:var(--muted)">${esc(v.notes)}</span>`:""}</td><td>${esc(v.city||"")}</td><td>${esc(v.category.replace("_"," "))}</td><td>${v.plenary_capacity?v.plenary_capacity.toLocaleString():"–"}</td><td>${v.exhibition_sqm?v.exhibition_sqm.toLocaleString():"–"}</td><td>${v.rooms||"–"}</td></tr>`).join("")}</tbody></table></div>` : `<p class="empty">Venue inventory not yet researched for this destination.</p>`;
+    if(t==="Hotels") return ht.length? `<div class="tblWrap"><table class="data"><thead><tr><th>Hotel</th><th>City</th><th>Type</th><th>Rooms</th><th>Conference capacity</th></tr></thead><tbody>${ht.map(v=>`<tr><td><b>${esc(v.name)}</b>${v.notes?`<br><span style="font-size:11.5px;color:var(--muted)">${esc(v.notes)}</span>`:""}</td><td>${esc(v.city||"")}</td><td>${v.category==="resort"?"resort":"conference hotel"}</td><td>${v.rooms||"–"}</td><td>${v.plenary_capacity?v.plenary_capacity.toLocaleString():"–"}</td></tr>`).join("")}</tbody></table></div>` : `<p class="empty">Hotel inventory not yet researched for this destination.</p>`;
+    if(t==="Air access") return ap.length? `<div class="tblWrap"><table class="data"><thead><tr><th>Airport</th><th>City</th><th>IATA</th><th>Connectivity</th></tr></thead><tbody>${ap.map(a=>`<tr><td><b>${esc(a.name)}</b></td><td>${esc(a.city||"")}</td><td>${esc(a.iata||"–")}</td><td>${esc(a.connectivity||"")}</td></tr>`).join("")}</tbody></table></div>` : `<p class="empty">Airport inventory not yet researched for this destination.</p>`;
+    return pe.length? `<div class="tblWrap"><table class="data"><thead><tr><th>Event</th><th>City</th><th>Year</th><th>Sector</th><th>Attendance</th></tr></thead><tbody>${pe.map(p=>`<tr><td><b>${esc(p.event_name)}</b>${p.notes?`<br><span style="font-size:11.5px;color:var(--muted)">${esc(p.notes)}</span>`:""}</td><td>${esc(p.city||"")}</td><td style="white-space:nowrap">${p.year||"recurring"}${(!p.year||p.year>=new Date().getFullYear()-5)?' <span class="chip open" style="font-size:10px">recent</span>':""}</td><td>${esc(p.sector||"")}</td><td>${p.attendance?p.attendance.toLocaleString():"–"}</td></tr>`).join("")}</tbody></table></div>` : `<p class="empty">No hosted-event records yet for this destination.</p>`;
   };
-  showModal(`
-    <div class="mHead"><div><h3>${flag(c.iso2)} ${esc(c.name)}</h3><div class="sub">${c.region} Africa · ${afLabelShort(c)||c.type}</div></div><button class="x" onclick="closeModal()">✕</button></div>
-    <div class="mTabs" id="mTabs">${tabs.map((t,i)=>`<button class="${i===0?"active":""}" data-t="${t}">${t}</button>`).join("")}</div>
-    <div class="mBody" id="mTabBody">${body("Profile")}</div>`);
+  showTabbedModal(`<div><h3>${flag(c.iso2)} ${esc(c.name)}</h3><div class="sub">${c.region} Africa · ${afLabelShort(c)||c.type}</div></div>`, tabs, body, tab);
+};
+window.visaForm = id => {
+  const c = DB.cById[id];
+  const tri = (k,l) => `<div class="field"><label>${l}</label><select id="v_${k}"><option value="" ${c[k]==null?"selected":""}>Unknown</option><option value="true" ${c[k]===true?"selected":""}>Yes</option><option value="false" ${c[k]===false?"selected":""}>No</option></select></div>`;
+  $("#visaEdit").innerHTML = `<div class="alignBox">
+    <div class="frow">
+      <div class="field"><label>African delegates</label><select id="v_visa_africa"><option value="">Not classified</option>${Object.entries(VISA_AF).map(([k,l])=>`<option value="${k}" ${c.visa_africa===k?"selected":""}>${l}</option>`).join("")}</select></div>
+      ${tri("evisa","eVisa / eTA")}${tri("visa_on_arrival","Visa on arrival")}${tri("univisa","KAZA UniVisa")}
+    </div>
+    <div class="field"><label>Regime summary</label><textarea id="v_visa_regime">${esc(c.visa_regime||"")}</textarea></div>
+    <div class="field"><label>Notes</label><textarea id="v_visa_notes">${esc(c.visa_notes||"")}</textarea></div>
+    <div class="field"><label>What it means for event bids (shown to the bureau)</label><textarea id="v_visa_events_note">${esc(c.visa_events_note||"")}</textarea></div>
+    <div class="frow"><div class="field"><label>Official portal URL</label><input id="v_visa_portal_url" value="${esc(c.visa_portal_url||"")}"></div>
+    <div class="field"><label>Last verified</label><input type="date" id="v_visa_verified_on" value="${esc(c.visa_verified_on||"")}"></div></div>
+    <button class="btn sm primary" onclick="saveVisa(${id})">Save visa profile</button></div>`;
+};
+window.saveVisa = async id => {
+  const b = v => v===""?null:v==="true";
+  const rec = {visa_africa:nz(val("v_visa_africa")), evisa:b(val("v_evisa")), visa_on_arrival:b(val("v_visa_on_arrival")), univisa:b(val("v_univisa")),
+    visa_regime:nz(val("v_visa_regime")), visa_notes:nz(val("v_visa_notes")), visa_events_note:nz(val("v_visa_events_note")),
+    visa_portal_url:nz(val("v_visa_portal_url")), visa_verified_on:nz(val("v_visa_verified_on"))};
+  const r = await sb.from("countries").update(rec).eq("id",id); if(r.error) return toast(r.error.message);
+  await reload(true); toast("Visa profile saved."); openDest(id,"Visa");
+};
+
+/* ---------- country policy panel (inside destination modal) ---------- */
+function liveMatchesFor(cid, secId){
+  const opp = DB.osec.filter(x=>x.econ_sector_id===secId).map(x=>DB.opps.find(o=>o.id===x.opportunity_id)).filter(o=>o&&isLiveOpp(o));
+  const ev = DB.esec.filter(x=>x.econ_sector_id===secId).map(x=>DB.events.find(e=>e.id===x.event_id)).filter(e=>e&&isLiveEv(e));
+  const dis = DB.aligns.filter(a=>a.country_id===cid&&a.status==="dismissed");
+  return {opp: opp.filter(o=>!dis.some(d=>d.opportunity_id===o.id)), ev: ev.filter(e=>!dis.some(d=>d.event_id===e.id))};
+}
+function policyTree(list){
+  const roots = list.filter(p=>!p.parent_id || !list.some(q=>q.id===p.parent_id));
+  const order = {vision:0,national_plan:1,sector_policy:2,strategy:3};
+  roots.sort((a,b)=>order[a.level]-order[b.level] || (b.period_end||0)-(a.period_end||0));
+  const out=[]; const walk=(p,d)=>{ out.push([p,d]); list.filter(q=>q.parent_id===p.id).sort((a,b)=>order[a.level]-order[b.level]).forEach(q=>walk(q,d+1)); };
+  roots.forEach(p=>walk(p,0)); return out;
+}
+function polCardHtml(p, depth, opts={}){
+  const c = DB.cById ? DB.cById[p.country_id] : null;
+  return `<div class="polCard ${depth?"child":""}" style="${depth>1?"margin-left:"+(22*depth)+"px":""}">
+    <div class="chips"><span class="chip lvl">${LEVELS[p.level]||p.level}</span>${p.econ_sector_id&&DB.sById?`<span class="chip sec pri">${esc(secName(p.econ_sector_id))}</span>`:(p.sector?`<span class="chip sec pri">${esc(p.sector)}</span>`:"")}
+      <span class="chip ${p.status==="in_force"?"open":p.status==="in_preparation"?"watchlist":"closed"}">${PSTATUS[p.status]||p.status}</span>
+      ${p.data_confidence?`<span class="chip conf-${p.data_confidence}">${p.data_confidence}</span>`:""}</div>
+    <h4>${opts.showCountry&&c?flag(c.iso2)+" ":""}${esc(p.title)}</h4>
+    <div class="meta">${[opts.showCountry&&c?c.name:"", period(p), p.issuing_body].filter(Boolean).map(esc).join(" · ")}</div>
+    ${p.summary?`<p>${esc(p.summary)}</p>`:""}
+    <div class="acts">
+      ${p.document_path?`<button class="btn sm primary" onclick="openDoc('${esc(p.document_path)}')">Open document</button>`:""}
+      ${p.source_url?`<a class="btn sm ghost" href="${esc(p.source_url)}" target="_blank" rel="noopener">Source ↗</a>`:""}
+      ${opts.admin?`<button class="btn sm ghost" onclick="policyForm(${p.country_id},${p.id})">Edit</button>`:""}
+      ${opts.admin&&!p.document_path?`<span style="font-size:11.5px;color:var(--muted);align-self:center">No document uploaded</span>`:""}
+    </div>
+  </div>`;
+}
+function countryPolicyPanel(cid){
+  const c = DB.cById[cid];
+  const pols = DB.policies.filter(p=>p.country_id===cid);
+  const ks = DB.csec.filter(x=>x.country_id===cid).sort((a,b)=>a.priority_rank-b.priority_rank || DB.sById[a.econ_sector_id].sort-DB.sById[b.econ_sector_id].sort);
+  return `
+  <div class="cardHead"><h5 style="margin:0">Policy frameworks</h5><div style="display:flex;gap:8px"><a class="btn sm ghost" href="${searchUrl(c.name)}" target="_blank" rel="noopener">Search online ↗</a><button class="btn sm primary" onclick="policyForm(${cid})">+ Add policy</button></div></div>
+  ${pols.length? `<div class="grid" style="gap:10px">${policyTree(pols).map(([p,d])=>polCardHtml(p,d,{admin:true})).join("")}</div>` : `<p class="empty">No policy frameworks recorded for ${esc(c.name)} yet. Use “Search online” to find the current national development plan, then add it here.</p>`}
+  <div class="cardHead" style="margin-top:22px"><h5 style="margin:0">Key economic sectors</h5><button class="btn sm primary" onclick="sectorForm(${cid})">+ Add key sector</button></div>
+  <div id="secEdit"></div>
+  ${ks.length? `<div class="tblWrap"><table class="data"><thead><tr><th>#</th><th>Sector</th><th>Source policy</th><th>Target / focus</th><th>Live bids & events</th><th></th></tr></thead><tbody>
+    ${ks.map(k=>{ const m=liveMatchesFor(cid,k.econ_sector_id); const n=m.opp.length+m.ev.length;
+      return `<tr><td>${rankDot(k.priority_rank)}</td><td><b>${esc(secName(k.econ_sector_id))}</b>${k.mice_angle?`<br><span style="font-size:11.5px;color:var(--muted)">MICE angle: ${esc(k.mice_angle)}</span>`:""}</td>
+      <td style="font-size:12.5px">${esc(polLabel(DB.pById[k.policy_id]))}${k.policy_reference?`<br><span style="color:var(--muted)">${esc(k.policy_reference)}</span>`:""}</td>
+      <td style="font-size:12.5px;max-width:260px">${esc(k.target||"–")}</td>
+      <td>${n?`<a href="#" onclick="event.preventDefault();cellDetail(${cid},${k.econ_sector_id})">${m.opp.length} bids · ${m.ev.length} events</a>`:'<span class="chip ns">gap</span>'}</td>
+      <td><button class="btn sm ghost" onclick="sectorForm(${cid},${k.id})">Edit</button></td></tr>`;}).join("")}
+  </tbody></table></div>` : `<p class="empty">No key sectors identified yet. Add them from the national development plan's priority areas.</p>`}`;
+}
+const searchUrl = name => "https://www.google.com/search?q="+encodeURIComponent(`${name} national development plan OR strategy 2025 2030 priority sectors pdf`);
+window.openDoc = async path => {
+  const {data,error} = await sb.storage.from("policy-docs").createSignedUrl(path, 900);
+  if(error) return toast("Could not open document: "+error.message);
+  window.open(data.signedUrl, "_blank", "noopener");
+};
+window.policyForm = (cid, pid) => {
+  const p = pid? DB.pById[pid] : {country_id:cid, level:"national_plan", status:"in_force", data_confidence:"estimate"};
+  const c = DB.cById[cid];
+  const parents = DB.policies.filter(x=>x.country_id===cid && x.id!==pid);
+  showModal(`<div class="mHead"><div><h3>${pid?"Edit":"Add"} policy framework</h3><div class="sub">${flag(c.iso2)} ${esc(c.name)}</div></div><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="mBody">
+    <div class="field"><label>Title</label><input id="p_title" value="${esc(p.title||"")}" placeholder="e.g. National Development Strategy 2 (2026-2030)"></div>
+    <div class="frow">
+      <div class="field"><label>Short name</label><input id="p_short" value="${esc(p.short_name||"")}" placeholder="NDS2"></div>
+      <div class="field"><label>Type</label><select id="p_level">${Object.entries(LEVELS).map(([k,l])=>`<option value="${k}" ${p.level===k?"selected":""}>${l}</option>`).join("")}</select></div>
+      <div class="field"><label>Status</label><select id="p_status">${Object.entries(PSTATUS).map(([k,l])=>`<option value="${k}" ${p.status===k?"selected":""}>${l}</option>`).join("")}</select></div>
+    </div>
+    <div class="frow">
+      <div class="field"><label>Sits under (parent)</label><select id="p_parent"><option value="">–</option>${parents.map(x=>`<option value="${x.id}" ${p.parent_id===x.id?"selected":""}>${esc(polLabel(x))}</option>`).join("")}</select></div>
+      <div class="field"><label>Sector (for sector policies)</label><select id="p_sector"><option value="">Cross-cutting (no single sector)</option>${DB.sectors.map(s=>`<option value="${s.id}" ${p.econ_sector_id===s.id?"selected":""}>${esc(s.name)}</option>`).join("")}</select></div>
+      <div class="field"><label>From year</label><input type="number" id="p_from" value="${p.period_start||""}"></div>
+      <div class="field"><label>To year</label><input type="number" id="p_to" value="${p.period_end||""}"></div>
+    </div>
+    <div class="field"><label>Issuing body</label><input id="p_issuer" value="${esc(p.issuing_body||"")}"></div>
+    <div class="field"><label>Summary of priorities, pillars and targets</label><textarea id="p_summary" style="min-height:120px">${esc(p.summary||"")}</textarea></div>
+    <div class="frow">
+      <div class="field"><label>Source URL</label><input id="p_url" value="${esc(p.source_url||"")}"></div>
+      <div class="field"><label>Data confidence</label><select id="p_conf">${["verified","estimate","unverified"].map(k=>`<option ${p.data_confidence===k?"selected":""}>${k}</option>`).join("")}</select></div>
+    </div>
+    <div class="field"><label>Policy document (PDF or Word, max 50 MB)</label><input type="file" id="p_file" accept=".pdf,.doc,.docx">
+      <div class="hint">${p.document_path?"Current file: "+esc(p.document_path.split("/").pop())+". Choosing a new file replaces it. ":""}Stored privately; the country's bureau can open its own country's documents.</div></div>
+    <button class="btn primary" id="p_save" onclick="savePolicy(${cid},${pid||"null"})">Save policy</button>
+    ${pid?`<button class="btn danger" style="margin-left:8px" onclick="delPolicy(${pid},${cid})">Delete</button>`:""}
+  </div>`);
+};
+window.savePolicy = async (cid, pid) => {
+  const c = DB.cById[cid];
+  if(!val("p_title")) return toast("Title is required.");
+  $("#p_save").disabled = true; $("#p_save").textContent = "Saving…";
+  const rec = {country_id:cid, title:val("p_title"), short_name:nz(val("p_short")), level:val("p_level"), status:val("p_status"),
+    parent_id: val("p_parent")? +val("p_parent"):null, econ_sector_id: val("p_sector")? +val("p_sector"):null,
+    period_start: val("p_from")? +val("p_from"):null, period_end: val("p_to")? +val("p_to"):null,
+    issuing_body:nz(val("p_issuer")), summary:nz(val("p_summary")), source_url:nz(val("p_url")), data_confidence:val("p_conf"), added_by:"dashboard"};
+  const f = $("#p_file").files[0];
+  if(f){
+    const path = `${(c.iso2||"XX").toUpperCase()}/${Date.now()}-${f.name.replace(/[^\w.\-]+/g,"_")}`;
+    const up = await sb.storage.from("policy-docs").upload(path, f, {contentType: f.type||"application/pdf"});
+    if(up.error){ $("#p_save").disabled=false; $("#p_save").textContent="Save policy"; return toast("Upload failed: "+up.error.message); }
+    rec.document_path = path;
+  }
+  const r = pid ? await sb.from("policy_frameworks").update(rec).eq("id",pid) : await sb.from("policy_frameworks").insert(rec);
+  if(r.error){ $("#p_save").disabled=false; $("#p_save").textContent="Save policy"; return toast(r.error.message); }
+  await reload(true); toast("Policy saved."); VIEW==="policies"? (closeModal(), rPolicies()) : openDest(cid,"Policy & sectors");
+};
+window.delPolicy = async (pid,cid) => {
+  if(DB.csec.some(k=>k.policy_id===pid) || DB.aligns.some(a=>a.policy_id===pid)) toast("Note: key sectors and links that cited this policy will keep their entries without a policy.");
+  const r = await sb.from("policy_frameworks").delete().eq("id",pid); if(r.error) return toast(r.error.message);
+  await reload(true); toast("Policy deleted."); VIEW==="policies"? (closeModal(), rPolicies()) : openDest(cid,"Policy & sectors");
+};
+window.sectorForm = (cid, ksid) => {
+  const k = ksid? DB.csec.find(x=>x.id===ksid) : {priority_rank:2};
+  const pols = DB.policies.filter(p=>p.country_id===cid);
+  $("#secEdit").innerHTML = `<div class="alignBox">
+    <div class="frow">
+      <div class="field"><label>Sector</label><select id="k_sec" ${ksid?"disabled":""}>${DB.sectors.map(s=>`<option value="${s.id}" ${k.econ_sector_id===s.id?"selected":""}>${esc(s.name)}</option>`).join("")}</select></div>
+      <div class="field"><label>Priority rank (1 = top)</label><select id="k_rank">${[1,2,3,4,5].map(n=>`<option ${n===k.priority_rank?"selected":""}>${n}</option>`).join("")}</select></div>
+      <div class="field"><label>Source policy</label><select id="k_pol"><option value="">–</option>${pols.map(p=>`<option value="${p.id}" ${k.policy_id===p.id?"selected":""}>${esc(polLabel(p))}</option>`).join("")}</select></div>
+    </div>
+    <div class="field"><label>Policy reference (pillar / chapter / paragraph)</label><input id="k_ref" value="${esc(k.policy_reference||"")}"></div>
+    <div class="field"><label>Target / focus</label><input id="k_target" value="${esc(k.target||"")}"></div>
+    <div class="field"><label>MICE angle</label><input id="k_mice" value="${esc(k.mice_angle||"")}" placeholder="What kind of events advance this sector?"></div>
+    <button class="btn sm primary" onclick="saveSector(${cid},${ksid||"null"})">Save key sector</button>
+    ${ksid?` <button class="btn sm danger" onclick="delSector(${ksid},${cid})">Remove</button>`:""}
+    <button class="btn sm ghost" onclick="$('#secEdit').innerHTML=''">Cancel</button></div>`;
+};
+window.saveSector = async (cid, ksid) => {
+  const rec = {country_id:cid, econ_sector_id:+val("k_sec"), priority_rank:+val("k_rank"), policy_id: val("k_pol")? +val("k_pol"):null,
+    policy_reference:nz(val("k_ref")), target:nz(val("k_target")), mice_angle:nz(val("k_mice"))};
+  const r = ksid ? await sb.from("country_sectors").update(rec).eq("id",ksid) : await sb.from("country_sectors").upsert(rec,{onConflict:"country_id,econ_sector_id"});
+  if(r.error) return toast(r.error.message);
+  await reload(true); toast("Key sector saved."); openDest(cid,"Policy & sectors");
+};
+window.delSector = async (ksid,cid) => { const r=await sb.from("country_sectors").delete().eq("id",ksid); if(r.error) return toast(r.error.message); await reload(true); openDest(cid,"Policy & sectors"); };
+
+/* =====================================================================
+   POLICY & SECTORS (library + alignment matrix)
+   ===================================================================== */
+function rPolicies(){
+  const q = state.polQ.toLowerCase().trim();
+  let list = DB.policies.filter(p=>
+    (state.polCountry==="all" || String(p.country_id)===state.polCountry) &&
+    (state.polLevel==="all" || p.level===state.polLevel) &&
+    (state.polSector==="all" || String(p.econ_sector_id)===state.polSector ||
+       (p.level!=="sector_policy" && DB.csec.some(k=>k.policy_id===p.id && String(k.econ_sector_id)===state.polSector))));
+  if(q) list = list.filter(p=>{ const c=DB.cById[p.country_id];
+    const hay = [p.title,p.short_name,p.summary,p.issuing_body,c?.name, secName(p.econ_sector_id),
+      ...DB.csec.filter(k=>k.policy_id===p.id).flatMap(k=>[secName(k.econ_sector_id),k.target,k.policy_reference])].join(" ").toLowerCase();
+    return q.split(/\s+/).every(w=>hay.includes(w)); });
+  const order = {vision:0,national_plan:1,sector_policy:2,strategy:3};
+  list.sort((a,b)=> (DB.cById[a.country_id]?.name||"").localeCompare(DB.cById[b.country_id]?.name||"") || order[a.level]-order[b.level]);
+  const withPol = [...new Set(DB.policies.map(p=>p.country_id))];
+  const selC = state.polCountry!=="all" ? DB.cById[+state.polCountry] : null;
+  // matrix
+  const mCountries = DB.countries.filter(c=>DB.csec.some(k=>k.country_id===c.id)).sort((a,b)=>(b.priority-a.priority)||a.name.localeCompare(b.name));
+  const mSectors = DB.sectors.filter(s=>DB.csec.some(k=>k.econ_sector_id===s.id));
+  const gaps = [];
+  const matrix = mCountries.length? `<div class="tblWrap"><table class="matrix"><thead><tr><th></th>${mSectors.map(s=>`<th class="rot"><div>${esc(s.name)}</div></th>`).join("")}</tr></thead><tbody>
+    ${mCountries.map(c=>`<tr><td class="cn">${flag(c.iso2)} ${esc(c.name)}</td>${mSectors.map(s=>{ const k=DB.csec.find(x=>x.country_id===c.id&&x.econ_sector_id===s.id);
+      if(!k) return "<td></td>"; const m=liveMatchesFor(c.id,s.id); const n=m.opp.length+m.ev.length; if(!n&&k.priority_rank<=2) gaps.push([c,s,k]);
+      return `<td><div class="mcell r${k.priority_rank} ${!n&&k.priority_rank<=2?"gap":""}" onclick="cellDetail(${c.id},${s.id})" title="${esc(c.name)} · ${esc(s.name)} · rank ${k.priority_rank} · ${m.opp.length} live bids, ${m.ev.length} events"><span>${n}</span><small>#${k.priority_rank}</small></div></td>`;}).join("")}</tr>`).join("")}
+  </tbody></table></div>
+  <div class="legend"><span><i style="background:var(--green)"></i>Rank 1 national priority</span><span><i style="background:var(--green2)"></i>Rank 2</span><span><i style="background:#a9c0c2"></i>Rank 3</span><span><i style="background:#d5e0e0"></i>Rank 4–5</span><span><i style="outline:2px dashed var(--red);outline-offset:-2px;background:#fff"></i>Top-priority sector with no live bid or event (scanning gap)</span><span>Number = live bids + events in that sector</span></div>` : `<p class="empty">No key sectors recorded yet.</p>`;
+  $("#mainEl").innerHTML = `
+  <div class="pageHead"><h2>Policy & Sectors</h2><div class="meta">${DB.policies.length} frameworks across ${withPol.length} countries · ${DB.csec.length} key-sector entries · ${DB.aligns.filter(a=>a.status==="confirmed").length} confirmed bid links</div></div>
+  <p class="lede">Each country's national development plan names its priority sectors. The pipeline tags every bid and event by sector, matches them against those priorities, and you confirm the link with the policy it serves. Confirmed links feed each convention bureau's portal.</p>
+  <div class="card">
+    <div class="cardHead"><h3>Sector alignment matrix</h3><span style="font-size:12.5px;color:var(--muted)">Click any cell to see the matching bids and events</span></div>
+    ${matrix}
+    ${gaps.length?`<h5 style="font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:16px 0 6px">Scanning gaps</h5><p style="font-size:13px">${gaps.map(([c,s])=>`${flag(c.iso2)} ${esc(c.name)} · <b>${esc(s.name)}</b>`).join(" · ")}</p><p style="font-size:12.5px;color:var(--muted);margin-top:4px">These are top national priorities with nothing in the pipeline. Add rotating congresses in these sectors to the scan.</p>`:""}
+  </div>
+  <div class="cardHead"><h3 style="font-size:18px">Policy library</h3><button class="btn primary" onclick="pickCountryForPolicy()">+ Add policy framework</button></div>
+  <div class="filters">
+    <input type="search" placeholder="Search policies, sectors, targets… e.g. tourism, NDS2, copper" value="${esc(state.polQ)}" oninput="state.polQ=this.value;rPolicies();this.focus();this.setSelectionRange(this.value.length,this.value.length)">
+    <select onchange="state.polCountry=this.value;rPolicies()"><option value="all">All countries</option>${DB.countries.map(c=>`<option value="${c.id}" ${state.polCountry===String(c.id)?"selected":""}>${esc(c.name)}${withPol.includes(c.id)?"":" (none yet)"}</option>`).join("")}</select>
+    <select onchange="state.polSector=this.value;rPolicies()">${sectorOptions(state.polSector)}</select>
+    <select onchange="state.polLevel=this.value;rPolicies()"><option value="all">All types</option>${Object.entries(LEVELS).map(([k,l])=>`<option value="${k}" ${state.polLevel===k?"selected":""}>${l}</option>`).join("")}</select>
+  </div>
+  ${selC && !withPol.includes(selC.id)?`<div class="card"><b>${flag(selC.iso2)} ${esc(selC.name)}</b> has no policy frameworks recorded yet. <a href="${searchUrl(selC.name)}" target="_blank" rel="noopener">Search for its national development plan ↗</a> then <a href="#" onclick="event.preventDefault();policyForm(${selC.id})">add it here</a>.</div>`:""}
+  <div class="grid cols2">${list.map(p=>polCardHtml(p,0,{admin:true,showCountry:true})).join("") || '<div class="card empty">No policies match.</div>'}</div>
+  <p style="font-size:12.5px;color:var(--muted);margin-top:16px">Countries without a recorded framework: ${DB.countries.filter(c=>!withPol.includes(c.id)).length}. Pick one in the country filter to get a search link.</p>`;
+}
+window.pickCountryForPolicy = () => {
+  if(state.polCountry!=="all") return policyForm(+state.polCountry);
+  showModal(`<div class="mHead"><div><h3>Add policy framework</h3><div class="sub">Choose the country first</div></div><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="mBody"><div class="field"><label>Country</label><select id="pc_c">${DB.countries.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("")}</select></div>
+  <button class="btn primary" onclick="policyForm(+$('#pc_c').value)">Continue</button></div>`);
+};
+window.cellDetail = (cid, sid) => {
+  const c = DB.cById[cid]; const k = DB.csec.find(x=>x.country_id===cid&&x.econ_sector_id===sid); const m = liveMatchesFor(cid,sid);
+  const row = (kind,x) => { const a = DB.aligns.find(al=>al.country_id===cid&&al.status==="confirmed"&&(kind==="opportunity"?al.opportunity_id===x.id:al.event_id===x.id));
+    return `<tr class="rowlink" onclick="${kind==="opportunity"?`openOpp(${x.id},'Sectors & policy fit')`:`openEv(${x.id},'Sectors & policy fit')`}"><td><b>${esc(x.title||x.event_name)}</b></td><td>${kind==="opportunity"?"Bid":"Event"}</td><td style="white-space:nowrap">${kind==="opportunity"?fmtD(x.submission_deadline)+" "+dlChip(x.submission_deadline):esc((x.bid_status||"").replace("_"," "))}</td><td>${a?'<span class="chip ok">linked</span>':'<span class="chip watchlist">suggested</span>'}</td></tr>`; };
+  showModal(`<div class="mHead"><div><h3>${flag(c.iso2)} ${esc(c.name)} · ${esc(secName(sid))}</h3><div class="sub">${k?`Rank ${k.priority_rank} · ${esc(polLabel(DB.pById[k.policy_id]))}${k.policy_reference?" · "+esc(k.policy_reference):""}`:""}</div></div><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="mBody">${k?.target?`<p style="margin-bottom:12px"><b>Policy focus:</b> ${esc(k.target)}</p>`:""}
+  ${(m.opp.length+m.ev.length)? `<div class="tblWrap"><table class="data"><thead><tr><th>Bid / event</th><th>Type</th><th>Deadline / status</th><th></th></tr></thead><tbody>${m.opp.map(x=>row("opportunity",x)).join("")}${m.ev.map(x=>row("event",x)).join("")}</tbody></table></div>` : `<p class="empty">No live bids or events in this sector. It is a scanning gap for ${esc(c.name)}.</p>`}</div>`);
+};
+
+/* =====================================================================
+   BUREAU ACCESS (admin)
+   ===================================================================== */
+function rAccess(){
+  const rows = DB.access.filter(a=>a.role==="bureau");
+  const withSec = DB.countries.filter(c=>DB.csec.some(k=>k.country_id===c.id));
+  $("#mainEl").innerHTML = `
+  <div class="pageHead"><h2>Bureau Access</h2><div class="meta">Client logins for convention bureaux and destination partners</div></div>
+  <p class="lede">Each bureau login is tied to one country. When it signs in, the bureau sees only that country, meaning its policies and key sectors, its visa profile, and the bids and events that match its national priorities, with your confirmed rationale. It never sees other countries' host scores, your suggested-host lists, verification notes or internal-only links.</p>
+  <div class="grid cols2">
+  <div class="card"><h3>Create a bureau login</h3>
+    <div class="field"><label>Country</label><select id="ba_c">${DB.countries.map(c=>`<option value="${c.id}">${esc(c.name)}${DB.csec.some(k=>k.country_id===c.id)?"":" (no key sectors yet)"}</option>`).join("")}</select></div>
+    <div class="field"><label>Organisation</label><input id="ba_org" placeholder="e.g. Zambia Tourism Agency"></div>
+    <div class="frow"><div class="field"><label>Contact name</label><input id="ba_name"></div>
+    <div class="field"><label>Login email</label><input type="email" id="ba_email"></div></div>
+    <button class="btn primary" id="ba_btn" onclick="createBureau()">Create login</button>
+    <div id="ba_out"></div>
+  </div>
+  <div class="card"><h3>Preview a bureau's view</h3>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px">See exactly what a country's bureau will see before you invite them.</p>
+    <div class="field"><label>Country</label><select id="pv_c">${withSec.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("")}</select></div>
+    <button class="btn ghost" onclick="startPreview(+$('#pv_c').value)">Preview portal</button>
+  </div>
+  </div>
+  <div class="card tblWrap"><h3>Bureau logins</h3>
+  ${rows.length? `<table class="data"><thead><tr><th>Organisation</th><th>Country</th><th>Login</th><th>Status</th><th>Last seen</th><th></th></tr></thead><tbody>
+  ${rows.map(a=>{ const c=DB.cById[a.country_id]; return `<tr><td><b>${esc(a.org_name||"–")}</b><br><span style="font-size:12px;color:var(--muted)">${esc(a.contact_name||"")}</span></td><td>${flag(c?.iso2)} ${esc(c?.name)}</td><td>${esc(a.email)}</td>
+    <td>${a.active?'<span class="chip ok">active</span>':'<span class="chip closed">disabled</span>'}</td><td style="font-size:12.5px">${a.last_seen_at?new Date(a.last_seen_at).toLocaleString("en-GB",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}):"never"}</td>
+    <td style="white-space:nowrap"><button class="btn sm ghost" onclick="bureauAct('reset_password','${a.user_id}')">Reset password</button> <button class="btn sm ${a.active?"danger":"ghost"}" onclick="bureauAct('set_active','${a.user_id}',${!a.active})">${a.active?"Disable":"Enable"}</button></td></tr>`;}).join("")}
+  </tbody></table>` : `<p class="empty">No bureau logins yet.</p>`}
+  <div id="ba_out2"></div></div>`;
+}
+async function callBureauAdmin(payload){
+  const {data:{session}} = await sb.auth.getSession();
+  const r = await fetch(SUPABASE_URL+"/functions/v1/bureau-admin",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token,"apikey":SUPABASE_KEY},body:JSON.stringify(payload)});
+  const j = await r.json().catch(()=>({error:"Unexpected response ("+r.status+")"}));
+  if(!r.ok || j.error) throw new Error(j.error||("HTTP "+r.status));
+  return j;
+}
+const pwHtml = (j,c) => `<div class="pwBox"><b>Login ready.</b> Send these to the bureau over a channel you trust; the password is shown only once.<br><br>
+  Portal: <a href="${location.origin+location.pathname}" target="_blank">${esc(location.origin+location.pathname)}</a><br>Email: <b>${esc(j.email)}</b><br>Temporary password: <code>${esc(j.temp_password)}</code><br><br>
+  They can change it under their email menu → Change password.${c?`<br><br><a href="mailto:${esc(j.email)}?subject=${encodeURIComponent((c.name||"")+" bid intelligence portal")}&body=${encodeURIComponent("Dear colleague,\n\nYour login to the Africa MICE bid intelligence portal is ready. It shows the international congresses and calls for bids that align with "+c.name+"'s national development priorities.\n\nPortal: "+location.origin+location.pathname+"\nEmail: "+j.email+"\n\nI will share your temporary password separately.\n\nKind regards,\nFarirai Nandipa")}">Draft the welcome email (without the password) ↗</a>`:""}</div>`;
+window.createBureau = async () => {
+  const email=val("ba_email"), cid=+val("ba_c");
+  if(!email) return toast("Enter the login email.");
+  $("#ba_btn").disabled=true; $("#ba_btn").textContent="Creating…";
+  try{
+    const j = await callBureauAdmin({action:"create", email, country_id:cid, org_name:nz(val("ba_org")), contact_name:nz(val("ba_name"))});
+    await loadData(); $("#ba_out").innerHTML = pwHtml(j, DB.cById[cid]);
+  }catch(e){ toast(e.message); $("#ba_btn").disabled=false; $("#ba_btn").textContent="Create login"; }
+};
+window.bureauAct = async (action, uid, active) => {
+  try{
+    const j = await callBureauAdmin({action, user_id:uid, active});
+    await loadData();
+    if(action==="reset_password") $("#ba_out2").innerHTML = pwHtml(j);
+    else toast(active?"Login enabled.":"Login disabled.");
+  }catch(e){ toast(e.message); }
+};
+window.startPreview = async cid => {
+  $("#mainEl").innerHTML = `<div class="loadWrap"><div class="spin"></div>Loading preview…</div>`;
+  const {data,error} = await sb.rpc("bureau_portal_preview",{cid});
+  if(error){ toast(error.message); MODE="admin"; VIEW="access"; buildNav(); return render(); }
+  PORTAL = data; MODE="preview"; VIEW="b_home"; buildNav(); render();
+};
+window.exitPreview = () => { MODE="admin"; VIEW="access"; PORTAL=null; buildNav(); render(); };
+
+/* =====================================================================
+   BUREAU PORTAL (client view)
+   ===================================================================== */
+async function loadPortal(){
+  const {data,error} = await sb.rpc("bureau_portal");
+  if(error || data?.error){ $("#mainEl").innerHTML = `<div class="card"><h3>Could not load your portal</h3><p>${esc(error?.message||data.error)}</p></div>`; return; }
+  PORTAL = data; buildNav(); render();
+  $("#footEl").textContent = "Prepared for "+(PORTAL.org?.org_name||PORTAL.country.name)+" by Farirai Nandipa MICE Agency · Confidential · Bid data is checked against official sources; items marked “estimate” are pending verification";
+}
+const P = () => PORTAL;
+function interestLink(title){
+  const c=P().country.name;
+  return `mailto:${AGENCY_EMAIL}?subject=${encodeURIComponent(c+" interest: "+title)}&body=${encodeURIComponent("Hello Farirai,\n\nWe would like to explore a bid for "+title+" for "+c+". Please advise on next steps, timeline and support required.\n\nRegards,\n"+(P().org?.contact_name||"")+"\n"+(P().org?.org_name||""))}`;
+}
+function whyHtml(x){
+  if(x.alignments?.length) return x.alignments.map(a=>`<div class="why"><b>${esc(a.policy_short||a.policy||"National policy")}${a.sector?" · "+esc(a.sector):""}</b><br>${esc(a.rationale||"")}</div>`).join("");
+  if(x.sectors?.length) return `<div class="why"><b>Fits your priority sector${x.sectors.length>1?"s":""}</b> ${x.sectors.map(esc).join(", ")}${x.policies?.length?` <span style="color:var(--muted)">(${x.policies.map(esc).join(", ")})</span>`:""}</div>`;
+  return "";
+}
+function bidCard(b){
+  return `<div class="evCard">
+    <div class="chips"><span class="chip ${b.status}">${b.status==="open"?"open call":"watchlist"}</span>${b.submission_deadline?dlChip(b.submission_deadline):""}${b.sectors.map(s=>`<span class="chip sec">${esc(s)}</span>`).join("")}</div>
+    <h4>${esc(b.title)}</h4>
+    <div class="org">${esc(b.issuing_body||"")}${b.event_type?" · "+esc(b.event_type):""}</div>
+    ${whyHtml(b)}
+    ${b.summary?`<div style="font-size:12.8px">${esc(b.summary)}</div>`:""}
+    <dl class="kv" style="grid-template-columns:130px 1fr;font-size:12.8px">
+      <dt>Deadline</dt><dd>${fmtD(b.submission_deadline)}</dd>
+      ${b.host_year?`<dt>Host year</dt><dd>${esc(b.host_year)}</dd>`:""}
+      ${b.eligibility?`<dt>Who can bid</dt><dd>${esc(b.eligibility)}</dd>`:""}
+      ${b.required_documents?`<dt>Required</dt><dd>${esc(b.required_documents)}</dd>`:""}
+    </dl>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:auto">
+      ${b.source_url?`<a class="btn sm ghost" href="${esc(b.source_url)}" target="_blank" rel="noopener">Official call ↗</a>`:""}
+      <a class="btn sm primary" href="${interestLink(b.title)}">Express interest</a>
+    </div></div>`;
+}
+function evCardB(e){
+  return `<div class="evCard">
+    <div class="chips"><span class="chip ${SCOPE_CLS[e.scope]||"sector"}">${esc(e.scope||"")}</span>${e.edition_year?`<span class="chip sector">${e.edition_year}</span>`:""}${e.sectors.map(s=>`<span class="chip sec">${esc(s)}</span>`).join("")}</div>
+    <h4>${esc(e.name)}</h4>
+    <div class="org">${esc(e.organiser||"")}${e.attendance?` · ~${Number(e.attendance).toLocaleString()} delegates`:""}</div>
+    ${whyHtml(e)}
+    ${e.host_fit!=null?`<div class="fitRow"><span class="nm" style="width:auto">Host-fit score for ${esc(P().country.name)}</span><span class="bar"><i style="width:${(e.host_fit/5)*100}%"></i></span><span class="sc">${Number(e.host_fit).toFixed(1)}</span></div>`:""}
+    ${e.rotation?`<div style="font-size:12.5px;color:var(--muted)"><b>Rotation:</b> ${esc(e.rotation)}</div>`:""}
+    ${e.host_requirements?`<div style="font-size:12.5px;color:var(--muted)"><b>Host needs:</b> ${esc(e.host_requirements)}</div>`:""}
+    ${e.next_edition?`<div style="font-size:12.5px;color:var(--muted)"><b>Next open edition:</b> ${esc(e.next_edition)}</div>`:""}
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:auto">
+      ${e.source_url?`<a class="btn sm ghost" href="${esc(e.source_url)}" target="_blank" rel="noopener">Event site ↗</a>`:""}
+      <a class="btn sm primary" href="${interestLink(e.name)}">Express interest</a>
+    </div></div>`;
+}
+function bHome(){
+  const p=P(), c=p.country;
+  const open = p.bids.filter(b=>b.status==="open");
+  const next = open.filter(b=>b.submission_deadline).sort((a,b)=>a.submission_deadline.localeCompare(b.submission_deadline))[0];
+  const top = p.sectors.filter(s=>s.rank<=2);
+  const plan = p.policies.find(x=>x.level==="national_plan"&&x.status==="in_force") || p.policies.find(x=>x.level==="national_plan");
+  $("#mainEl").innerHTML = `
+  <div class="pageHead"><h2>${flag(c.iso2)} ${esc(c.name)}: bids aligned to your national priorities</h2><div class="meta">${esc(p.org?.org_name||"")} · updated ${new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})}</div></div>
+  <p class="lede">These international congresses and calls for bids match the priority sectors in ${plan?esc(plan.title):"your national development plan"}. Each one shows why it fits, so you can take the case to ministries and industry partners.</p>
+  <div class="kpis">
+    <div class="kpi"><div class="n">${open.length}</div><div class="l">Open calls for bids aligned to ${esc(c.name)}</div></div>
+    <div class="kpi"><div class="n">${p.bids.length-open.length}</div><div class="l">On watch (call expected)</div></div>
+    <div class="kpi"><div class="n">${p.events.length}</div><div class="l">Rotating events to target</div></div>
+    <div class="kpi gold"><div class="n">${p.sectors.length}</div><div class="l">Priority sectors tracked</div></div>
+    <div class="kpi"><div class="n" style="font-size:20px;padding-top:8px">${next?fmtD(next.submission_deadline):"–"}</div><div class="l">Next deadline${next?" · "+esc(next.title.slice(0,40))+(next.title.length>40?"…":""):""}</div></div>
+  </div>
+  <div class="card"><div class="cardHead"><h3>Top matches</h3><a href="#" onclick="event.preventDefault();goTab('b_bids')">All bids ›</a></div>
+    <div class="grid cols2">${[...p.bids].slice(0,4).map(bidCard).join("") || '<p class="empty">No live calls match your priority sectors right now. New calls are added as they open.</p>'}</div></div>
+  <div class="card"><div class="cardHead"><h3>Your top-priority sectors</h3><a href="#" onclick="event.preventDefault();goTab('b_policy')">Policy detail ›</a></div>
+    <div class="chips">${top.map(s=>`<span class="chip sec pri">${rankDot(s.rank)} ${esc(s.sector)} · ${s.n_items} match${s.n_items===1?"":"es"}</span>`).join("") || '<span class="empty">Not yet recorded.</span>'}</div></div>`;
+}
+window.goTab = v => { VIEW=v; document.querySelectorAll("#navTabs button").forEach(x=>x.classList.toggle("active",x.dataset.v===v)); render(); };
+function bBids(){
+  const p=P(); const secs=[...new Set(p.bids.flatMap(b=>b.sectors))].sort();
+  const list = p.bids.filter(b=>state.bSector==="all"||b.sectors.includes(state.bSector));
+  $("#mainEl").innerHTML = `
+  <div class="pageHead"><h2>Calls for bids for ${esc(p.country.name)}</h2><div class="meta">${p.bids.length} live opportunities, ranked by fit with your priority sectors</div></div>
+  <div class="filters"><select onchange="state.bSector=this.value;bBids()"><option value="all">All your sectors</option>${secs.map(s=>`<option ${state.bSector===s?"selected":""}>${esc(s)}</option>`).join("")}</select></div>
+  <div class="grid cols2">${list.map(bidCard).join("") || '<div class="card empty">No matching calls right now.</div>'}</div>`;
+}
+function bEvents(){
+  const p=P();
+  $("#mainEl").innerHTML = `
+  <div class="pageHead"><h2>Strategic rotating events</h2><div class="meta">${p.events.length} events whose sectors match ${esc(p.country.name)}'s priorities</div></div>
+  <p class="lede">These events rotate around the continent or the world. Most open their host selection one to three years ahead, so position early.</p>
+  <div class="grid cols2">${p.events.map(evCardB).join("") || '<div class="card empty">No matching events yet.</div>'}</div>`;
+}
+function bPolicy(){
+  const p=P(), c=p.country;
+  const tree = (()=>{ const list=p.policies; const roots=list.filter(x=>!x.parent_id||!list.some(q=>q.id===x.parent_id)); const out=[]; const walk=(x,d)=>{out.push([x,d]); list.filter(q=>q.parent_id===x.id).forEach(q=>walk(q,d+1));}; roots.forEach(x=>walk(x,0)); return out; })();
+  $("#mainEl").innerHTML = `
+  <div class="pageHead"><h2>${esc(c.name)}: policy & priority sectors</h2><div class="meta">The national frameworks used to match bids to your economy</div></div>
+  <div class="card tblWrap"><h3>Priority sectors</h3>
+  ${p.sectors.length? `<table class="data"><thead><tr><th>#</th><th>Sector</th><th>Policy source</th><th>Focus</th><th>Event angle</th><th>Matches</th></tr></thead><tbody>
+  ${p.sectors.map(s=>`<tr><td>${rankDot(s.rank)}</td><td><b>${esc(s.sector)}</b></td><td style="font-size:12.5px">${esc(s.policy_short||s.policy||"–")}${s.reference?`<br><span style="color:var(--muted)">${esc(s.reference)}</span>`:""}</td><td style="font-size:12.5px">${esc(s.target||"–")}</td><td style="font-size:12.5px">${esc(s.mice_angle||"–")}</td><td>${s.n_items}</td></tr>`).join("")}
+  </tbody></table>` : `<p class="empty">Priority sectors for ${esc(c.name)} have not been recorded yet.</p>`}
+  <p style="font-size:12px;color:var(--muted);margin-top:10px">Spotted a change in national priorities? Tell us at ${AGENCY_EMAIL} and we will update the matching.</p></div>
+  <h3 style="font-size:18px;margin:6px 0 12px">Policy frameworks</h3>
+  <div class="grid" style="gap:10px">${tree.map(([x,d])=>polCardHtml(x,d,{})).join("") || '<div class="card empty">No frameworks recorded yet.</div>'}</div>`;
+}
+function bVisa(){
+  const c=P().country;
+  $("#mainEl").innerHTML = `
+  <div class="pageHead"><h2>Visa & delegate access</h2><div class="meta">How organisers will read ${esc(c.name)}'s entry regime</div></div>
+  <div class="card">${visaBlock(c)}</div>
+  ${c.transport_summary?`<div class="card"><h3>Transport network</h3><p>${esc(c.transport_summary)}</p></div>`:""}
+  <p style="font-size:12px;color:var(--muted)">Visa rules change often. Confirm with the immigration authority before quoting in a bid document.</p>`;
+}
+
+/* =====================================================================
+   MODAL PLUMBING
+   ===================================================================== */
+function showModal(html){ $("#modalEl").innerHTML=html; $("#modalBack").classList.remove("hidden"); document.body.style.overflow="hidden"; }
+function showTabbedModal(headHtml, tabs, body, tab){
+  const t0 = tabs.includes(tab)? tab : tabs[0];
+  showModal(`<div class="mHead">${headHtml}<button class="x" onclick="closeModal()">✕</button></div>
+    <div class="mTabs" id="mTabs">${tabs.map(t=>`<button class="${t===t0?"active":""}" data-t="${esc(t)}">${esc(t)}</button>`).join("")}</div>
+    <div class="mBody" id="mTabBody">${body(t0)}</div>`);
   $("#mTabs").addEventListener("click",e=>{
     const b=e.target.closest("button"); if(!b) return;
     document.querySelectorAll("#mTabs button").forEach(x=>x.classList.toggle("active",x===b));
     $("#mTabBody").innerHTML = body(b.dataset.t);
   });
-};
-
-/* ---------- modal plumbing ---------- */
-function showModal(html){ $("#modalEl").innerHTML=html; $("#modalBack").classList.remove("hidden"); document.body.style.overflow="hidden"; }
+}
 window.closeModal = ()=>{ $("#modalBack").classList.add("hidden"); document.body.style.overflow=""; };
 $("#modalBack").addEventListener("click",e=>{ if(e.target.id==="modalBack") closeModal(); });
 document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeModal(); });

@@ -70,7 +70,18 @@ RLS is enabled on every table. Current policy shape:
   Contact page submits the enquiry/consultation form. Only `authenticated`
   can read, update, or delete submissions.
 
-There is currently **no sign-in flow in the app**, so nothing actually holds
+**Update Oct 2026:** the same Supabase project also backs the Africa MICE Bid
+Pipeline (`public/pipeline/index.html`, served at `/pipeline`). It has sign-in,
+including client logins for convention bureaux (`user_access`, role `bureau`).
+Because of that, every `authenticated` write/read policy on the website tables
+above is now scoped to `public.is_allowlisted()` (admins in `allowlist`), not
+to any signed-in user. Keep it that way: never reopen these policies to plain
+`authenticated`, or bureau accounts could edit the website. Pipeline tables
+(countries, bid_opportunities, events, policy_frameworks, country_sectors,
+bid_alignments, etc.) are admin-only via RLS; bureaux read their own country
+only through the `bureau_portal()` RPC.
+
+Historically there was **no sign-in flow in the app**, so nothing actually held
 the `authenticated` role today — writes to `articles`/`services`/`service_items`
 and reads/updates on `contact_submissions` can only happen via the Supabase
 dashboard, the `service_role` key, or a future admin login. If an admin UI or
