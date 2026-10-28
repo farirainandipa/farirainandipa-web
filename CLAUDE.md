@@ -30,8 +30,8 @@ npm run typecheck      # tsc --noEmit
 
 ## Structure
 
-- `src/pages/` — one component per route (Home, About, Services, Packages,
-  Insights, ArticleDetail, Contact)
+- `src/pages/` — one component per route (Home, About, Services, Destinations,
+  DestinationPage, Insights, ArticleDetail, Contact)
 - `src/components/` — shared layout pieces (Header, Footer, Layout, ScrollFade)
 - `src/lib/supabase.ts` — Supabase client + row types (`Article`, `Service`,
   `ServiceItem`, `ContactSubmission`)
