@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { destinationTemplate, guide, type Destination } from '../../data/destinations';
+import { guide } from '../../data/destinations';
 
 // Shared building blocks for the /destinations hub and destination pages.
 
@@ -95,17 +95,6 @@ export function PhotoSlot({
     </div>
   );
 }
-
-// Only destinations with an inspection still to come carry a badge (dashed).
-export function StatusBadge({ destination }: { destination: Destination }) {
-  if (destination.status !== 'scheduled') return null;
-  return (
-    <span className="inline-flex items-center font-['Inter'] text-xs font-semibold text-navy bg-white border border-dashed border-navy px-2.5 py-1.5 rounded">
-      {destinationTemplate.scheduledBadge}
-    </span>
-  );
-}
-
 
 // Shown in place of a form after a successful submit.
 export function GuideConfirmation({ title, body, onNavy = false }: { title: string; body?: string; onNavy?: boolean }) {

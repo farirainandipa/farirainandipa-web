@@ -8,7 +8,6 @@
 // striped placeholder box describing the intended shot.
 
 export type EventType = 'association' | 'corporate' | 'incentive' | 'government';
-export type InspectionStatus = 'inspected' | 'scheduled';
 
 export interface Fact { label: string; value: string }
 export interface Reason { title: string; body: string }
@@ -28,7 +27,6 @@ export interface Destination {
   slug: string;
   name: string;
   cities: string;
-  status: InspectionStatus;
   eventTypes: EventType[];
   bestFor: string;          // one line, used on hub cards
   headline: string;         // italic line under the H1; also the meta description
@@ -71,7 +69,6 @@ export const destinations: Destination[] = [
     slug: 'kenya',
     name: 'Kenya',
     cities: 'Nairobi · Mombasa · Maasai Mara',
-    status: 'inspected',
     eventTypes: ['government', 'association', 'corporate'],
     bestFor: 'Regional summits, UN and NGO-linked meetings, East African association events.',
     headline: 'Where East Africa meets, negotiates and does business.',
@@ -128,14 +125,13 @@ export const destinations: Destination[] = [
     slug: 'rwanda',
     name: 'Rwanda',
     cities: 'Kigali · Musanze',
-    status: 'scheduled',
     eventTypes: ['association', 'government'],
     bestFor: 'Association congresses and high-profile summits that must run like clockwork.',
     headline: 'A congress city built to run like clockwork.',
     intro: 'Kigali has made hosting part of its national brand. It is compact, safe and well organised. Associations choose it when the event cannot afford to go wrong.',
     photos: {
-      hero: '[Photo: Kigali, partner-supplied until the inspection]',
-      card: '[Photo: Kigali, partner-supplied until the inspection]',
+      hero: '[Photo: Kigali, partner-supplied]',
+      card: '[Photo: Kigali, partner-supplied]',
     },
     facts: [
       { label: 'Main airport', value: 'Kigali International (KGL)' },
@@ -185,7 +181,6 @@ export const destinations: Destination[] = [
     slug: 'south-africa',
     name: 'South Africa',
     cities: 'Cape Town · Durban · Johannesburg',
-    status: 'inspected',
     eventTypes: ['association', 'corporate', 'incentive'],
     bestFor: 'Large congresses, exhibitions and incentive travel at scale.',
     headline: 'The continent’s most complete meetings infrastructure.',
@@ -242,7 +237,6 @@ export const destinations: Destination[] = [
     slug: 'zambia',
     name: 'Zambia',
     cities: 'Lusaka · Livingstone',
-    status: 'inspected',
     eventTypes: ['corporate', 'incentive'],
     bestFor: 'Regional corporate meetings and value-led incentives on the Zambezi.',
     headline: 'Value, warmth and the Falls from the Zambian side.',
@@ -299,7 +293,6 @@ export const destinations: Destination[] = [
     slug: 'zimbabwe',
     name: 'Zimbabwe',
     cities: 'Harare · Victoria Falls · Hwange',
-    status: 'inspected',
     eventTypes: ['incentive', 'corporate'],
     bestFor: 'Boutique conferences, leadership retreats and incentives at the Falls.',
     headline: 'Boutique conferences and retreats at a wonder of the world.',
@@ -360,7 +353,7 @@ export const getDestination = (slug: string) => destinations.find((d) => d.slug 
 
 export const hub = {
   eyebrow: 'MICE Destination Portfolio · 2027',
-  title: 'Five African destinations. Inspected on the ground. Matched to your event.',
+  title: 'Five African destinations. Matched to your event.',
   intro: 'Most destination decisions in Africa are made from brochures. That is how congresses end up in the wrong city. I have walked the venues, timed the transfers and met the bureaux. Tell me about your event. I will tell you where it belongs.',
   primaryCta: 'Get the 2027 Destination Guide',
   secondaryCta: 'Compare destinations',
@@ -379,7 +372,7 @@ export const hub = {
   compare: {
     eyebrow: 'Side by side',
     title: 'The comparison planners ask me for.',
-    body: 'Capacities come from my inspections and venue confirmations.',
+    body: 'Capacities come from venue confirmations.',
   },
   combos: {
     eyebrow: 'Signature combinations',
@@ -392,7 +385,7 @@ export const hub = {
     featuredTag: 'Most requested',
   },
   stats: [
-    { value: '4 + 1', label: 'Destinations inspected, Rwanda scheduled' },
+    { value: '5', label: 'African destinations' },
     { value: 'Since 2009', label: 'In business events' },
     { value: 'CEM · CEPA', label: 'Certified exhibition and event professional' },
     { value: 'Pan-African', label: 'From bid development to execution' },
@@ -444,7 +437,6 @@ export const guide = {
 
 export const destinationTemplate = {
   breadcrumbRoot: 'Destinations',
-  scheduledBadge: 'Inspection planned',
   briefCta: (name: string) => `Request the ${name} Destination Brief`,
   whyEyebrow: (name: string) => `Why ${name}`,
   whyTitle: 'Three reasons it wins the shortlist.',

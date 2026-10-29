@@ -13,7 +13,6 @@ import {
   GuideConfirmation,
   PhotoSlot,
   SectionHeading,
-  StatusBadge,
   btnOnNavy,
   btnPrimary,
   btnSecondary,
@@ -131,12 +130,7 @@ export default function Destinations() {
                   to={`/destinations/${d.slug}`}
                   className="group flex flex-col w-full bg-white border border-gray-200 rounded-md overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.05)] hover:shadow-md transition-shadow duration-200 focus-visible:outline-navy"
                 >
-                  <div className="relative">
-                    <PhotoSlot photo={d.photos.card} alt={`${d.name} site visit`} className="h-[210px]" square />
-                    <span className="absolute top-3.5 left-3.5">
-                      <StatusBadge destination={d} />
-                    </span>
-                  </div>
+                  <PhotoSlot photo={d.photos.card} alt={d.name} className="h-[210px]" square />
                   <div className="px-6 pt-[22px] pb-[26px] flex flex-col gap-2.5 flex-grow">
                     <span className="text-xs font-semibold uppercase tracking-[0.1em] text-ink-muted">{d.cities}</span>
                     <h3 className="font-['Cormorant_Garamond'] font-semibold text-[34px] leading-none text-navy">{d.name}</h3>

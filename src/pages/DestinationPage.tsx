@@ -8,7 +8,6 @@ import {
   GuideConfirmation,
   PhotoSlot,
   SectionHeading,
-  StatusBadge,
   btnOnNavy,
   btnPrimary,
   container,
@@ -27,7 +26,7 @@ export default function DestinationPage() {
       <div className="min-h-[60vh] flex items-center justify-center px-4">
         <Seo
           title="Destination Not Found | Farirai Nandipa Events"
-          description="The destination you're looking for isn't in the portfolio. Browse the African MICE destinations Farirai Nandipa Events has inspected."
+          description="The destination you're looking for isn't in the portfolio. Browse the African MICE destinations Farirai Nandipa Events works in."
           path={`/destinations/${slug}`}
         />
         <div className="text-center">
@@ -77,10 +76,7 @@ export default function DestinationPage() {
           </nav>
           <div className="flex flex-wrap gap-14 items-center">
             <div className="flex-[1_1_520px] min-w-0 flex flex-col gap-5">
-              <div className="flex flex-wrap gap-3 items-center">
-                <StatusBadge destination={d} />
-                <span className="text-[13px] font-semibold uppercase tracking-[0.12em] text-ink-muted">{d.cities}</span>
-              </div>
+              <span className="text-[13px] font-semibold uppercase tracking-[0.12em] text-ink-muted">{d.cities}</span>
               <h1 className="font-['Cormorant_Garamond'] font-semibold text-[clamp(52px,6.5vw,92px)] leading-[0.95] text-navy">
                 {d.name}
               </h1>
