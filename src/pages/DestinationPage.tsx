@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { AlertCircle, AlertTriangle, ArrowLeft, Check } from 'lucide-react';
+import { AlertCircle, ArrowLeft } from 'lucide-react';
 import Seo from '../components/Seo';
 import { destinationTemplate as t, getDestination, type Destination } from '../data/destinations';
 import {
@@ -11,7 +11,6 @@ import {
   StatusBadge,
   btnOnNavy,
   btnPrimary,
-  btnSecondary,
   container,
   inputOnNavyClass,
 } from '../components/destinations/shared';
@@ -91,7 +90,6 @@ export default function DestinationPage() {
               <p className="text-lg leading-[1.7] max-w-[600px]">{d.intro}</p>
               <div className="flex flex-wrap gap-3 mt-1.5">
                 <a href="#brief" className={btnPrimary}>{t.briefCta(d.name)}</a>
-                <a href="#notes" className={btnSecondary}>{t.notesCta}</a>
               </div>
             </div>
             <PhotoSlot
@@ -131,31 +129,6 @@ export default function DestinationPage() {
               <p className="text-base leading-[1.7]">{w.body}</p>
             </article>
           ))}
-        </div>
-      </section>
-
-      {/* Site-visit notes */}
-      <section id="notes" aria-labelledby="notes-h" className={`bg-mint-light ${anchorOffset}`}>
-        <div className={`${container} py-20 lg:py-[88px] flex flex-wrap gap-12`}>
-          <div className="flex-[1_1_340px] min-w-0 flex flex-col gap-4">
-            <SectionHeading id="notes-h" eyebrow={t.notesEyebrow} title={t.notesTitle} />
-            <p className="text-base leading-[1.7]">{d.visitLine}</p>
-            <div className="bg-white rounded-md p-[22px] flex flex-col gap-2.5">
-              <span className="text-xs font-semibold uppercase tracking-[0.1em] text-ink-muted">{t.inspectedLabel}</span>
-              <ul className="flex flex-col gap-2">
-                {d.inspected.map((i) => (
-                  <li key={i} className="text-[15px] leading-normal pb-2 border-b border-gray-200 last:border-b-0 last:pb-0 text-navy">
-                    {i}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <PhotoSlot photo={d.photos.notes} alt={`Behind the scenes on the ${d.name} site visit`} tone="deep" className="h-[200px]" />
-          </div>
-          <div className="flex-[1.4_1_520px] min-w-0 grid grid-cols-[repeat(auto-fit,minmax(min(260px,100%),1fr))] gap-5 content-start">
-            <NotesCard title={t.impressedTitle} icon="check" items={d.impressed} />
-            <NotesCard title={t.watchOutsTitle} icon="warn" items={d.watchOuts} />
-          </div>
         </div>
       </section>
 
@@ -285,21 +258,6 @@ export default function DestinationPage() {
           <BriefForm destination={d} />
         </div>
       </section>
-    </div>
-  );
-}
-
-function NotesCard({ title, icon, items }: { title: string; icon: 'check' | 'warn'; items: string[] }) {
-  const Icon = icon === 'check' ? Check : AlertTriangle;
-  return (
-    <div className="bg-white rounded-md p-7 flex flex-col gap-3.5">
-      <h3 className="flex items-center gap-2.5 font-['Cormorant_Garamond'] font-semibold text-[26px] text-navy">
-        <Icon className="w-[22px] h-[22px]" strokeWidth={2} aria-hidden="true" />
-        {title}
-      </h3>
-      {items.map((x) => (
-        <p key={x} className="text-base leading-[1.7]">{x}</p>
-      ))}
     </div>
   );
 }

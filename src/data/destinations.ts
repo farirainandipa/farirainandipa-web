@@ -29,18 +29,13 @@ export interface Destination {
   name: string;
   cities: string;
   status: InspectionStatus;
-  statusDate: string;
   eventTypes: EventType[];
   bestFor: string;          // one line, used on hub cards
   headline: string;         // italic line under the H1; also the meta description
   intro: string;
-  photos: { hero: string; card: string; notes: string };
+  photos: { hero: string; card: string };
   facts: Fact[];
   why: Reason[];
-  visitLine: string;
-  inspected: string[];
-  impressed: string[];
-  watchOuts: string[];
   venues: Venue[];
   access: { flights: string; entry: string; transfers: string };
   experiences: Experience[];
@@ -77,7 +72,6 @@ export const destinations: Destination[] = [
     name: 'Kenya',
     cities: 'Nairobi · Mombasa · Maasai Mara',
     status: 'inspected',
-    statusDate: '[MON YYYY]',
     eventTypes: ['government', 'association', 'corporate'],
     bestFor: 'Regional summits, UN and NGO-linked meetings, East African association events.',
     headline: 'Where East Africa meets, negotiates and does business.',
@@ -85,7 +79,6 @@ export const destinations: Destination[] = [
     photos: {
       hero: '[Photo: KICC or a Nairobi venue from the site visit]',
       card: '[Photo: Nairobi site visit]',
-      notes: '[Photo: back-of-house, loading bay or registration area]',
     },
     facts: [
       { label: 'Main airport', value: 'Nairobi JKIA (NBO)' },
@@ -97,16 +90,6 @@ export const destinations: Destination[] = [
       { title: 'A regional diplomatic hub', body: 'UN offices at Gigiri and many regional headquarters. Some of your delegates may already be based here.' },
       { title: 'Connectivity', body: 'JKIA links East Africa to the rest of the continent, Europe, the Gulf and Asia.' },
       { title: 'Add-ons that sell', body: 'The Maasai Mara and the coast turn a working week into a reason to attend.' },
-    ],
-    visitLine: 'Visited [MONTH YEAR]. [X] venues and [X] hotels inspected across Nairobi and [Mombasa].',
-    inspected: ['Kenyatta International Convention Centre', '[Hotel conference venue, Nairobi]', '[Second venue or hotel]'],
-    impressed: [
-      'Supplier depth. AV, production and DMC options at every budget level.',
-      'Delegate familiarity. Many international participants already know the city.',
-    ],
-    watchOuts: [
-      'Traffic. Airport and cross-city transfers need buffer time built into every run-of-show.',
-      'Peak dates. Large UN-linked meetings compress hotel availability, so block rooms early.',
     ],
     venues: [
       venue('Kenyatta International Convention Centre', 'Nairobi', 'Convention centre'),
@@ -146,7 +129,6 @@ export const destinations: Destination[] = [
     name: 'Rwanda',
     cities: 'Kigali · Musanze',
     status: 'scheduled',
-    statusDate: '[MON 2027]',
     eventTypes: ['association', 'government'],
     bestFor: 'Association congresses and high-profile summits that must run like clockwork.',
     headline: 'A congress city built to run like clockwork.',
@@ -154,7 +136,6 @@ export const destinations: Destination[] = [
     photos: {
       hero: '[Photo: Kigali, partner-supplied until the inspection]',
       card: '[Photo: Kigali, partner-supplied until the inspection]',
-      notes: '[Photo: to follow after the inspection]',
     },
     facts: [
       { label: 'Main airport', value: 'Kigali International (KGL)' },
@@ -167,10 +148,6 @@ export const destinations: Destination[] = [
       { title: 'A bureau that backs bids', body: 'The Rwanda Convention Bureau supports associations from bid stage to delivery.' },
       { title: 'A post-tour unlike any other', body: 'Gorilla trekking in Volcanoes National Park, a short drive from the capital.' },
     ],
-    visitLine: 'Inspection planned for [MONTH 2027]. My full field notes publish after the visit.',
-    inspected: ['Kigali Convention Centre (planned)', 'Intare Conference Arena (planned)', '[Hotel block options] (planned)'],
-    impressed: ['[To follow after the inspection.]'],
-    watchOuts: ['Room stock. For very large congresses, hotel blocks need securing early. [Confirm on site.]'],
     venues: [
       venue('Kigali Convention Centre', 'Kigali', 'Convention centre'),
       venue('Intare Conference Arena', 'Kigali', 'Conference arena'),
@@ -209,7 +186,6 @@ export const destinations: Destination[] = [
     name: 'South Africa',
     cities: 'Cape Town · Durban · Johannesburg',
     status: 'inspected',
-    statusDate: '[MON YYYY]',
     eventTypes: ['association', 'corporate', 'incentive'],
     bestFor: 'Large congresses, exhibitions and incentive travel at scale.',
     headline: 'The continent’s most complete meetings infrastructure.',
@@ -217,7 +193,6 @@ export const destinations: Destination[] = [
     photos: {
       hero: '[Photo: CTICC or another venue from the site visit]',
       card: '[Photo: Cape Town site visit]',
-      notes: '[Photo: back-of-house, loading bay or registration area]',
     },
     facts: [
       { label: 'Main airports', value: 'Johannesburg (JNB), Cape Town (CPT), Durban (DUR)' },
@@ -229,13 +204,6 @@ export const destinations: Destination[] = [
       { title: 'Three convention cities', body: 'Cape Town, Durban and Johannesburg each offer a purpose-built centre with surrounding hotel stock.' },
       { title: 'Scale and supply', body: 'Experienced PCOs, DMCs and production companies for events in the thousands.' },
       { title: 'Incentives that close', body: 'Winelands, Big Five safaris and the Garden Route within easy reach.' },
-    ],
-    visitLine: 'Visited [MONTH YEAR]. [X] venues and [X] hotels inspected in [cities].',
-    inspected: ['[CTICC / Durban ICC / Sandton Convention Centre]', '[Hotel 1]', '[Incentive venue]'],
-    impressed: ['Operational maturity. Venues run large events as routine.', '[Your specific observation.]'],
-    watchOuts: [
-      'Peak pricing. Cape Town rates climb over December and January.',
-      'Connections. Check routings for delegates from West and Central Africa.',
     ],
     venues: [
       venue('Cape Town International Convention Centre (CTICC)', 'Cape Town', 'Convention centre'),
@@ -275,7 +243,6 @@ export const destinations: Destination[] = [
     name: 'Zambia',
     cities: 'Lusaka · Livingstone',
     status: 'inspected',
-    statusDate: '[MON YYYY]',
     eventTypes: ['corporate', 'incentive'],
     bestFor: 'Regional corporate meetings and value-led incentives on the Zambezi.',
     headline: 'Value, warmth and the Falls from the Zambian side.',
@@ -283,7 +250,6 @@ export const destinations: Destination[] = [
     photos: {
       hero: '[Photo: Livingstone or Lusaka venue from the site visit]',
       card: '[Photo: Livingstone site visit]',
-      notes: '[Photo: back-of-house, loading bay or registration area]',
     },
     facts: [
       { label: 'Main airports', value: 'Lusaka (LUN), Livingstone (LVI)' },
@@ -295,13 +261,6 @@ export const destinations: Destination[] = [
       { title: 'A regional meetings capital', body: 'Lusaka hosts SADC, COMESA and government-level meetings with established venues.' },
       { title: 'Livingstone retreats', body: 'Resort-style meetings on the Zambezi, minutes from the Falls.' },
       { title: 'Built for twin-destination', body: 'Pairs naturally with Zimbabwe for cross-border Falls programmes.' },
-    ],
-    visitLine: 'Visited [MONTH YEAR]. [X] venues and [X] hotels inspected in Lusaka and Livingstone.',
-    inspected: ['Mulungushi International Conference Centre', '[Livingstone resort]', '[Lusaka hotel venue]'],
-    impressed: ['Value. Strong rates for groups compared with larger markets.', '[Your specific observation.]'],
-    watchOuts: [
-      'Fewer long-haul direct flights. Most delegates connect via regional hubs.',
-      '[Your observation on supplier capacity for larger groups.]',
     ],
     venues: [
       venue('Mulungushi International Conference Centre', 'Lusaka', 'Convention centre'),
@@ -341,7 +300,6 @@ export const destinations: Destination[] = [
     name: 'Zimbabwe',
     cities: 'Harare · Victoria Falls · Hwange',
     status: 'inspected',
-    statusDate: '[MON YYYY]',
     eventTypes: ['incentive', 'corporate'],
     bestFor: 'Boutique conferences, leadership retreats and incentives at the Falls.',
     headline: 'Boutique conferences and retreats at a wonder of the world.',
@@ -349,7 +307,6 @@ export const destinations: Destination[] = [
     photos: {
       hero: '[Photo: Victoria Falls venue from the site visit]',
       card: '[Photo: Victoria Falls site visit]',
-      notes: '[Photo: back-of-house, loading bay or registration area]',
     },
     facts: [
       { label: 'Main airports', value: 'Harare (HRE), Victoria Falls (VFA)' },
@@ -361,13 +318,6 @@ export const destinations: Destination[] = [
       { title: 'Victoria Falls', body: 'Conference resorts, river experiences and the Falls within one small town.' },
       { title: 'Harare for national events', body: 'HICC and city hotels for government, association and corporate meetings.' },
       { title: 'Local expertise', body: 'My home ground. Local suppliers, local relationships and local problem-solving.' },
-    ],
-    visitLine: 'Inspected [MONTH YEAR]. [X] venues and [X] hotels across Harare and Victoria Falls.',
-    inspected: ['Harare International Conference Centre', '[Victoria Falls resort]', '[Second Falls venue or lodge]'],
-    impressed: ['Experience density. Meetings, river, Falls and safari all within a short drive.', '[Your specific observation.]'],
-    watchOuts: [
-      'Payments. Agree currency and settlement terms with suppliers early.',
-      'Room stock at the Falls is limited for groups above [XXX].',
     ],
     venues: [
       venue('Harare International Conference Centre', 'Harare', 'Convention centre'),
@@ -422,7 +372,7 @@ export const hub = {
   portfolio: {
     eyebrow: 'The portfolio',
     title: 'Choose by event, not by postcard.',
-    body: 'Filter by the kind of event you are planning. Each destination page carries my site-visit notes, venue snapshot, access details and a sample programme.',
+    body: 'Filter by the kind of event you are planning. Each destination page carries a venue snapshot, access details and a sample programme.',
     allLabel: 'All destinations',
     emptyLabel: 'No destinations match that event type yet.',
   },
@@ -497,14 +447,8 @@ export const destinationTemplate = {
   inspectedBadge: 'Site-inspected',
   scheduledBadge: 'Inspection planned',
   briefCta: (name: string) => `Request the ${name} Destination Brief`,
-  notesCta: 'Read my site-visit notes',
   whyEyebrow: (name: string) => `Why ${name}`,
   whyTitle: 'Three reasons it wins the shortlist.',
-  notesEyebrow: "Farirai's site-visit notes",
-  notesTitle: 'What I saw. What to watch.',
-  inspectedLabel: 'Inspected',
-  impressedTitle: 'What impressed me',
-  watchOutsTitle: 'Watch-outs',
   venueEyebrow: 'Venue snapshot',
   venueTitle: 'Where your event could sit.',
   venueNote: 'Capacities confirmed [MONTH YEAR]. Full floor plans in the Destination Brief.',

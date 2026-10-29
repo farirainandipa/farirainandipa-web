@@ -98,9 +98,7 @@ export function PhotoSlot({
 }
 
 function statusLabel(d: Destination) {
-  return d.status === 'inspected'
-    ? `${destinationTemplate.inspectedBadge} ${d.statusDate}`
-    : `${destinationTemplate.scheduledBadge} ${d.statusDate}`;
+  return d.status === 'inspected' ? destinationTemplate.inspectedBadge : destinationTemplate.scheduledBadge;
 }
 
 // Hub cards use a navy-filled badge for inspected destinations; the
