@@ -78,7 +78,7 @@ export default function DestinationPage() {
           <div className="flex flex-wrap gap-14 items-center">
             <div className="flex-[1_1_520px] min-w-0 flex flex-col gap-5">
               <div className="flex flex-wrap gap-3 items-center">
-                <StatusBadge destination={d} variant="hero" />
+                <StatusBadge destination={d} />
                 <span className="text-[13px] font-semibold uppercase tracking-[0.12em] text-ink-muted">{d.cities}</span>
               </div>
               <h1 className="font-['Cormorant_Garamond'] font-semibold text-[clamp(52px,6.5vw,92px)] leading-[0.95] text-navy">

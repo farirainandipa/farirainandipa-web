@@ -134,7 +134,7 @@ export default function Destinations() {
                   <div className="relative">
                     <PhotoSlot photo={d.photos.card} alt={`${d.name} site visit`} className="h-[210px]" square />
                     <span className="absolute top-3.5 left-3.5">
-                      <StatusBadge destination={d} variant="card" />
+                      <StatusBadge destination={d} />
                     </span>
                   </div>
                   <div className="px-6 pt-[22px] pb-[26px] flex flex-col gap-2.5 flex-grow">

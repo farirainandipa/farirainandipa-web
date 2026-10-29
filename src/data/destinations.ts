@@ -444,7 +444,6 @@ export const guide = {
 
 export const destinationTemplate = {
   breadcrumbRoot: 'Destinations',
-  inspectedBadge: 'Site-inspected',
   scheduledBadge: 'Inspection planned',
   briefCta: (name: string) => `Request the ${name} Destination Brief`,
   whyEyebrow: (name: string) => `Why ${name}`,

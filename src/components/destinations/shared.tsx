@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import { Check } from 'lucide-react';
 import { destinationTemplate, guide, type Destination } from '../../data/destinations';
 
 // Shared building blocks for the /destinations hub and destination pages.
@@ -97,32 +96,12 @@ export function PhotoSlot({
   );
 }
 
-function statusLabel(d: Destination) {
-  return d.status === 'inspected' ? destinationTemplate.inspectedBadge : destinationTemplate.scheduledBadge;
-}
-
-// Hub cards use a navy-filled badge for inspected destinations; the
-// destination page hero uses a mint badge with a tick. Scheduled is dashed in both.
-export function StatusBadge({ destination, variant }: { destination: Destination; variant: 'card' | 'hero' }) {
-  const label = statusLabel(destination);
-  if (destination.status === 'scheduled') {
-    return (
-      <span className="inline-flex items-center font-['Inter'] text-xs font-semibold text-navy bg-white border border-dashed border-navy px-2.5 py-1.5 rounded">
-        {label}
-      </span>
-    );
-  }
-  if (variant === 'card') {
-    return (
-      <span className="inline-flex items-center font-['Inter'] text-xs font-semibold text-white bg-navy px-2.5 py-1.5 rounded">
-        {label}
-      </span>
-    );
-  }
+// Only destinations with an inspection still to come carry a badge (dashed).
+export function StatusBadge({ destination }: { destination: Destination }) {
+  if (destination.status !== 'scheduled') return null;
   return (
-    <span className="inline-flex items-center gap-2 font-['Inter'] text-[13px] font-semibold text-navy bg-mint px-3 py-1.5 rounded">
-      <Check className="w-3.5 h-3.5" strokeWidth={2.6} aria-hidden="true" />
-      {label}
+    <span className="inline-flex items-center font-['Inter'] text-xs font-semibold text-navy bg-white border border-dashed border-navy px-2.5 py-1.5 rounded">
+      {destinationTemplate.scheduledBadge}
     </span>
   );
 }
