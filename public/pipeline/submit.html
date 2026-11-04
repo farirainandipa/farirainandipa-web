@@ -81,9 +81,15 @@ legend small{display:block;font-family:'IBM Plex Sans',sans-serif;font-weight:40
 const SUPABASE_URL = "https://upzkvszgoqhoefkiwoep.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwemt2c3pnb3Fob2Vma2l3b2VwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxMzg1MjQsImV4cCI6MjA5NzcxNDUyNH0.4RB-5FCWW7JXvGBKs0PlzkYcUeG5kTVxTVdoXUNp8ao";
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-/* econ_sectors is not readable anonymously, so the 18-sector taxonomy is mirrored here (ids match public.econ_sectors) */
-const SECTORS = [[1,"Agriculture, food & agro-processing"],[2,"Mining & mineral beneficiation"],[3,"Manufacturing & industrialisation"],[4,"Energy & power"],[5,"Trade, investment & AfCFTA"],[6,"Infrastructure, housing & urban development"],[7,"Water & sanitation"],[8,"Environment, climate & conservation"],[9,"Finance, insurance & fintech"],[10,"ICT, digital economy & innovation"],[11,"Science, research & higher learning"],[12,"Education & skills"],[13,"Health & life sciences"],[14,"Social development, gender & population"],[15,"Governance, law & public administration"],[16,"Tourism, hospitality & MICE"],[17,"Transport, aviation & logistics"],[18,"Creative industries, culture & sport"]];
-document.getElementById("sector_id").innerHTML = SECTORS.map(([id,n])=>`<option value="${id}">${n}</option>`).join("");
+/* The list is read from public.econ_sectors (the 18-sector taxonomy the pipeline uses; anon read-only since migration 006).
+   This copy is only a fallback if that read fails, so the form still works. */
+const FALLBACK_SECTORS = [[1,"Agriculture, food & agro-processing"],[2,"Mining & mineral beneficiation"],[3,"Manufacturing & industrialisation"],[4,"Energy & power"],[5,"Trade, investment & AfCFTA"],[6,"Infrastructure, housing & urban development"],[7,"Water & sanitation"],[8,"Environment, climate & conservation"],[9,"Finance, insurance & fintech"],[10,"ICT, digital economy & innovation"],[11,"Science, research & higher learning"],[12,"Education & skills"],[13,"Health & life sciences"],[14,"Social development, gender & population"],[15,"Governance, law & public administration"],[16,"Tourism, hospitality & MICE"],[17,"Transport, aviation & logistics"],[18,"Creative industries, culture & sport"]];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fillSectors = list => { const el=document.getElementById("sector_id"), keep=el.value; el.innerHTML = `<option value="">Choose a sector</option>` + list.map(([id,n])=>`<option value="${id}">${esc(n)}</option>`).join(""); el.value = keep; };
+fillSectors(FALLBACK_SECTORS);
+sb.from("econ_sectors").select("id,name,sort").order("sort").then(({data,error}) => {
+  if(!error && data && data.length) fillSectors(data.map(s=>[s.id, s.name]));
+});
 const v = id => { const el=document.getElementById(id); const x=el.value.trim(); return x===""?null:x; };
 const n = id => { const x=v(id); return x==null?null:Number(x); };
 document.getElementById("f").addEventListener("submit", async e => {
@@ -101,7 +107,7 @@ document.getElementById("f").addEventListener("submit", async e => {
   const {error} = await sb.from("submissions").insert(rec);
   btn.disabled = false;
   if(error){ out.innerHTML = `<div class="err">We could not save that. ${error.message}. Email nandie@farirainandipa.co.zw and we will log it for you.</div>`; return; }
-  e.target.reset(); document.getElementById("sector_id").selectedIndex = 0;
+  e.target.reset();
   out.innerHTML = `<div class="ok"><b>Received. Thank you.</b> We will confirm the host-decision details with you by email and then place the event in front of the convention bureaux that fit it.</div>`;
 });
 </script>
