@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Submit a conference · Africa MICE Bid Pipeline · Farirai Nandipa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+:root{--ink:#1f2222;--muted:#5f6a6b;--bg:#eeeeee;--card:#ffffff;--line:#e8e8e8;--green:#46666a;--green2:#5a7f84;--red:#a33b2e}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans',system-ui,sans-serif;background:linear-gradient(160deg,#46666a 0%,#4f7176 55%,#5a7f84 100%);color:var(--ink);font-size:14px;line-height:1.5;min-height:100vh;padding:28px 16px}
+h1,h2{font-family:'IBM Plex Serif',Georgia,serif}
+.card{background:var(--card);border-radius:16px;padding:32px;max-width:860px;margin:0 auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.brandLogo{margin:0 auto 18px;text-align:center}
+.brandLogo img{display:block;width:min(240px,70%);margin:0 auto}
+.brandLogo .fnSub{display:block;font-size:10.5px;letter-spacing:.42em;text-indent:.42em;color:#3f3f3d;margin-top:2px}
+h1{font-size:22px;text-align:center;margin-bottom:4px}
+p.sub{text-align:center;color:var(--muted);margin-bottom:22px;font-size:13.5px;max-width:62ch;margin-left:auto;margin-right:auto}
+fieldset{border:1px solid var(--line);border-radius:12px;padding:16px 16px 4px;margin-bottom:18px}
+legend{font-family:'IBM Plex Serif',Georgia,serif;font-weight:700;padding:0 8px;font-size:15px}
+legend small{display:block;font-family:'IBM Plex Sans',sans-serif;font-weight:400;color:var(--muted);font-size:12px}
+.frow{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0 14px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+.field input,.field select,.field textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:#fbfbfa}
+.field textarea{min-height:72px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{outline:2px solid var(--green2);border-color:transparent}
+.btn{border:none;border-radius:9px;padding:12px 18px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;background:var(--green);color:#fff}
+.btn:disabled{opacity:.6;cursor:default}
+.note{font-size:12.5px;color:var(--muted);margin-top:10px}
+.err{background:#fbeae7;color:var(--red);padding:10px 12px;border-radius:9px;margin-top:12px;font-weight:600}
+.ok{background:#e3f0e9;color:var(--green);padding:16px;border-radius:9px;margin-top:12px}
+.ok b{display:block;margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="brandLogo"><img src="https://upzkvszgoqhoefkiwoep.supabase.co/functions/v1/dashboard/logo" alt="Farirai Nandipa"><span class="fnSub">M.I.C.E AGENCY</span></div>
+  <h1>Submit a conference that could be hosted in Africa</h1>
+  <p class="sub">For corporates, associations, foundations and incentive houses whose event is not tied to one country. There is no charge. Our team confirms the three questions below with you before any convention bureau sees the record.</p>
+  <form id="f" novalidate>
+    <fieldset><legend>The three questions we confirm with you <small>These decide whether a bureau can act on your event.</small></legend>
+      <div class="frow">
+        <div class="field"><label for="host_open">Is the host destination open?</label><select id="host_open" required><option value="">Choose</option><option>Yes, any African country</option><option>Yes, within a region of Africa</option><option>No, already decided</option></select></div>
+        <div class="field"><label for="decision_when">When will the host be decided?</label><input id="decision_when" placeholder="e.g. March 2027, or at the 2027 AGM" required></div>
+        <div class="field"><label for="decision_who">Who decides?</label><input id="decision_who" placeholder="Board, general assembly, CEO, organising committee" required></div>
+      </div>
+    </fieldset>
+    <fieldset><legend>The event</legend>
+      <div class="frow">
+        <div class="field"><label for="event_name">Event name</label><input id="event_name" required></div>
+        <div class="field"><label for="organisation">Organisation</label><input id="organisation" required></div>
+        <div class="field"><label for="org_type">Organisation type</label><select id="org_type"><option>Corporate</option><option>Association</option><option>Intergovernmental body</option><option>Government</option><option>Foundation or NGO</option><option>Academic</option><option>Incentive house or DMC</option></select></div>
+        <div class="field"><label for="sector_id">Sector</label><select id="sector_id"></select></div>
+        <div class="field"><label for="expected_delegates">Expected delegates</label><input id="expected_delegates" type="number" min="50" required></div>
+        <div class="field"><label for="international_share">International share (%)</label><input id="international_share" type="number" min="0" max="100"></div>
+        <div class="field"><label for="preferred_quarter">Preferred dates or quarter</label><input id="preferred_quarter" placeholder="Q3 2028"></div>
+        <div class="field"><label for="duration_days">Duration (days)</label><input id="duration_days" type="number" min="1"></div>
+        <div class="field"><label for="room_nights">Hotel room-nights needed</label><input id="room_nights" type="number" min="0"></div>
+        <div class="field"><label for="past_hosts">Last two host cities</label><input id="past_hosts" placeholder="Nairobi 2024, Accra 2022"></div>
+      </div>
+      <div class="field"><label for="venue_needs">Plenary and breakout needs</label><input id="venue_needs" placeholder="1 plenary of 800 theatre, 6 breakouts of 80, 400 m² exhibition"></div>
+      <div class="field"><label for="host_needs">What you need from a host</label><input id="host_needs" placeholder="Subvention, venue support, visa facilitation, in-kind services"></div>
+    </fieldset>
+    <fieldset><legend>You</legend>
+      <div class="frow">
+        <div class="field"><label for="submitter_name">Name and role</label><input id="submitter_name" required></div>
+        <div class="field"><label for="submitter_email">Email</label><input id="submitter_email" type="email" required></div>
+      </div>
+      <div class="field"><label for="notes">Anything else</label><textarea id="notes"></textarea></div>
+    </fieldset>
+    <button class="btn" id="go" type="submit">Submit for review</button>
+    <p class="note">We reply within five working days. Your details are shared only with the convention bureaux that match your event, and only after we have spoken to you.</p>
+    <div id="out"></div>
+  </form>
+</div>
+<script>
+const SUPABASE_URL = "https://upzkvszgoqhoefkiwoep.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwemt2c3pnb3Fob2Vma2l3b2VwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxMzg1MjQsImV4cCI6MjA5NzcxNDUyNH0.4RB-5FCWW7JXvGBKs0PlzkYcUeG5kTVxTVdoXUNp8ao";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+/* econ_sectors is not readable anonymously, so the 18-sector taxonomy is mirrored here (ids match public.econ_sectors) */
+const SECTORS = [[1,"Agriculture, food & agro-processing"],[2,"Mining & mineral beneficiation"],[3,"Manufacturing & industrialisation"],[4,"Energy & power"],[5,"Trade, investment & AfCFTA"],[6,"Infrastructure, housing & urban development"],[7,"Water & sanitation"],[8,"Environment, climate & conservation"],[9,"Finance, insurance & fintech"],[10,"ICT, digital economy & innovation"],[11,"Science, research & higher learning"],[12,"Education & skills"],[13,"Health & life sciences"],[14,"Social development, gender & population"],[15,"Governance, law & public administration"],[16,"Tourism, hospitality & MICE"],[17,"Transport, aviation & logistics"],[18,"Creative industries, culture & sport"]];
+document.getElementById("sector_id").innerHTML = SECTORS.map(([id,n])=>`<option value="${id}">${n}</option>`).join("");
+const v = id => { const el=document.getElementById(id); const x=el.value.trim(); return x===""?null:x; };
+const n = id => { const x=v(id); return x==null?null:Number(x); };
+document.getElementById("f").addEventListener("submit", async e => {
+  e.preventDefault();
+  const out = document.getElementById("out"); out.innerHTML = "";
+  const req = ["host_open","decision_when","decision_who","event_name","organisation","expected_delegates","submitter_name","submitter_email"];
+  const missing = req.filter(id=>!v(id));
+  if(missing.length){ out.innerHTML = `<div class="err">Please complete: ${missing.map(id=>document.querySelector('label[for="'+id+'"]').textContent).join(", ")}.</div>`; return; }
+  if(n("expected_delegates")<50){ out.innerHTML = `<div class="err">The pipeline tracks meetings of 50 delegates and up.</div>`; return; }
+  const rec = {host_open:v("host_open"), decision_when:v("decision_when"), decision_who:v("decision_who"), event_name:v("event_name"), organisation:v("organisation"),
+    org_type:v("org_type"), sector_id:n("sector_id"), expected_delegates:n("expected_delegates"), international_share:n("international_share"), preferred_quarter:v("preferred_quarter"),
+    duration_days:n("duration_days"), room_nights:n("room_nights"), venue_needs:v("venue_needs"), host_needs:v("host_needs"), past_hosts:v("past_hosts"),
+    submitter_name:v("submitter_name"), submitter_email:v("submitter_email"), notes:v("notes")};
+  const btn = document.getElementById("go"); btn.disabled = true;
+  const {error} = await sb.from("submissions").insert(rec);
+  btn.disabled = false;
+  if(error){ out.innerHTML = `<div class="err">We could not save that. ${error.message}. Email nandie@farirainandipa.co.zw and we will log it for you.</div>`; return; }
+  e.target.reset(); document.getElementById("sector_id").selectedIndex = 0;
+  out.innerHTML = `<div class="ok"><b>Received. Thank you.</b> We will confirm the host-decision details with you by email and then place the event in front of the convention bureaux that fit it.</div>`;
+});
+</script>
+</body>
+</html>
