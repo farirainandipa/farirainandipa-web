@@ -140,9 +140,15 @@ link) and `profile_status()`, the only anon surface. Rows land in
 `profile_submission_attempts`, `freemail_domains` and
 `verified_submitter_domains`, are admin-only under RLS and the anon and
 bureau roles hold no table grants on them. Keep it that way. A submission
-never writes live data: an admin promotes each field from the review queue,
-which writes `destination_profile_fields` (or a `countries` visa column) at
-`source_tier` 4, `confidence` unverified, with `recheck_due_on` 30 days out.
+never writes live data: an admin promotes each field from the Partner Data
+tab through `profile_review()` (migrations 019 to 021), which writes
+`destination_profile_fields` (or a `countries` visa column) at `source_tier`
+4, `confidence` unverified, with `recheck_due_on` 30 days out. It never
+overrides a Verified row at Tier 1 or 2 (or with no tier, the researched
+rows): that row is kept and marked Conflict with the proposal noted.
+`profile_field_recheck()` closes a re-check, and only a Tier 1 or 2 URL may
+set Verified. Accepting "events currently bidding for" creates a candidate
+`events` row (with its `series` parent) at Tier 4, never a live edition.
 `destination_profile_fields` now takes the four-state confidence (plus
 `partial` for the researched rows) and joins `pipeline_demote()` only where
 `source_tier` is set. Every change to `destination_profile_fields`,
