@@ -65,3 +65,40 @@ Accepted values feed the existing Pass 2 verification work list. Demotion rules 
 
 ## Ask me before
 Creating any new profile column, changing existing RLS, or deciding the domain-verification list.
+
+## What was built (5 Nov 2026)
+
+Migrations 016 to 022 are live on `upzkvszgoqhoefkiwoep`; the pages ship with the next Netlify deploy of `main`.
+
+| Piece | Where |
+| --- | --- |
+| Staging tables, field catalog (32 fields), audit log, abuse tables, private bucket, intake RPCs, trust fields on `destination_profile_fields` | `supabase/migrations/…016_partner_submissions.sql`, `…017` (indexes) |
+| Public form, verify link and status page | `public/pipeline/partner.html` at `/pipeline/partner`; `…018` adds `partner_form_options()` |
+| Review queue, promotion, re-checks | `…019`, `…020` (series parent for candidates), `…021` (guard covers tier-less researched rows); dashboard tab "Partner Data" in `public/pipeline/index.html` |
+| Submitter emails | edge function `supabase/functions/send-submission-verification`, `…022` (`profile_notify()`, confirmed email, confirm-request trigger) |
+
+### Choices that differ from the spec
+
+1. **Table names are prefixed `profile_`** because `submissions` already holds the movable-conference channel from migration 004.
+2. **No new profile columns.** Every field without a home became a `destination_profile_fields` row numbered from 101, the same number on full and base profiles, so the 21-field and 12-field catalogs are untouched. The ministry's visa facts target the structured `countries` visa columns (`evisa`, `visa_on_arrival`, `univisa`, `visa_africa`, `visa_events_note`) rather than free text.
+3. **Confidence on `destination_profile_fields` is now the four-state vocabulary** plus `partial` for the researched rows. The nightly demotion only touches rows with a `source_tier`, so nothing researched before this change moves.
+4. **A submission's status gains `awaiting_email`** before New; the verify link moves it to New. `Confirmed` is set by hand from the tab once you have spoken to the submitter; `Published` is set automatically once every field is decided and at least one was accepted.
+5. **A Tier 4 value never replaces a Verified Tier 1 or 2 fact** (or a tier-less researched row): accepting marks the live row Conflict with the proposal in the note, and the re-check list picks it up. Only a Tier 1 or 2 URL can set Verified on a re-check.
+6. **Submitters are not auth users.** Verification is a 32-byte token, stored hashed, valid 48 hours, single use.
+7. **Rate limits**: three submissions per email per day, ten attempts per IP per hour (IP stored hashed). The free-mail list is a table (`freemail_domains`, 21 seeded). `verified_submitter_domains` is empty; a match sets `domain_verified`.
+8. **The webhook secret is shared with the contact form.** Vault `submission_webhook_secret` holds the same value as `contact_webhook_secret` and the function checks the existing `WEBHOOK_SECRET`. Rotate both together.
+
+### Operating notes
+
+- Documents: anonymous upload only into a submission's own folder for two hours, five objects, 10 MB, PDF / PNG / JPG / DOCX / XLSX. Admins open them from the tab with a signed URL.
+- "Events currently bidding for" accepted on the tab creates an `events` candidate (and its `series` row) at Tier 4, `added_by partner-<submission id>`, never a live edition.
+- "Ask to confirm" emails the submitter the question; they reply to the agency inbox. The tab shows the decision as Confirmation requested until you accept or reject it.
+- Re-checks due show on the tab and in the KPI. Verified needs the Tier 1 or 2 page; "Still unverified" pushes the date on 30 days.
+- The Netlify deploy preview of a pull request cannot send mail or write the live database differently from production: it talks to the same project.
+
+### Still to do
+
+1. Decide the verified partner domain list (`verified_submitter_domains`).
+2. Delete the leftover 15-byte test object `a6e773a5-82c6-4f55-8cc9-980b2e426739/subvention_fund/fund_brochure.pdf` from the `submission-uploads` bucket (SQL cannot delete storage objects).
+3. Cross-check the field catalog against `Pipeline_Reference_Data.xlsx` (not found on disk during the build; the mapping was taken from the live schema).
+4. Add the re-check step to `scan-rules.md` in the Claude Project: accepted partner values appear on the Partner Data tab under Re-checks; confirm each against a Tier 1 page within 30 days.

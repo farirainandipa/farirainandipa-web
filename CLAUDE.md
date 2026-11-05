@@ -155,10 +155,14 @@ set Verified. Accepting "events currently bidding for" creates a candidate
 `destination_profiles` and the visa block on `countries` lands in
 `profile_review_audit` with the old row. Supporting documents go to the
 private `submission-uploads` bucket; anon may upload only into a fresh
-submission's folder. The verification email needs the
-`send-submission-verification` edge function and a Vault secret named
-`submission_webhook_secret`; until both exist submissions wait in
-`awaiting_email`. Spec: `docs/HANDOVER-partner-submissions.md`.
+submission's folder. Submitter emails (magic link, "in the queue" with the status link
+plus an admin notice, and a reviewer's confirm request) go through
+`profile_notify()` to the `send-submission-verification` edge function,
+which checks the shared secret `WEBHOOK_SECRET` (Vault
+`submission_webhook_secret` holds the same value, migration 022). If the
+Vault secret is missing, submissions simply wait in `awaiting_email` and an
+admin can verify them by hand. Spec and build notes:
+`docs/HANDOVER-partner-submissions.md`.
 
 When changing schema, add a new file under `supabase/migrations/` (don't edit
 existing ones) and apply it to the linked project. After any DDL change, check
