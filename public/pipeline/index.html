@@ -113,6 +113,10 @@ table.data tr.rowlink:hover{background:#f4f6f6}
 .chip.c-stale{background:#f7edd3;color:#8a6d10}
 .chip.c-unverified{background:#eceae4;color:var(--muted)}
 .chip.c-conflict{background:#fbeae7;color:var(--red)}
+.chip.c-partial{background:#f7edd3;color:#8a6d10}
+table.data td .pv{white-space:pre-wrap;font-size:13px;max-width:360px}
+table.data td .pm{font-size:11.5px;color:var(--muted);margin-top:3px}
+.pActs{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
 .chip.hs{background:#e6eef4;color:#3e5a6e;font-weight:500}
 .fitBreak{font-size:12px;color:var(--muted);display:grid;grid-template-columns:auto auto;gap:2px 10px;margin:4px 0 0 0}
 .fitBreak b{color:inherit;font-weight:500}
@@ -402,7 +406,7 @@ window.savePw = async ()=>{
 /* =====================================================================
    NAV
    ===================================================================== */
-const ADMIN_TABS = [["overview","Overview"],["pipeline","Bid Pipeline"],["events","Strategic Events"],["history","Bid History"],["destinations","Destinations"],["policies","Policy & Sectors"],["submissions","Submissions"],["access","Bureau Access"]];
+const ADMIN_TABS = [["overview","Overview"],["pipeline","Bid Pipeline"],["events","Strategic Events"],["history","Bid History"],["destinations","Destinations"],["policies","Policy & Sectors"],["submissions","Submissions"],["partner","Partner Data"],["access","Bureau Access"]];
 function bureauTabs(){
   const t = curTier();
   if(!t || t==="free") return [["b_history","Bid history"]];
@@ -424,7 +428,7 @@ $("#navTabs").addEventListener("click",e=>{
   render();
 });
 function render(){
-  const R = {overview:rOverview, pipeline:rPipeline, events:rEvents, history:rHistory, destinations:rDest, policies:rPolicies, submissions:rSubmissions, access:rAccess,
+  const R = {overview:rOverview, pipeline:rPipeline, events:rEvents, history:rHistory, destinations:rDest, policies:rPolicies, submissions:rSubmissions, partner:rPartner, access:rAccess,
              b_home:bHome, b_bids:bBids, b_events:bEvents, b_history:bHistory, b_policy:bPolicy, b_visa:bVisa};
   (R[VIEW]||rOverview)();
   window.scrollTo(0,0);
@@ -1651,6 +1655,129 @@ window.saveWin = async (id, markChecked) => {
   if(r.error) return toast(r.error.message);
   await sb.rpc("history_recompute_admin");
   await loadHistAdmin(); closeModal(); rHistory(); toast(markChecked?"Saved and marked checked today.":"Saved.");
+};
+
+/* =====================================================================
+   PARTNER DATA (destination partner submissions at /pipeline/partner)
+   ===================================================================== */
+let PADM = null;
+const PTYPE_L = {bureau:"Convention bureau", venue:"Venue or hotel", ministry:"Immigration or ministry", association:"Tourism association", airline:"Airline"};
+const PSTAT_L = {awaiting_email:["Awaiting email","closed"], new:["New","watchlist"], in_review:["In review","watchlist"], confirmed:["Confirmed","open"], published:["Published","open"], rejected:["Rejected","closed"]};
+const PDEC_L = {pending:["Pending","terr"], accepted:["Accepted","open"], edited:["Edited and accepted","open"], rejected:["Rejected","no"], confirm_requested:["Confirmation requested","watchlist"]};
+const pChip = (L, k) => { const [l,c] = L[k] || [k,"terr"]; return `<span class="chip ${c}">${esc(l)}</span>`; };
+const liveChip = l => !l?.confidence ? "" : l.confidence==="partial" ? `<span class="chip c-partial">Partial</span>` : confChip(l);
+const ageTxt = d => { if(!d) return "never checked"; const n=Math.floor((new Date()-new Date(d+"T00:00:00"))/864e5); return n<=0 ? "checked today" : `checked ${n} day${n===1?"":"s"} ago`; };
+const pTier = t => t===4 ? "submitted by partner" : TIER_L[t];
+const docName = p => p ? p.split("/").pop() : "";
+async function loadPartner(){
+  const {data,error} = await sb.rpc("profile_review_queue");
+  if(error) throw new Error(error.message);
+  if(data?.error) throw new Error(data.error);
+  PADM = data;
+}
+function rPartner(){
+  if(!PADM){ $("#mainEl").innerHTML = `<div class="loadWrap"><div class="spin"></div>Loading partner submissions…</div>`;
+    loadPartner().then(()=>{ if(VIEW==="partner") rPartner(); }).catch(e=>{ $("#mainEl").innerHTML=`<div class="card"><h3>Could not load partner submissions</h3><p>${esc(e.message)}</p></div>`; }); return; }
+  const S = PADM.submissions, R = PADM.rechecks;
+  const st = state.pStatus||"queue", cty = state.pCountry||"all", ty = state.pType||"all";
+  const rows = S.filter(s => (st==="queue" ? (s.status==="new"||s.status==="in_review") : st==="all" || s.status===st) && (cty==="all" || String(s.country_id)===cty) && (ty==="all" || s.submitter_type===ty));
+  const due = R.filter(r => r.recheck_due_on <= TODAY());
+  const countries = [...new Map(S.map(s=>[s.country_id,s.country])).entries()].sort((a,b)=>a[1].localeCompare(b[1]));
+  $("#mainEl").innerHTML = `
+  <div class="pageHead"><h2>Partner Data</h2><div class="meta">Submitted by bureaux and other in-country partners through the public form. Nothing goes live until you accept it here, and an accepted value stays Unverified until a Tier 1 or 2 page confirms it.</div></div>
+  <div class="kpis">
+    <div class="kpi ${S.filter(s=>s.status==="new").length?"gold":""}"><div class="n">${S.filter(s=>s.status==="new").length}</div><div class="l">New submissions</div></div>
+    <div class="kpi"><div class="n">${S.filter(s=>s.status==="in_review").length}</div><div class="l">In review</div></div>
+    <div class="kpi"><div class="n">${S.filter(s=>s.status==="awaiting_email").length}</div><div class="l">Awaiting email confirmation</div></div>
+    <div class="kpi ${due.length?"gold":""}"><div class="n">${due.length}</div><div class="l">Re-checks due</div></div>
+  </div>
+  <div class="filters">
+    <select onchange="state.pStatus=this.value;rPartner()">${[["queue","Review queue"],["awaiting_email","Awaiting email"],["published","Published"],["confirmed","Confirmed"],["rejected","Rejected"],["all","All"]].map(([k,l])=>`<option value="${k}" ${st===k?"selected":""}>${l}</option>`).join("")}</select>
+    <select onchange="state.pCountry=this.value;rPartner()"><option value="all">All countries</option>${countries.map(([id,n])=>`<option value="${id}" ${cty===String(id)?"selected":""}>${esc(n)}</option>`).join("")}</select>
+    <select onchange="state.pType=this.value;rPartner()"><option value="all">All submitter types</option>${Object.entries(PTYPE_L).map(([k,l])=>`<option value="${k}" ${ty===k?"selected":""}>${l}</option>`).join("")}</select>
+    <button class="btn sm ghost" onclick="PADM=null;rPartner()">Refresh</button>
+    <a class="btn sm ghost" href="partner.html" target="_blank" rel="noopener">Open the public form ↗</a>
+  </div>
+  ${rows.length ? rows.map(pSubCard).join("") : `<div class="card empty">Nothing in this list. Partners submit at <code>/pipeline/partner</code>.</div>`}
+  ${pRecheckCard(R)}`;
+}
+function pSubCard(s){
+  const u = s.submitter, open = s.status==="new" || s.status==="in_review";
+  const flags = [
+    s.email_verified_at ? `<span class="chip ok">email confirmed</span>` : `<span class="chip watchlist">email not confirmed</span>`,
+    u.domain_verified ? `<span class="chip ok">verified domain</span>` : "",
+    s.freemail_flag ? `<span class="chip ns">free-mail address</span>` : "",
+    u.status==="blocked" ? `<span class="chip no">blocked</span>` : ""
+  ].join(" ");
+  const when = new Date(s.submitted_at).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"});
+  return `<div class="card">
+    <div class="cardHead"><h3>${flag(s.iso2)} ${esc(s.country)} <span style="font-weight:400;color:var(--muted)">· ${esc(PTYPE_L[s.submitter_type]||s.submitter_type)}</span></h3><div class="chips">${pChip(PSTAT_L, s.status)}<span class="chip terr">${esc(s.profile_depth)} profile</span></div></div>
+    <div style="font-size:13px;margin-bottom:6px"><b>${esc(u.full_name)}</b>${u.role?", "+esc(u.role):""} · ${esc(u.organisation)} · <span style="user-select:all">${esc(u.work_email)}</span> · submitted ${esc(when)}</div>
+    <div class="chips" style="margin-bottom:12px">${flags}</div>
+    ${s.reviewer_note ? `<div class="why" style="margin-bottom:12px"><b>Review note</b> ${esc(s.reviewer_note)}</div>` : ""}
+    <div class="tblWrap"><table class="data"><thead><tr><th>Data point</th><th>Proposed</th><th>Live now</th><th>Decision</th></tr></thead><tbody>
+    ${s.fields.map(f=>pFieldRow(s, f, open)).join("")}
+    </tbody></table></div>
+    ${open ? `<div class="pActs" style="margin-top:12px"><button class="btn sm ghost" onclick="pConfirmed(${s.id})">Mark confirmed with submitter</button></div>` : ""}
+  </div>`;
+}
+function pFieldRow(s, f, open){
+  const l = f.live;
+  const proposed = `<div class="pv">${esc(f.proposed_value)}</div><div class="pm">as of ${fmtD(f.as_of_date)}${f.source_url?` · <a href="${esc(f.source_url)}" target="_blank" rel="noopener">source ↗</a>`:""}${f.supporting_file?` · <a href="#" onclick="pDoc('${esc(f.supporting_file)}');return false">${esc(docName(f.supporting_file))}</a>`:""}</div>`;
+  const live = f.target_kind==="evidence" ? `<span class="chip terr">evidence only</span>`
+    : !l || l.value==null || l.value==="" ? `<span class="chip terr">no live value</span>`
+    : `<div class="pv">${esc(l.value)}</div><div class="pm">${liveChip(l)} ${esc(ageTxt(l.verified_on))}${l.source_tier?" · "+esc(pTier(l.source_tier)):""}${l.source_url?` · <a href="${esc(l.source_url)}" target="_blank" rel="noopener">source ↗</a>`:""}</div>`;
+  const canAct = open && (f.decision==="pending" || f.decision==="confirm_requested");
+  const decision = `${pChip(PDEC_L, f.decision)}${f.decided_at?`<div class="pm">${esc(f.decided_by||"")} · ${new Date(f.decided_at).toLocaleDateString("en-GB",{day:"numeric",month:"short"})}${f.decision==="edited"&&f.decided_value?` · published “${esc(f.decided_value)}”`:""}</div>`:""}${f.reviewer_note?`<div class="pm">${esc(f.reviewer_note)}</div>`:""}
+    ${canAct ? `<div class="pActs"><button class="btn sm primary" onclick="pDecide(${f.id},'accepted')">Accept</button><button class="btn sm ghost" onclick="pDecide(${f.id},'edited')">Edit and accept</button><button class="btn sm ghost" onclick="pDecide(${f.id},'rejected')">Reject</button>${f.decision==="pending"?`<button class="btn sm ghost" onclick="pDecide(${f.id},'confirm_requested')">Ask to confirm</button>`:""}</div>` : ""}`;
+  return `<tr><td><b>${esc(f.label)}</b><div class="pm">${esc(f.group)}${f.target_kind==="country_column"?" · country visa field":""}</div></td><td>${proposed}</td><td>${live}</td><td>${decision}</td></tr>`;
+}
+function pRecheckCard(R){
+  if(!R.length) return `<div class="card"><h3>Re-checks</h3><p style="color:var(--muted);font-size:13px">No accepted partner values are waiting for a Tier 1 or 2 check.</p></div>`;
+  const today = TODAY();
+  return `<div class="card tblWrap"><div class="cardHead"><h3>Re-checks (${R.filter(r=>r.recheck_due_on<=today).length} due)</h3><span style="font-size:12.5px;color:var(--muted)">Accepted partner values. Verified needs a Tier 1 or 2 page; otherwise record a conflict or push the check on 30 days.</span></div>
+  <table class="data"><thead><tr><th>Due</th><th>Country</th><th>Field</th><th>Value</th><th>Confidence</th><th></th></tr></thead><tbody>
+  ${R.map(r=>`<tr><td><span class="chip days ${r.recheck_due_on<=today?"":"ok"}">${fmtD(r.recheck_due_on)}</span></td><td>${esc(r.country)}</td><td>${esc(r.field)}</td>
+    <td><div class="pv">${esc(r.value||"")}</div><div class="pm">as of ${fmtD(r.as_of_date)}${r.source_url?` · <a href="${esc(r.source_url)}" target="_blank" rel="noopener">source ↗</a>`:""}${r.conflict_note?`<br>${esc(r.conflict_note)}`:""}</div></td>
+    <td>${liveChip(r)}<div class="pm">${esc(ageTxt(r.verified_on))}${r.source_tier?" · "+esc(pTier(r.source_tier)):""}</div></td>
+    <td><div class="pActs"><button class="btn sm primary" onclick="pRecheck(${r.id},'verified')">Verified at Tier 1 or 2</button><button class="btn sm ghost" onclick="pRecheck(${r.id},'conflict')">Conflict</button><button class="btn sm ghost" onclick="pRecheck(${r.id},'unverified')">Still unverified</button></div></td></tr>`).join("")}
+  </tbody></table></div>`;
+}
+window.pDecide = async (fid, decision) => {
+  const f = PADM.submissions.flatMap(s=>s.fields).find(x=>x.id===fid); if(!f) return;
+  let value = null, note = null;
+  if(decision==="edited"){ value = prompt("Value to publish (edited from the submission):", f.proposed_value); if(value===null) return; }
+  if(decision==="rejected"){ note = prompt("Why is this rejected? (recorded on the field)", ""); if(note===null) return; }
+  if(decision==="confirm_requested"){ note = prompt("What needs confirming with the submitter? (recorded on the field)", ""); if(note===null) return; }
+  if(decision==="accepted" && !confirm(`Publish "${f.label}" as submitted, at Tier 4 and Unverified, with a re-check due in 30 days?`)) return;
+  const {data,error} = await sb.rpc("profile_review", {p_field_id:fid, p_decision:decision, p_value:value, p_note:note});
+  if(error) return toast(error.message);
+  await loadPartner(); rPartner();
+  toast(data?.outcome==="conflict" ? "The live value is Verified at Tier 1 or 2, so it was kept and marked Conflict with the proposal noted."
+    : {accepted:"Published at Tier 4, Unverified. Re-check due in 30 days.", edited:"Edited value published at Tier 4, Unverified.", rejected:"Rejected.", confirm_requested:"Marked for confirmation with the submitter."}[decision]);
+};
+window.pConfirmed = async id => {
+  const note = prompt("How was it confirmed? (who you spoke to and when; recorded on the submission)", "");
+  if(note===null) return;
+  const r = await sb.from("profile_submissions").update({status:"confirmed", reviewer_note:note||null, reviewed_at:new Date().toISOString()}).eq("id",id);
+  if(r.error) return toast(r.error.message);
+  await loadPartner(); rPartner(); toast("Marked confirmed with the submitter.");
+};
+window.pDoc = async path => {
+  const {data,error} = await sb.storage.from("submission-uploads").createSignedUrl(path, 300);
+  if(error || !data?.signedUrl) return toast("Could not open the document: "+(error?.message||"not found"));
+  window.open(data.signedUrl, "_blank", "noopener");
+};
+window.pRecheck = async (id, outcome) => {
+  let url = null, tier = null, note = null;
+  if(outcome==="verified"){
+    url = prompt("Tier 1 or Tier 2 page that confirms the value:", ""); if(!url) return;
+    tier = Number(prompt("Source tier (1 primary source, 2 official announcement):", "1")); if(tier!==1 && tier!==2) return toast("Tier must be 1 or 2.");
+  } else { note = prompt(outcome==="conflict" ? "What does the source say instead? (recorded as the conflict note)" : "Note (optional):", ""); if(note===null) return; }
+  const {error} = await sb.rpc("profile_field_recheck", {p_live_id:id, p_outcome:outcome, p_source_url:url, p_source_tier:tier, p_note:note});
+  if(error) return toast(error.message);
+  await loadPartner(); rPartner();
+  toast(outcome==="verified" ? "Verified and the re-check cleared." : outcome==="conflict" ? "Marked Conflict, re-check in 30 days." : "Still Unverified, re-check in 30 days.");
 };
 
 /* =====================================================================

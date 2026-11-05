@@ -130,6 +130,40 @@ the nightly `pipeline_demote()`) derives depth, cycle, Dormant and the
 estimated next window, and never overrides a Tier 1 bid window on `events`.
 Details and the Pass 2 rules are in `docs/HANDOVER-bid-history.md`.
 
+**Update Nov 2026 (destination partner submissions, migrations 016 and
+017):** outside parties (bureaux, venues, ministries, associations, airlines)
+propose profile data through `profile_submit()`, `profile_verify()` (magic
+link) and `profile_status()`, the only anon surface. Rows land in
+`profile_submitters`, `profile_submissions` and `profile_submission_fields`
+(what may be proposed, and by which submitter type, is the
+`profile_field_catalog`); all of these, plus `profile_review_audit`,
+`profile_submission_attempts`, `freemail_domains` and
+`verified_submitter_domains`, are admin-only under RLS and the anon and
+bureau roles hold no table grants on them. Keep it that way. A submission
+never writes live data: an admin promotes each field from the Partner Data
+tab through `profile_review()` (migrations 019 to 021), which writes
+`destination_profile_fields` (or a `countries` visa column) at `source_tier`
+4, `confidence` unverified, with `recheck_due_on` 30 days out. It never
+overrides a Verified row at Tier 1 or 2 (or with no tier, the researched
+rows): that row is kept and marked Conflict with the proposal noted.
+`profile_field_recheck()` closes a re-check, and only a Tier 1 or 2 URL may
+set Verified. Accepting "events currently bidding for" creates a candidate
+`events` row (with its `series` parent) at Tier 4, never a live edition.
+`destination_profile_fields` now takes the four-state confidence (plus
+`partial` for the researched rows) and joins `pipeline_demote()` only where
+`source_tier` is set. Every change to `destination_profile_fields`,
+`destination_profiles` and the visa block on `countries` lands in
+`profile_review_audit` with the old row. Supporting documents go to the
+private `submission-uploads` bucket; anon may upload only into a fresh
+submission's folder. Submitter emails (magic link, "in the queue" with the status link
+plus an admin notice, and a reviewer's confirm request) go through
+`profile_notify()` to the `send-submission-verification` edge function,
+which checks the shared secret `WEBHOOK_SECRET` (Vault
+`submission_webhook_secret` holds the same value, migration 022). If the
+Vault secret is missing, submissions simply wait in `awaiting_email` and an
+admin can verify them by hand. Spec and build notes:
+`docs/HANDOVER-partner-submissions.md`.
+
 When changing schema, add a new file under `supabase/migrations/` (don't edit
 existing ones) and apply it to the linked project. After any DDL change, check
 Supabase security advisors for new RLS/lint warnings.
