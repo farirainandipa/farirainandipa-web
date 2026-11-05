@@ -10,6 +10,12 @@
   to = "/pipeline/index.html"
   status = 200
 
+# Public bid-history teaser (no login): last three hosts per series.
+[[redirects]]
+  from = "/pipeline/history"
+  to = "/pipeline/history.html"
+  status = 200
+
 # SPA fallback: every other path renders the React app shell.
 [[redirects]]
   from = "/*"

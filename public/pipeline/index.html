@@ -176,6 +176,21 @@ table.data tr.rowlink:hover{background:#f4f6f6}
 .legend span{display:inline-flex;align-items:center;gap:5px}
 .legend i{width:14px;height:14px;border-radius:4px;display:inline-block}
 .alignBox{border:1px solid var(--line);border-radius:10px;padding:14px;background:#fafbfb;margin:8px 0}
+/* ---------- bid history ---------- */
+.subTabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.subTabs button{background:#fff;border:1px solid var(--line);border-radius:20px;padding:7px 14px;font-size:13px;font-weight:600;color:var(--muted)}
+.subTabs button.active{background:var(--green);color:#fff;border-color:var(--green)}
+.subTabs button .lk{font-size:10.5px;font-weight:600;margin-left:6px;opacity:.8}
+.coverage{font-size:12px;color:var(--muted);margin:-6px 0 16px;max-width:860px}
+table.data.sm td{padding:6px 8px;font-size:12.5px}
+table.data.sm th{padding:6px 8px}
+.serCard details{margin-top:2px}
+.serCard summary{cursor:pointer;font-size:12.5px;color:var(--green2);font-weight:600}
+.estBox{background:#eef3f2;border:1px dashed var(--green2);border-radius:8px;padding:9px 11px;font-size:12.5px}
+.estBox b{color:var(--green)}
+.quote{font-size:12px;color:var(--muted)}
+.teaserHosts{font-size:13px;color:var(--ink)}
+.teaserHosts span{white-space:nowrap}
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:10px;font-size:13px;z-index:200;box-shadow:var(--shadow)}
 .pwBox{background:#f4f8f7;border:1px solid var(--sand);border-radius:10px;padding:14px;margin:12px 0;font-size:13px}
 .pwBox code{font-size:15px;font-weight:700;background:#fff;padding:3px 8px;border-radius:6px;border:1px solid var(--line)}
@@ -326,6 +341,12 @@ const val = id => { const el=document.getElementById(id); return el? (el.type===
 const nz = v => (v===""||v==null)? null : v;
 
 let DB = {}, ME = null, PORTAL = null, MODE = "admin", VIEW = "overview";
+/* licence tiers (Bureau Licence Tiers doc). The server enforces them; these only drive the layout. */
+const LIC_L = {free:"Free", explorer:"Explorer", bureau:"Bureau", bureau_plus:"Bureau Plus"};
+const LIC_RANK = {free:0, explorer:1, bureau:2, bureau_plus:3, admin:9};
+let PREVIEW_TIER = "bureau";
+const curTier = () => MODE==="preview" ? PREVIEW_TIER : MODE==="admin" ? "admin" : (ME?.tier || null);
+const tierAtLeast = t => (LIC_RANK[curTier()] ?? -1) >= LIC_RANK[t];
 let state = {pipeStatus:"all", pipeQ:"", pipeSector:"all", evSector:"all", evScope:"all", evAf:false, destQ:"", polQ:"", polCountry:"all", polSector:"all", polLevel:"all", bSector:"all"};
 
 /* =====================================================================
@@ -353,6 +374,10 @@ async function enter(session){
   if(error){ $("#mainEl").innerHTML = `<div class="card"><h3>Could not check your access</h3><p>${esc(error.message)}</p></div>`; return; }
   ME = acc;
   if(acc.role==="admin"){ MODE="admin"; buildNav(); await loadData(); }
+  else if(acc.role==="bureau" && (!acc.tier || acc.tier==="free")){
+    /* Free tier: the public teaser only, no portal */
+    MODE="bureau"; VIEW="b_history"; PORTAL={country:{id:acc.country_id,name:acc.country,iso2:acc.iso2}, org:{org_name:acc.org_name}}; buildNav(); render();
+  }
   else if(acc.role==="bureau"){ MODE="bureau"; VIEW="b_home"; buildNav(); await loadPortal(); }
   else { $("#navTabs").innerHTML=""; $("#mainEl").innerHTML = `<div class="card"><h3>Account not authorised</h3><p>Your login works but this account has no access yet. Contact ${AGENCY_EMAIL} to be added.</p></div>`; }
 }
@@ -377,15 +402,19 @@ window.savePw = async ()=>{
 /* =====================================================================
    NAV
    ===================================================================== */
-const ADMIN_TABS = [["overview","Overview"],["pipeline","Bid Pipeline"],["events","Strategic Events"],["destinations","Destinations"],["policies","Policy & Sectors"],["submissions","Submissions"],["access","Bureau Access"]];
-function bureauTabs(){ return [["b_home","Overview"],["b_bids","Bids for "+(PORTAL?.country?.name||"you")],["b_events","Strategic events"],["b_policy","Policy & sectors"],["b_visa","Visa & access"]]; }
+const ADMIN_TABS = [["overview","Overview"],["pipeline","Bid Pipeline"],["events","Strategic Events"],["history","Bid History"],["destinations","Destinations"],["policies","Policy & Sectors"],["submissions","Submissions"],["access","Bureau Access"]];
+function bureauTabs(){
+  const t = curTier();
+  if(!t || t==="free") return [["b_history","Bid history"]];
+  return [["b_home","Overview"],["b_bids","Bids for "+(PORTAL?.country?.name||"you")],["b_events","Strategic events"],["b_history","Bid history"],["b_policy","Policy & sectors"],["b_visa","Visa & access"]];
+}
 function buildNav(){
   const tabs = MODE==="admin" ? ADMIN_TABS : bureauTabs();
   $("#navTabs").innerHTML = tabs.map(([k,l])=>`<button data-v="${k}" class="${k===VIEW?"active":""}">${esc(l)}</button>`).join("");
   if(MODE==="admin"){ $("#brandTitle").textContent="Africa MICE Bid Pipeline"; $("#brandSub").textContent="Farirai Nandipa MICE Agency"; }
   else { $("#brandTitle").textContent = (PORTAL?.country?.name||"")+" bid intelligence"; $("#brandSub").textContent="Partner portal · Farirai Nandipa MICE Agency"; }
   const pb=$("#previewBar");
-  if(MODE==="preview"){ pb.classList.remove("hidden"); pb.innerHTML=`Previewing what the <b>${esc(PORTAL.country.name)}</b> bureau sees. Internal notes, other countries' scores and suggested-host lists are hidden from them. <button class="btn sm ghost" onclick="exitPreview()">Exit preview</button>`; }
+  if(MODE==="preview"){ pb.classList.remove("hidden"); pb.innerHTML=`Previewing what the <b>${esc(PORTAL.country.name)}</b> bureau sees on the <b>${esc(LIC_L[PREVIEW_TIER]||PREVIEW_TIER)}</b> licence. Internal notes, other countries' scores and suggested-host lists are hidden from them. <button class="btn sm ghost" onclick="exitPreview()">Exit preview</button>`; }
   else pb.classList.add("hidden");
 }
 $("#navTabs").addEventListener("click",e=>{
@@ -395,8 +424,8 @@ $("#navTabs").addEventListener("click",e=>{
   render();
 });
 function render(){
-  const R = {overview:rOverview, pipeline:rPipeline, events:rEvents, destinations:rDest, policies:rPolicies, submissions:rSubmissions, access:rAccess,
-             b_home:bHome, b_bids:bBids, b_events:bEvents, b_policy:bPolicy, b_visa:bVisa};
+  const R = {overview:rOverview, pipeline:rPipeline, events:rEvents, history:rHistory, destinations:rDest, policies:rPolicies, submissions:rSubmissions, access:rAccess,
+             b_home:bHome, b_bids:bBids, b_events:bEvents, b_history:bHistory, b_policy:bPolicy, b_visa:bVisa};
   (R[VIEW]||rOverview)();
   window.scrollTo(0,0);
 }
@@ -1169,6 +1198,8 @@ function rAccess(){
   <div class="card"><h3>Create a bureau login</h3>
     <div class="field"><label>Country</label><select id="ba_c">${DB.countries.map(c=>`<option value="${c.id}">${esc(c.name)}${DB.csec.some(k=>k.country_id===c.id)?"":" (no key sectors yet)"}</option>`).join("")}</select></div>
     <div class="field"><label>Organisation</label><input id="ba_org" placeholder="e.g. Zambia Tourism Agency"></div>
+    <div class="field"><label>Licence tier</label><select id="ba_t"><option value="">Choose a tier</option>${Object.entries(LIC_L).map(([k,l])=>`<option value="${k}">${esc(l)}</option>`).join("")}</select>
+      <div class="hint">Free sees only the public bid-history teaser. Explorer adds full win history. Bureau adds win factors, estimated windows and Opening soon. Bureau Plus adds the competitor view.</div></div>
     <div class="frow"><div class="field"><label>Contact name</label><input id="ba_name"></div>
     <div class="field"><label>Login email</label><input type="email" id="ba_email"></div></div>
     <button class="btn primary" id="ba_btn" onclick="createBureau()">Create login</button>
@@ -1177,12 +1208,14 @@ function rAccess(){
   <div class="card"><h3>Preview a bureau's view</h3>
     <p style="font-size:13px;color:var(--muted);margin-bottom:12px">See exactly what a country's bureau will see before you invite them.</p>
     <div class="field"><label>Country</label><select id="pv_c">${withSec.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("")}</select></div>
-    <button class="btn ghost" onclick="startPreview(+$('#pv_c').value)">Preview portal</button>
+    <div class="field"><label>Licence tier</label><select id="pv_t">${Object.entries(LIC_L).map(([k,l])=>`<option value="${k}" ${k==="bureau"?"selected":""}>${esc(l)}</option>`).join("")}</select></div>
+    <button class="btn ghost" onclick="startPreview(+$('#pv_c').value, $('#pv_t').value)">Preview portal</button>
   </div>
   </div>
   <div class="card tblWrap"><h3>Bureau logins</h3>
-  ${rows.length? `<table class="data"><thead><tr><th>Organisation</th><th>Country</th><th>Login</th><th>Status</th><th>Last seen</th><th></th></tr></thead><tbody>
+  ${rows.length? `<table class="data"><thead><tr><th>Organisation</th><th>Country</th><th>Login</th><th>Tier</th><th>Status</th><th>Last seen</th><th></th></tr></thead><tbody>
   ${rows.map(a=>{ const c=DB.cById[a.country_id]; return `<tr><td><b>${esc(a.org_name||"–")}</b><br><span style="font-size:12px;color:var(--muted)">${esc(a.contact_name||"")}</span></td><td>${flag(c?.iso2)} ${esc(c?.name)}</td><td>${esc(a.email)}</td>
+    <td><select onchange="setTier('${a.user_id}',this.value)" style="padding:5px 7px;border:1px solid var(--line);border-radius:7px;font-size:12.5px">${a.tier?"":`<option value="" selected>No tier</option>`}${Object.entries(LIC_L).map(([k,l])=>`<option value="${k}" ${a.tier===k?"selected":""}>${esc(l)}</option>`).join("")}</select></td>
     <td>${a.active?'<span class="chip ok">active</span>':'<span class="chip closed">disabled</span>'}</td><td style="font-size:12.5px">${a.last_seen_at?new Date(a.last_seen_at).toLocaleString("en-GB",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}):"never"}</td>
     <td style="white-space:nowrap"><button class="btn sm ghost" onclick="bureauAct('reset_password','${a.user_id}')">Reset password</button> <button class="btn sm ${a.active?"danger":"ghost"}" onclick="bureauAct('set_active','${a.user_id}',${!a.active})">${a.active?"Disable":"Enable"}</button></td></tr>`;}).join("")}
   </tbody></table>` : `<p class="empty">No bureau logins yet.</p>`}
@@ -1199,11 +1232,12 @@ const pwHtml = (j,c) => `<div class="pwBox"><b>Login ready.</b> Send these to th
   Portal: <a href="${location.origin+location.pathname}" target="_blank">${esc(location.origin+location.pathname)}</a><br>Email: <b>${esc(j.email)}</b><br>Temporary password: <code>${esc(j.temp_password)}</code><br><br>
   They can change it under their email menu → Change password.${c?`<br><br><a href="mailto:${esc(j.email)}?subject=${encodeURIComponent((c.name||"")+" bid intelligence portal")}&body=${encodeURIComponent("Dear colleague,\n\nYour login to the Africa MICE bid intelligence portal is ready. It shows the international congresses and calls for bids that align with "+c.name+"'s national development priorities.\n\nPortal: "+location.origin+location.pathname+"\nEmail: "+j.email+"\n\nI will share your temporary password separately.\n\nKind regards,\nFarirai Nandipa")}">Draft the welcome email (without the password) ↗</a>`:""}</div>`;
 window.createBureau = async () => {
-  const email=val("ba_email"), cid=+val("ba_c");
+  const email=val("ba_email"), cid=+val("ba_c"), tier=val("ba_t");
   if(!email) return toast("Enter the login email.");
+  if(!tier) return toast("Choose a licence tier.");
   $("#ba_btn").disabled=true; $("#ba_btn").textContent="Creating…";
   try{
-    const j = await callBureauAdmin({action:"create", email, country_id:cid, org_name:nz(val("ba_org")), contact_name:nz(val("ba_name"))});
+    const j = await callBureauAdmin({action:"create", email, country_id:cid, tier, org_name:nz(val("ba_org")), contact_name:nz(val("ba_name"))});
     await loadData(); $("#ba_out").innerHTML = pwHtml(j, DB.cById[cid]);
   }catch(e){ toast(e.message); $("#ba_btn").disabled=false; $("#ba_btn").textContent="Create login"; }
 };
@@ -1215,13 +1249,23 @@ window.bureauAct = async (action, uid, active) => {
     else toast(active?"Login enabled.":"Login disabled.");
   }catch(e){ toast(e.message); }
 };
-window.startPreview = async cid => {
+window.setTier = async (uid, tier) => {
+  if(!tier) return;
+  try{ await callBureauAdmin({action:"set_tier", user_id:uid, tier}); await loadData(); toast("Tier set to "+LIC_L[tier]+"."); }
+  catch(e){ toast(e.message); }
+};
+window.startPreview = async (cid, tier) => {
+  PREVIEW_TIER = tier || "bureau"; HIST = null;
+  if(PREVIEW_TIER==="free"){
+    const c = DB.cById[cid];
+    PORTAL = {country:{id:c.id,name:c.name,iso2:c.iso2}, org:{org_name:"Preview (admin)"}}; MODE="preview"; VIEW="b_history"; buildNav(); return render();
+  }
   $("#mainEl").innerHTML = `<div class="loadWrap"><div class="spin"></div>Loading preview…</div>`;
   const {data,error} = await sb.rpc("bureau_portal_preview",{cid});
   if(error){ toast(error.message); MODE="admin"; VIEW="access"; buildNav(); return render(); }
   PORTAL = data; MODE="preview"; VIEW="b_home"; buildNav(); render();
 };
-window.exitPreview = () => { MODE="admin"; VIEW="access"; PORTAL=null; buildNav(); render(); };
+window.exitPreview = () => { MODE="admin"; VIEW="access"; PORTAL=null; HIST=null; buildNav(); render(); };
 
 /* =====================================================================
    BUREAU PORTAL (client view)
@@ -1340,6 +1384,274 @@ function bVisa(){
   ${c.transport_summary?`<div class="card"><h3>Transport network</h3><p>${esc(c.transport_summary)}</p></div>`:""}
   <p style="font-size:12px;color:var(--muted)">Visa rules change often. Confirm with the immigration authority before quoting in a bid document.</p>`;
 }
+
+/* =====================================================================
+   BID HISTORY (ICCA Bid Wins layer)
+   What each licence tier sees is decided server side by bid_history() /
+   bid_history_preview(); the page only lays out what it is given.
+   ===================================================================== */
+let HIST = null, HADM = null;
+const AWARD_L = {awarded:"Awarded", held:"Held", cancelled:"Cancelled"};
+const SEC_L = SECTORS;
+const COVERAGE = `Coverage is partial. ICCA's public Bid Wins feed carries only the wins its members choose to report, not the full ICCA database. Past editions of the African forums come from the agency's own rotation-map research, and each record shows its source and the date it was last checked.`;
+const hostHtml = w => w.country||w.city ? `${w.city?esc(w.city)+", ":""}${w.iso2?flag(w.iso2)+" ":""}${esc(w.country||"")}` : `<span class="chip closed" title="Pass 2 confirms the host on the organiser's own site">host not yet confirmed</span>`;
+const yearOf = w => w.year || (w.event_start? +w.event_start.slice(0,4) : null);
+function factorsHtml(w){
+  if(!w.win_factors) return "";
+  return `<div class="why"><b>How it was won</b>${w.win_factors_status==="draft"?` <span class="chip watchlist" title="Drafted from the announcement. A team member has not yet checked it against the source.">Draft, under review</span>`:""}<br>${esc(w.win_factors)}</div>`;
+}
+const noteHtml = w => w.note ? `<div style="font-size:11.5px;color:var(--muted)">${esc(w.note)}</div>` : "";
+const quoteHtml = w => w.quote ? `<div class="quote">“${esc(w.quote)}…”${w.source_url?` <a href="${esc(w.source_url)}" target="_blank" rel="noopener">source ↗</a>`:""}</div>` : "";
+const srcLink = w => w.source_url ? `<a href="${esc(w.source_url)}" target="_blank" rel="noopener">${w.source_tier?esc(TIER_L[w.source_tier]):"source"} ↗</a>` : `<span style="color:var(--muted)">no source yet</span>`;
+const lockedHtml = (what, tiers) => `<div class="card"><h3>${esc(what)}</h3><p style="font-size:13.5px">${esc(what)} is part of the ${esc(tiers)} licence${tiers.includes(" and ")?"s":""}. Ask ${AGENCY_EMAIL} about moving up a tier.</p></div>`;
+const mon = d => d? new Date(d+"T00:00:00").toLocaleDateString("en-GB",{month:"short",year:"numeric"}) : "–";
+
+async function loadHistory(){
+  const t = curTier(), cid = PORTAL?.country?.id, key = MODE+"|"+t+"|"+cid;
+  if(HIST && HIST._key===key) return HIST;
+  let data;
+  if(MODE==="preview"){ const r = await sb.rpc("bid_history_preview",{cid, p_tier:t}); if(r.error) throw new Error(r.error.message); data=r.data; }
+  else if(!t || t==="free"){ const r = await sb.rpc("bid_wins_teaser"); if(r.error) throw new Error(r.error.message); data={teaser:r.data}; }
+  else { const r = await sb.rpc("bid_history"); if(r.error) throw new Error(r.error.message); data=r.data; }
+  if(data?.error) throw new Error(data.error==="not_entitled" ? "Your licence does not include the bid history." : data.error);
+  HIST = data; HIST._key = key; return HIST;
+}
+
+async function bHistory(){
+  $("#mainEl").innerHTML = `<div class="loadWrap"><div class="spin"></div>Loading bid history…</div>`;
+  let h; try{ h = await loadHistory(); }catch(e){ $("#mainEl").innerHTML = `<div class="card"><h3>Could not load the bid history</h3><p>${esc(e.message)}</p></div>`; return; }
+  if(h.teaser) return teaserView(h.teaser);
+  const t = curTier(), cname = h.country?.name || PORTAL?.country?.name || "your country";
+  const sub = state.hSub || "country";
+  const tabs = [["country","Won in "+cname,null],["series","Series profiles",null],["soon","Opening soon",tierAtLeast("bureau")?null:"Bureau"],["rivals","Competitors",tierAtLeast("bureau_plus")?null:"Bureau Plus"]];
+  let body = "";
+  if(sub==="country") body = histCountry(h, cname, t);
+  else if(sub==="series") body = histSeries(h);
+  else if(sub==="soon") body = tierAtLeast("bureau") ? histSoon(h) : lockedHtml("Opening soon","Bureau and Bureau Plus");
+  else if(sub==="rivals") body = tierAtLeast("bureau_plus") ? histRivalsShell(h) : lockedHtml("The competitor view","Bureau Plus");
+  $("#mainEl").innerHTML = `
+  <div class="pageHead"><h2>Bid history</h2><div class="meta">Who won which international meetings, where and when · ${esc(LIC_L[t]||t)} licence</div></div>
+  <p class="coverage">${COVERAGE}</p>
+  <div class="subTabs">${tabs.map(([k,l,lock])=>`<button class="${k===sub?"active":""}" onclick="state.hSub='${k}';bHistory()">${esc(l)}${lock?`<span class="lk">${esc(lock)}</span>`:""}</button>`).join("")}</div>
+  ${body}`;
+  if(sub==="rivals" && tierAtLeast("bureau_plus") && state.hRivals?.length) runRivals();
+}
+window.bHistory = bHistory;
+
+function histCountry(h, cname, t){
+  const wins = h.wins||[];
+  return `${t==="explorer"?`<p class="lede">Your Explorer licence shows Verified editions recorded at least 30 days ago. Win-factors notes, estimated bid windows and Opening soon come with the Bureau licence.</p>`:""}
+  <div class="card tblWrap"><h3>International meetings hosted in ${esc(cname)}</h3>
+  ${wins.length? `<table class="data"><thead><tr><th>Year</th><th>Series</th><th>City</th><th>Status</th><th>Won by</th><th>Sector</th><th>Confidence</th><th>Source</th></tr></thead><tbody>
+  ${wins.map(w=>`<tr><td><b>${esc(yearOf(w)||"–")}</b>${w.label&&w.label!=String(yearOf(w))?`<br><span style="font-size:11.5px;color:var(--muted)">${esc(w.label)}</span>`:""}</td>
+    <td><b>${esc(w.series)}</b>${noteHtml(w)}${factorsHtml(w)}${quoteHtml(w)}</td><td>${esc(w.city||"–")}</td><td>${esc(AWARD_L[w.status]||w.status)}</td>
+    <td style="font-size:12.5px">${esc(w.winning_bidder||"–")}${w.competing?`<br><span style="color:var(--muted)">Also in the running: ${w.competing.map(esc).join(", ")}</span>`:""}</td>
+    <td>${w.sector?`<span class="chip sector">${esc(SEC_L[w.sector]||w.sector)}</span>`:"–"}</td><td>${confChip(w)}<div style="font-size:11px;color:var(--muted)">${w.verified_on?"checked "+fmtD(w.verified_on):"never checked"}</div></td><td style="font-size:12.5px">${srcLink(w)}</td></tr>`).join("")}
+  </tbody></table>` : `<p class="empty">No ${t==="explorer"?"Verified ":""}awarded or held editions are recorded for ${esc(cname)} yet. New wins are added from the weekly scan.</p>`}</div>`;
+}
+
+function histSeries(h){
+  const q = (state.hQ||"").toLowerCase();
+  const list = (h.series||[]).filter(s=>(!state.hAfrica || s.africa_editions>0) && (!state.hNoFixed || !s.fixed_venue) && (!q || s.name.toLowerCase().includes(q) || (s.organiser||"").toLowerCase().includes(q)));
+  const canEst = tierAtLeast("bureau");
+  return `<div class="filters">
+    <input type="search" placeholder="Search series or organiser" value="${esc(state.hQ||"")}" onchange="state.hQ=this.value;bHistory()">
+    <label class="toggle"><input type="checkbox" ${state.hAfrica?"checked":""} onchange="state.hAfrica=this.checked;bHistory()"> Hosted in Africa at least once</label>
+    <label class="toggle"><input type="checkbox" ${state.hNoFixed?"checked":""} onchange="state.hNoFixed=this.checked;bHistory()"> Hide fixed-venue series</label>
+    <span style="font-size:12.5px;color:var(--muted)">${list.length} series</span></div>
+  <div class="grid cols2">${list.map(s=>{
+    const eds = s.editions||[];
+    const est = canEst && s.next_window_start ? `<div class="estBox"><b>Estimated bid window ${esc(mon(s.next_window_start))} to ${esc(mon(s.next_window_end))}</b><br>${esc(s.next_window_basis||"")}<br><span style="color:var(--muted)">An estimate from past editions, not an organiser announcement.</span></div>`
+              : canEst && s.next_window_basis ? `<div style="font-size:12px;color:var(--muted)">${esc(s.next_window_basis)}</div>` : "";
+    return `<div class="evCard serCard">
+      <div class="chips">${s.sector?`<span class="chip sector">${esc(SEC_L[s.sector]||s.sector)}</span>`:""}${s.cycle_months?`<span class="chip lvl">every ${s.cycle_months%12===0?(s.cycle_months/12===1?"year":s.cycle_months/12+" years"):s.cycle_months+" months"}</span>`:""}<span class="chip hs">${s.history_depth} edition${s.history_depth===1?"":"s"} with a known host</span>${s.africa_editions?`<span class="chip open">${s.africa_editions} in Africa</span>`:""}${s.fixed_venue?`<span class="chip closed">fixed venue</span>`:""}${s.dormant?`<span class="chip closed" title="No successor edition for 18 months">dormant</span>`:""}${confChip(s)}</div>
+      <h4>${esc(s.name)}</h4>
+      ${s.organiser?`<div class="org">${esc(s.organiser)}</div>`:""}
+      ${s.decision_body?`<div style="font-size:12.5px;color:var(--muted)"><b>Host chosen by:</b> ${esc(s.decision_body)}${canEst&&s.typical_award_lead_months?` · typically ${s.typical_award_lead_months} months ahead`:""}</div>`:""}
+      ${s.rotation_pattern?`<div style="font-size:12.5px;color:var(--muted)"><b>Rotation:</b> ${esc(s.rotation_pattern)}</div>`:""}
+      ${est}
+      <details ${eds.length<=4?"open":""}><summary>Past and awarded editions (${eds.length})</summary>
+        <table class="data sm"><tbody>${eds.map(w=>`<tr><td style="white-space:nowrap"><b>${esc(yearOf(w)||"–")}</b></td><td>${hostHtml(w)}${w.winning_bidder?`<br><span style="font-size:11.5px;color:var(--muted)">${esc(w.winning_bidder)}</span>`:""}${noteHtml(w)}${factorsHtml(w)}</td><td>${esc(AWARD_L[w.status]||"")}</td><td>${confChip(w)}</td><td>${w.source_url?`<a href="${esc(w.source_url)}" target="_blank" rel="noopener">↗</a>`:""}</td></tr>`).join("")}</tbody></table>
+      </details></div>`;}).join("") || '<div class="card empty">No series match.</div>'}</div>`;
+}
+
+function histSoon(h){
+  const list = h.opening_soon||[];
+  return `<p class="lede">Series whose estimated bid window falls within the next 18 months. Each window is estimated from at least three past editions with a known host. It never overrides a window the organiser has published, so check Strategic Events for those first.</p>
+  <div class="grid cols2">${list.map(s=>`<div class="evCard">
+    <div class="chips"><span class="chip watchlist">Expected open</span><span class="chip hs">${s.history_depth} editions</span>${confChip(s)}</div>
+    <h4>${esc(s.name)}</h4>
+    <div class="estBox"><b>${esc(mon(s.start))} to ${esc(mon(s.end))}</b><br>${esc(s.basis||"")}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:auto">
+      <button class="btn sm ghost" onclick="state.hSub='series';state.hQ=${esc(JSON.stringify(s.name))};bHistory()">Series profile ›</button>
+      ${MODE!=="admin"?`<a class="btn sm primary" href="${interestLink(s.name)}">Express interest</a>`:""}
+    </div></div>`).join("") || '<div class="card empty">No estimated windows fall in the next 18 months yet. Estimates appear as series reach three editions with a known host.</div>'}</div>`;
+}
+
+function histRivalsShell(h){
+  const own = h.country?.name;
+  const names = [...new Set((h.series||[]).flatMap(s=>(s.editions||[]).map(w=>w.country)).filter(Boolean))].filter(n=>n!==own).sort();
+  const sel = new Set(state.hRivals||[]);
+  return `<p class="lede">Pick the destinations you compete with. The view shows every recorded edition they have hosted, grouped by region and sector.</p>
+  <div class="card"><div class="field"><label>Rival destinations (up to 8)</label>
+    <div class="checks" style="max-height:180px;overflow-y:auto">${names.map(n=>`<label><input type="checkbox" value="${esc(n)}" ${sel.has(n)?"checked":""} onchange="toggleRival(this)"> ${esc(n)}</label>`).join("")}</div></div>
+    <button class="btn primary" onclick="runRivals()">Show their wins</button></div>
+  <div id="rivalsOut"></div>`;
+}
+window.toggleRival = el => { const s=new Set(state.hRivals||[]); if(el.checked){ if(s.size>=8){ el.checked=false; return toast("Up to 8 rivals at a time."); } s.add(el.value); } else s.delete(el.value); state.hRivals=[...s]; };
+window.runRivals = async () => {
+  const out = $("#rivalsOut"); if(!out) return;
+  if(!state.hRivals?.length){ out.innerHTML = `<p class="empty">Choose at least one rival destination.</p>`; return; }
+  out.innerHTML = `<div class="loadWrap" style="min-height:120px"><div class="spin"></div>Loading…</div>`;
+  const {data,error} = await sb.rpc("bid_history_competitors",{rivals:state.hRivals});
+  if(error){ out.innerHTML = `<div class="card"><p>${esc(error.message)}</p></div>`; return; }
+  const by = (k)=>{ const m={}; data.forEach(w=>{ const v=w[k]||"Unknown"; m[v]=(m[v]||0)+1; }); return Object.entries(m).sort((a,b)=>b[1]-a[1]); };
+  out.innerHTML = `<div class="kpis">${by("country").map(([c,n])=>`<div class="kpi"><div class="n">${n}</div><div class="l">${esc(c)}</div></div>`).join("")}</div>
+  <div class="grid cols2"><div class="card"><h3>By region</h3>${by("region").map(([r,n])=>`<div class="fitRow"><span class="nm">${esc(r)}</span><span class="bar"><i style="width:${n/data.length*100}%"></i></span><span class="sc">${n}</span></div>`).join("")}</div>
+  <div class="card"><h3>By sector</h3>${by("sector").map(([s,n])=>`<div class="fitRow"><span class="nm" style="width:190px">${esc(SEC_L[s]||s)}</span><span class="bar"><i style="width:${n/data.length*100}%"></i></span><span class="sc">${n}</span></div>`).join("")}</div></div>
+  <div class="card tblWrap"><h3>Their recorded wins</h3>${data.length?`<table class="data sm"><thead><tr><th>Destination</th><th>Year</th><th>Series</th><th>City</th><th>Sector</th><th>Confidence</th><th></th></tr></thead><tbody>
+  ${data.map(w=>`<tr><td>${flag(w.iso2)} ${esc(w.country)}</td><td>${esc(w.year||"–")}</td><td>${esc(w.series)}</td><td>${esc(w.city||"–")}</td><td>${esc(SEC_L[w.sector]||w.sector||"–")}</td><td>${confChip(w)}</td><td>${w.source_url?`<a href="${esc(w.source_url)}" target="_blank" rel="noopener">↗</a>`:""}</td></tr>`).join("")}</tbody></table>`:`<p class="empty">No recorded wins for these destinations yet.</p>`}</div>`;
+};
+
+function teaserView(list){
+  const q=(state.hQ||"").toLowerCase();
+  const rows = list.filter(s=>!q || s.series.toLowerCase().includes(q));
+  $("#mainEl").innerHTML = `
+  <div class="pageHead"><h2>Bid history</h2><div class="meta">Free view · last three host countries per series</div></div>
+  <div class="card" style="background:#f4f8f7"><b>See the full history.</b> A paid licence adds every edition, host cities, who won and how, estimated bid windows and the competitor view. Write to <a href="mailto:${AGENCY_EMAIL}?subject=${encodeURIComponent("Bid history licence")}">${AGENCY_EMAIL}</a> to upgrade.</div>
+  <div class="filters"><input type="search" placeholder="Search series" value="${esc(state.hQ||"")}" onchange="state.hQ=this.value;bHistory()"><span style="font-size:12.5px;color:var(--muted)">${rows.length} series</span></div>
+  <div class="card tblWrap"><table class="data"><thead><tr><th>Series</th><th>Last hosts</th></tr></thead><tbody>
+  ${rows.map(s=>`<tr><td><b>${esc(s.series)}</b></td><td class="teaserHosts">${(s.hosts||[]).map(h=>`<span>${esc(h.country)} ${esc(h.year)}</span>`).join(" · ")}</td></tr>`).join("")}
+  </tbody></table></div>`;
+}
+
+/* ---------- admin: Bid History tab ---------- */
+async function loadHistAdmin(){
+  const [w,s,l] = await Promise.all([
+    sb.from("bid_wins").select("*").order("edition_year",{ascending:false,nullsFirst:false}),
+    sb.from("series").select("*").order("name"),
+    sb.from("history_sync_log").select("*").order("ran_at",{ascending:false}).limit(1)
+  ]);
+  const err = [w,s,l].find(x=>x.error); if(err) throw new Error(err.error.message);
+  HADM = {wins:w.data, series:s.data, sByKey:Object.fromEntries(s.data.map(x=>[x.key,x])), last:l.data?.[0]};
+}
+function rHistory(){
+  if(!HADM){ $("#mainEl").innerHTML = `<div class="loadWrap"><div class="spin"></div>Loading bid history…</div>`;
+    loadHistAdmin().then(()=>{ if(VIEW==="history") rHistory(); }).catch(e=>{ $("#mainEl").innerHTML=`<div class="card"><h3>Could not load the bid history</h3><p>${esc(e.message)}</p></div>`; }); return; }
+  const W = HADM.wins, live = W.filter(w=>w.award_status!=="cancelled");
+  const qn = state.haQueue||"all", q=(state.haQ||"").toLowerCase();
+  const pass2 = w => w.source_tier===2 && w.confidence!=="verified" && w.award_status!=="cancelled";
+  const filt = {all:w=>w.award_status!=="cancelled", pass2, nohost:w=>w.award_status!=="cancelled"&&!w.host_country_name, draft:w=>w.win_factors&&w.win_factors_status==="draft", africa:w=>w.africa_hosted, cancelled:w=>w.award_status==="cancelled"}[qn] || (()=>true);
+  const rows = W.filter(filt).filter(w=>!q || (HADM.sByKey[w.series_key]?.name||"").toLowerCase().includes(q) || (w.host_city||"").toLowerCase().includes(q) || (w.host_country_name||"").toLowerCase().includes(q));
+  const S = HADM.series;
+  const last = HADM.last;
+  $("#mainEl").innerHTML = `
+  <div class="pageHead"><h2>Bid History</h2><div class="meta">ICCA Bid Wins plus rotation-map editions · last Pass 1 ${last?new Date(last.ran_at).toLocaleString("en-GB",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})+(last.result?.added!=null?` (${last.result.added} new)`:last.result?.error?" (error)":""):"never"}</div></div>
+  <p class="coverage">${COVERAGE}</p>
+  <div class="kpis">
+    <div class="kpi"><div class="n">${live.length}</div><div class="l">Editions recorded</div></div>
+    <div class="kpi"><div class="n">${live.filter(w=>w.africa_hosted).length}</div><div class="l">Hosted in Africa</div></div>
+    <div class="kpi gold"><div class="n">${S.filter(s=>s.history_depth>=3).length}</div><div class="l">Series with 3+ known hosts</div></div>
+    <div class="kpi"><div class="n">${S.filter(s=>s.next_window_start).length}</div><div class="l">Estimated bid windows</div></div>
+    <div class="kpi"><div class="n">${W.filter(pass2).length}</div><div class="l">ICCA wins awaiting Tier 1 check</div></div>
+    <div class="kpi"><div class="n">${W.filter(w=>w.win_factors&&w.win_factors_status==="draft").length}</div><div class="l">Draft win-factors notes</div></div>
+  </div>
+  <div class="filters">
+    <input type="search" placeholder="Search series, city or country" value="${esc(state.haQ||"")}" onchange="state.haQ=this.value;rHistory()">
+    <select onchange="state.haQueue=this.value;rHistory()">${[["all","All editions"],["pass2","Pass 2 queue (ICCA, not yet checked)"],["nohost","Host not confirmed"],["draft","Draft win factors"],["africa","Hosted in Africa"],["cancelled","Parked or cancelled"]].map(([k,l])=>`<option value="${k}" ${qn===k?"selected":""}>${l}</option>`).join("")}</select>
+    <button class="btn sm ghost" onclick="runPass1()" id="btnPass1">Run Pass 1 now</button>
+    <button class="btn sm ghost" onclick="recomputeHistory()">Recompute estimates</button>
+    <a class="btn sm ghost" href="history.html" target="_blank" rel="noopener">Open the public teaser ↗</a>
+  </div>
+  <div class="card tblWrap"><div class="cardHead"><h3>${rows.length} edition${rows.length===1?"":"s"}</h3><span style="font-size:12.5px;color:var(--muted)">Click a row to edit, confirm at Tier 1, or review its win factors</span></div>
+  <table class="data sm"><thead><tr><th>Year</th><th>Series</th><th>Host</th><th>Status</th><th>Source</th><th>Confidence</th><th>Win factors</th></tr></thead><tbody>
+  ${rows.map(w=>`<tr class="rowlink" onclick="openWin(${w.id})"><td><b>${esc(w.edition_year||"–")}</b></td><td>${esc(HADM.sByKey[w.series_key]?.name||w.series_key)}<br><span style="font-size:11px;color:var(--muted)">${esc(w.edition_label||"")}</span></td>
+    <td>${hostHtml({city:w.host_city,country:w.host_country_name,iso2:w.host_iso2})}</td><td>${esc(AWARD_L[w.award_status])}</td><td>${w.source_tier?esc(TIER_L[w.source_tier]):"–"}</td><td>${confChip({...w,status:w.award_status})}</td>
+    <td>${w.win_factors?(w.win_factors_status==="draft"?'<span class="chip watchlist">draft</span>':'<span class="chip ok">reviewed</span>'):"–"}</td></tr>`).join("")}
+  </tbody></table></div>`;
+}
+window.runPass1 = async () => {
+  const b=$("#btnPass1"); if(b){ b.disabled=true; b.textContent="Reading ICCA…"; }
+  try{
+    const {data:{session}} = await sb.auth.getSession();
+    const r = await fetch(SUPABASE_URL+"/functions/v1/icca-bid-wins",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token,"apikey":SUPABASE_KEY},body:'{"source":"admin"}'});
+    const j = await r.json(); if(!r.ok||j.error) throw new Error(j.error||("HTTP "+r.status));
+    toast(`Pass 1 done: ${j.fetched} posts read, ${j.added} new, ${j.new_series} new series.`);
+    await loadHistAdmin(); rHistory();
+  }catch(e){ toast("Pass 1 failed: "+e.message); if(b){ b.disabled=false; b.textContent="Run Pass 1 now"; } }
+};
+window.recomputeHistory = async () => {
+  const r = await sb.rpc("history_recompute_admin"); if(r.error) return toast(r.error.message);
+  await loadHistAdmin(); rHistory(); toast("Depth, cycles and windows recomputed.");
+};
+window.openWin = id => {
+  const w = HADM.wins.find(x=>x.id===id); if(!w) return;
+  const s = HADM.sByKey[w.series_key]||{};
+  const africa = DB.countries.filter(c=>c.type==="country");
+  const opt = (v,l,cur)=>`<option value="${esc(v)}" ${String(cur??"")===String(v)?"selected":""}>${esc(l)}</option>`;
+  showModal(`<div class="mHead"><div><h3>${esc(s.name||w.series_key)}</h3><div class="sub">${esc(w.edition_label||"")} · added by ${esc(w.added_by||"–")}${w.icca_post_id?" · ICCA post "+w.icca_post_id:""}${w.source_published_on?" · source published "+fmtD(w.source_published_on):""}</div></div><button class="x" onclick="closeModal()">✕</button></div>
+  <div class="mBody">
+    ${w.source_quote?`<div class="quote" style="margin-bottom:12px">Pass 1 quote: “${esc(w.source_quote)}…”</div>`:""}
+    <div class="frow">
+      <div class="field"><label>Edition year</label><input id="bw_year" type="number" value="${esc(w.edition_year??"")}"></div>
+      <div class="field"><label>Edition label</label><input id="bw_label" value="${esc(w.edition_label||"")}"></div>
+      <div class="field"><label>Status</label><select id="bw_status">${Object.entries(AWARD_L).map(([k,l])=>opt(k,l,w.award_status)).join("")}</select></div>
+      <div class="field"><label>Awarded on</label><input id="bw_awarded" type="date" value="${esc(w.awarded_on||"")}"></div>
+      <div class="field"><label>Event start</label><input id="bw_start" type="date" value="${esc(w.event_start||"")}"></div>
+      <div class="field"><label>Event end</label><input id="bw_end" type="date" value="${esc(w.event_end||"")}"></div>
+    </div>
+    <div class="frow">
+      <div class="field"><label>Host country (Africa)</label><select id="bw_cid"><option value="">Outside Africa or not known</option>${africa.map(c=>opt(c.id,c.name,w.host_country_id)).join("")}</select></div>
+      <div class="field"><label>Host country name</label><input id="bw_cname" value="${esc(w.host_country_name||"")}"><div class="hint">Filled from the list for African hosts</div></div>
+      <div class="field"><label>ISO2</label><input id="bw_iso" maxlength="2" value="${esc(w.host_iso2||"")}"></div>
+      <div class="field"><label>Region</label><input id="bw_region" value="${esc(w.host_region||"")}" placeholder="Europe, Asia, Americas…"></div>
+      <div class="field"><label>Host city</label><input id="bw_city" value="${esc(w.host_city||"")}"></div>
+    </div>
+    <div class="frow">
+      <div class="field"><label>Won by</label><input id="bw_bidder" value="${esc(w.winning_bidder||"")}"></div>
+      <div class="field"><label>Also in the running (comma separated)</label><input id="bw_comp" value="${esc((w.competing_destinations||[]).join(", "))}"></div>
+      <div class="field"><label>Decision body</label><input id="bw_dbody" value="${esc(w.decision_body||"")}"></div>
+    </div>
+    <div class="field"><label>Win factors (one to three sentences; quote under 15 words and link the source)</label><textarea id="bw_wf">${esc(w.win_factors||"")}</textarea></div>
+    <div class="frow">
+      <div class="field"><label>Win-factors status</label><select id="bw_wfs">${opt("draft","Draft",w.win_factors_status)}${opt("reviewed","Reviewed",w.win_factors_status)}</select></div>
+      <div class="field"><label>Source URL</label><input id="bw_src" value="${esc(w.source_url||"")}"></div>
+      <div class="field"><label>Source tier</label><select id="bw_tier"><option value="">–</option>${[1,2,3,4].map(t=>opt(t,t+" · "+TIER_L[t],w.source_tier)).join("")}</select></div>
+      <div class="field"><label>Confidence</label><select id="bw_conf">${Object.entries(CONF_L).map(([k,l])=>opt(k,l,w.confidence)).join("")}</select></div>
+    </div>
+    <div class="frow">
+      <div class="field"><label>Edition note (context shown to subscribers)</label><input id="bw_enote" value="${esc(w.edition_note||"")}"></div>
+      <div class="field"><label>Conflict</label><input id="bw_note" value="${esc(w.conflict_note||"")}"></div>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Last checked ${w.verified_on?fmtD(w.verified_on):"never"}. Only a Tier 1 or Tier 2 page may set a date or host. An ICCA (Tier 2) fact must be re-checked on the organiser's own site within 30 days.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn primary" onclick="saveWin(${w.id},false)">Save</button>
+      <button class="btn ghost" onclick="saveWin(${w.id},true)">Save and mark checked today</button>
+      ${w.win_factors&&w.win_factors_status==="draft"?`<button class="btn ghost" onclick="$('#bw_wfs').value='reviewed';saveWin(${w.id},false)">Mark win factors reviewed</button>`:""}
+      <a class="btn ghost" href="${esc(w.source_url||"#")}" target="_blank" rel="noopener" ${w.source_url?"":"style='display:none'"}>Open source ↗</a>
+    </div>
+  </div>`);
+  $("#bw_cid").addEventListener("change",e=>{ const c=DB.cById[+e.target.value]; if(c){ $("#bw_cname").value=c.name; $("#bw_iso").value=c.iso2; $("#bw_region").value=c.region; } });
+};
+window.saveWin = async (id, markChecked) => {
+  const cid = +val("bw_cid")||null, tier = val("bw_tier")? +val("bw_tier") : null;
+  const p = {
+    edition_year: nz(val("bw_year"))? +val("bw_year") : null, edition_label: nz(val("bw_label")), award_status: val("bw_status"),
+    awarded_on: nz(val("bw_awarded")), event_start: nz(val("bw_start")), event_end: nz(val("bw_end")),
+    host_country_id: cid, host_country_name: nz(val("bw_cname")), host_iso2: nz(val("bw_iso").toUpperCase()), host_region: nz(val("bw_region")), host_city: nz(val("bw_city")),
+    winning_bidder: nz(val("bw_bidder")), competing_destinations: val("bw_comp").split(",").map(x=>x.trim()).filter(Boolean), decision_body: nz(val("bw_dbody")),
+    win_factors: nz(val("bw_wf")), win_factors_status: val("bw_wfs"), source_url: nz(val("bw_src")), source_tier: tier,
+    confidence: val("bw_conf"), conflict_note: nz(val("bw_note")), edition_note: nz(val("bw_enote"))
+  };
+  if(markChecked){
+    if(!p.source_url || !tier || tier>2) return toast("Marking checked needs a Tier 1 or Tier 2 source URL.");
+    p.confidence = "verified"; p.verified_on = TODAY();
+  }
+  const r = await sb.from("bid_wins").update(p).eq("id",id);
+  if(r.error) return toast(r.error.message);
+  await sb.rpc("history_recompute_admin");
+  await loadHistAdmin(); closeModal(); rHistory(); toast(markChecked?"Saved and marked checked today.":"Saved.");
+};
 
 /* =====================================================================
    MODAL PLUMBING

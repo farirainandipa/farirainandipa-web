@@ -112,6 +112,24 @@ agency's priority set is Zimbabwe, Zambia, Rwanda, Kenya, Botswana, Namibia
 The operating rules for the weekly scan live in the Claude Project doc
 `scan-rules.md`.
 
+**Update Nov 2026 (bid history layer, migrations 008 to 015):** `series` is
+now the parent of `events.series_key` and `bid_opportunities.series_key` (FK),
+with `organisers` above it. `bid_wins` holds one row per awarded or held
+edition (history only; future opportunities stay on `events`), with the same
+trust fields plus `win_factors`/`win_factors_status` (draft until reviewed),
+`source_quote` (max 14 words, check-enforced; never store ICCA article text)
+and `source_published_on` (the ICCA post date, which is not the award date).
+`user_access.tier` is `free`/`explorer`/`bureau`/`bureau_plus`; every bureau
+login needs one. These three tables are admin-only under RLS. Subscribers read
+them only through `bid_history()`, `bid_history_competitors()` (Bureau Plus)
+and the anon `bid_wins_teaser()` (public page `public/pipeline/history.html`),
+which apply the tier rules server side. Keep it that way: never add an
+`authenticated` read policy on them. Pass 1 is the `icca-bid-wins` edge
+function on pg_cron job `icca_bid_wins_weekly`. `history_recompute()` (run by
+the nightly `pipeline_demote()`) derives depth, cycle, Dormant and the
+estimated next window, and never overrides a Tier 1 bid window on `events`.
+Details and the Pass 2 rules are in `docs/HANDOVER-bid-history.md`.
+
 When changing schema, add a new file under `supabase/migrations/` (don't edit
 existing ones) and apply it to the linked project. After any DDL change, check
 Supabase security advisors for new RLS/lint warnings.
