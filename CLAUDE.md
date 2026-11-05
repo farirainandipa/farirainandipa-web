@@ -89,6 +89,29 @@ auth flow is added, scope `authenticated` policies down further (e.g. to a
 specific admin user/role claim) rather than leaving them open to any signed-in
 user.
 
+**Update Nov 2026 (pipeline v2 trust schema, migrations 004 and 005):**
+`bid_opportunities` and `events` carry provenance on every row
+(`source_tier` 1 primary / 2 official / 3 aggregator / 4 submitted,
+`confidence` verified / stale / unverified / conflict, `verified_on`,
+`conflict_note`) plus `series_key`, `edition_label` and `host_selection`.
+Events also carry the rotation-map fields (`forum_group`, `decision_body`,
+`lead_time`, `last_hosts`, `openness_2027_29`, `fixed_venue`). Only a Tier 1 or
+2 page may set a date or host; aggregator hits create candidates only. The
+nightly `public.pipeline_demote()` (pg_cron job `pipeline_demote_nightly`)
+moves Verified to Stale after 60 days (14 for open bids), Stale to Unverified
+after 120, and closes passed deadlines; the page also computes the effective
+badge client-side so a missed job never shows a stale record as Verified.
+`destination_profiles` (one row per country, fit-score inputs) and
+`destination_profile_fields` (researched fields with source URL and
+confidence) are admin-write, and a bureau can read its own country's rows.
+`submissions` takes anonymous inserts from `public/pipeline/submit.html`
+(the three gating questions are required); admins review it on the
+Submissions tab, and confirming creates an `events` row at tier 4. The
+agency's priority set is Zimbabwe, Zambia, Rwanda, Kenya, Botswana, Namibia
+(`countries.priority`); every other country still has its own bureau view.
+The operating rules for the weekly scan live in the Claude Project doc
+`scan-rules.md`.
+
 When changing schema, add a new file under `supabase/migrations/` (don't edit
 existing ones) and apply it to the linked project. After any DDL change, check
 Supabase security advisors for new RLS/lint warnings.
