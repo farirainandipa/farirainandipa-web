@@ -130,6 +130,30 @@ the nightly `pipeline_demote()`) derives depth, cycle, Dormant and the
 estimated next window, and never overrides a Tier 1 bid window on `events`.
 Details and the Pass 2 rules are in `docs/HANDOVER-bid-history.md`.
 
+**Update Nov 2026 (destination partner submissions, migrations 016 and
+017):** outside parties (bureaux, venues, ministries, associations, airlines)
+propose profile data through `profile_submit()`, `profile_verify()` (magic
+link) and `profile_status()`, the only anon surface. Rows land in
+`profile_submitters`, `profile_submissions` and `profile_submission_fields`
+(what may be proposed, and by which submitter type, is the
+`profile_field_catalog`); all of these, plus `profile_review_audit`,
+`profile_submission_attempts`, `freemail_domains` and
+`verified_submitter_domains`, are admin-only under RLS and the anon and
+bureau roles hold no table grants on them. Keep it that way. A submission
+never writes live data: an admin promotes each field from the review queue,
+which writes `destination_profile_fields` (or a `countries` visa column) at
+`source_tier` 4, `confidence` unverified, with `recheck_due_on` 30 days out.
+`destination_profile_fields` now takes the four-state confidence (plus
+`partial` for the researched rows) and joins `pipeline_demote()` only where
+`source_tier` is set. Every change to `destination_profile_fields`,
+`destination_profiles` and the visa block on `countries` lands in
+`profile_review_audit` with the old row. Supporting documents go to the
+private `submission-uploads` bucket; anon may upload only into a fresh
+submission's folder. The verification email needs the
+`send-submission-verification` edge function and a Vault secret named
+`submission_webhook_secret`; until both exist submissions wait in
+`awaiting_email`. Spec: `docs/HANDOVER-partner-submissions.md`.
+
 When changing schema, add a new file under `supabase/migrations/` (don't edit
 existing ones) and apply it to the linked project. After any DDL change, check
 Supabase security advisors for new RLS/lint warnings.
