@@ -62,11 +62,19 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const BUCKET = "submission-uploads";
 const MAX_FILE = 10 * 1024 * 1024;
 const FILE_TYPES = {"application/pdf":".pdf","image/png":".png","image/jpeg":".jpg","application/vnd.openxmlformats-officedocument.wordprocessingml.document":".docx","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":".xlsx"};
-// Submitter types the form takes today. The other four blocks follow; their
-// catalog entries already exist, so enabling one here is enough.
-const TYPES = [["bureau","Convention bureau",true],["venue","Venue or hotel",false],["ministry","Immigration or government ministry",false],["association","Tourism industry association",false],["airline","Airline",false]];
+// Which data points each type sees comes from profile_field_catalog; this list
+// only controls the picker.
+const TYPES = [["bureau","Convention bureau",true],["venue","Venue or hotel",true],["ministry","Immigration or government ministry",true],["association","Tourism industry association",true],["airline","Airline",true]];
+const TYPE_HINT = {
+  bureau: "Tell us about the bureau itself, its bid support and what it has won or is bidding for.",
+  venue: "One venue per submission. Use the organisation field for the venue or hotel name.",
+  ministry: "Visa facts as published. Visa ease is scored by our team from the evidence, not submitted.",
+  association: "Membership, the sectors you represent and what you can put behind a bid.",
+  airline: "Routes into the country, frequencies, seasonality and any delegate offers."
+};
+const ENUM_L = {visa_free_all:"Visa-free for all African passports", visa_free_most:"Visa-free for most African passports", mixed:"Mixed", restrictive:"Restrictive", in_kind:"In kind", none:"None"};
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const human = s => String(s).replace(/_/g," ").replace(/^\w/, c => c.toUpperCase());
+const human = s => ENUM_L[s] || String(s).replace(/_/g," ").replace(/^\w/, c => c.toUpperCase());
 const sanitise = name => name.replace(/[^A-Za-z0-9._-]/g, "_");
 const view = document.getElementById("view");
 const qs = new URLSearchParams(location.search);
@@ -110,7 +118,7 @@ function fieldInput(f){
 }
 
 function dataPoint(f){
-  return `<div class="dp" data-key="${esc(f.key)}">
+  return `<div class="dp" data-key="${esc(f.key)}" data-kind="${esc(f.value_kind)}">
     <h3>${esc(f.label)}</h3>
     <div class="field">${fieldInput(f)}</div>
     <div class="meta">
@@ -140,7 +148,7 @@ async function showForm(){
         </div>
         <div class="hp" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
       </fieldset>
-      <fieldset><legend>Data points <small>Fill in the ones you can speak to. Leave the rest blank.</small></legend>
+      <fieldset><legend>Data points <small id="typeHint">Fill in the ones you can speak to. Leave the rest blank.</small></legend>
         <div id="points"></div>
       </fieldset>
       <button class="btn" id="go" type="submit">Submit for review</button>
@@ -150,6 +158,7 @@ async function showForm(){
   const typeSel = document.getElementById("submitter_type");
   const renderPoints = () => {
     const t = typeSel.value;
+    document.getElementById("typeHint").textContent = `${TYPE_HINT[t] || ""} Fill in the ones you can speak to. Leave the rest blank.`;
     document.getElementById("points").innerHTML = opts.fields.filter(f => f.allowed_types.includes(t)).map(dataPoint).join("");
   };
   typeSel.addEventListener("change", renderPoints);
@@ -165,6 +174,7 @@ async function showForm(){
     for(const dp of document.querySelectorAll("#points .dp")){
       const key = dp.dataset.key, label = dp.querySelector("h3").textContent;
       const value = val(`v_${key}`); if(value == null) continue;
+      if(dp.dataset.kind === "integer" && !/^\d{1,9}$/.test(value)){ problems.push(`${label}: enter a whole number`); continue; }
       const as_of = val(`d_${key}`), source_url = val(`s_${key}`), file = document.getElementById(`u_${key}`).files[0] || null;
       if(!as_of){ problems.push(`${label}: add the date this was true on`); continue; }
       if(!source_url && !file){ problems.push(`${label}: add a source link or a document`); continue; }
