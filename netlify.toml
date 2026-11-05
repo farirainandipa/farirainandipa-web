@@ -16,6 +16,12 @@
   to = "/pipeline/history.html"
   status = 200
 
+# Destination partner submission form (no login), also the verify link and status page.
+[[redirects]]
+  from = "/pipeline/partner"
+  to = "/pipeline/partner.html"
+  status = 200
+
 # SPA fallback: every other path renders the React app shell.
 [[redirects]]
   from = "/*"

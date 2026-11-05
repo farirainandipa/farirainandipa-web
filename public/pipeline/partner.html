@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Destination partner submission · Africa MICE Bid Pipeline · Farirai Nandipa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+:root{--ink:#1f2222;--muted:#5f6a6b;--bg:#eeeeee;--card:#ffffff;--line:#e8e8e8;--green:#46666a;--green2:#5a7f84;--red:#a33b2e;--amber:#8a6d1f}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans',system-ui,sans-serif;background:linear-gradient(160deg,#46666a 0%,#4f7176 55%,#5a7f84 100%);color:var(--ink);font-size:14px;line-height:1.5;min-height:100vh;padding:28px 16px}
+h1,h2{font-family:'IBM Plex Serif',Georgia,serif}
+.card{background:var(--card);border-radius:16px;padding:32px;max-width:900px;margin:0 auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.brandLogo{margin:0 auto 18px;text-align:center}
+.brandLogo img{display:block;width:min(240px,70%);margin:0 auto}
+.brandLogo .fnSub{display:block;font-size:10.5px;letter-spacing:.42em;text-indent:.42em;color:#3f3f3d;margin-top:2px}
+h1{font-size:22px;text-align:center;margin-bottom:4px}
+p.sub{text-align:center;color:var(--muted);margin-bottom:22px;font-size:13.5px;max-width:64ch;margin-left:auto;margin-right:auto}
+fieldset{border:1px solid var(--line);border-radius:12px;padding:16px 16px 4px;margin-bottom:18px}
+legend{font-family:'IBM Plex Serif',Georgia,serif;font-weight:700;padding:0 8px;font-size:15px}
+legend small{display:block;font-family:'IBM Plex Sans',sans-serif;font-weight:400;color:var(--muted);font-size:12px}
+.frow{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0 14px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+.field input,.field select,.field textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:#fbfbfa}
+.field textarea{min-height:64px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{outline:2px solid var(--green2);border-color:transparent}
+.field input[type=file]{padding:7px 10px;font-size:13px}
+.dp{border:1px solid var(--line);border-radius:12px;padding:14px 14px 0;margin-bottom:14px;background:#fafaf9}
+.dp h3{font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:600;margin-bottom:10px}
+.dp .meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0 12px}
+.dp .meta .field label{font-size:11px}
+.btn{border:none;border-radius:9px;padding:12px 18px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;background:var(--green);color:#fff}
+.btn:disabled{opacity:.6;cursor:default}
+.note{font-size:12.5px;color:var(--muted);margin-top:10px}
+.err{background:#fbeae7;color:var(--red);padding:10px 12px;border-radius:9px;margin-top:12px;font-weight:600}
+.warn{background:#fbf3e0;color:var(--amber);padding:10px 12px;border-radius:9px;margin-top:12px}
+.ok{background:#e3f0e9;color:var(--green);padding:16px;border-radius:9px;margin-top:12px}
+.ok b{display:block;margin-bottom:4px}
+.hp{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+table.status{width:100%;border-collapse:collapse;margin-top:14px;font-size:13.5px}
+table.status th,table.status td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+table.status th{font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:600;background:#eceeee;color:var(--muted)}
+.pill.accepted,.pill.edited,.pill.published{background:#e3f0e9;color:var(--green)}
+.pill.rejected{background:#fbeae7;color:var(--red)}
+.pill.confirm_requested{background:#fbf3e0;color:var(--amber)}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="brandLogo"><img src="https://upzkvszgoqhoefkiwoep.supabase.co/functions/v1/dashboard/logo" alt="Farirai Nandipa"><span class="fnSub">M.I.C.E AGENCY</span></div>
+  <div id="view"></div>
+</div>
+<script>
+const SUPABASE_URL = "https://upzkvszgoqhoefkiwoep.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwemt2c3pnb3Fob2Vma2l3b2VwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxMzg1MjQsImV4cCI6MjA5NzcxNDUyNH0.4RB-5FCWW7JXvGBKs0PlzkYcUeG5kTVxTVdoXUNp8ao";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const BUCKET = "submission-uploads";
+const MAX_FILE = 10 * 1024 * 1024;
+const FILE_TYPES = {"application/pdf":".pdf","image/png":".png","image/jpeg":".jpg","application/vnd.openxmlformats-officedocument.wordprocessingml.document":".docx","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":".xlsx"};
+// Submitter types the form takes today. The other four blocks follow; their
+// catalog entries already exist, so enabling one here is enough.
+const TYPES = [["bureau","Convention bureau",true],["venue","Venue or hotel",false],["ministry","Immigration or government ministry",false],["association","Tourism industry association",false],["airline","Airline",false]];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const human = s => String(s).replace(/_/g," ").replace(/^\w/, c => c.toUpperCase());
+const sanitise = name => name.replace(/[^A-Za-z0-9._-]/g, "_");
+const view = document.getElementById("view");
+const qs = new URLSearchParams(location.search);
+
+const header = (title, sub) => `<h1>${esc(title)}</h1><p class="sub">${sub}</p>`;
+
+async function showVerify(token){
+  view.innerHTML = header("Confirming your email", "One moment.");
+  const {data, error} = await sb.rpc("profile_verify", {token});
+  if(error || !data){ view.innerHTML = header("Confirming your email", "") + `<div class="err">We could not confirm that link. ${esc(error?.message || "")}</div>`; return; }
+  if(!data.ok){
+    const why = data.reason === "expired" ? "That link has expired. Submit again and we will send a fresh one." : "That link is not valid. It may have been used already, or copied incompletely.";
+    view.innerHTML = header("Confirming your email", "") + `<div class="err">${why}</div><p class="note"><a href="partner">Back to the form</a></p>`;
+    return;
+  }
+  view.innerHTML = header("Email confirmed", "Your submission is now in the review queue.") +
+    `<div class="ok"><b>Thank you.</b> We check every data point against a primary source before it reaches the destination profile, and we may email you to confirm a detail.</div>
+     <p class="note">You can follow progress at any time on your <a href="partner?status=${encodeURIComponent(data.status_key)}">status page</a>. Keep that link; it is private to you.</p>`;
+}
+
+async function showStatus(key){
+  view.innerHTML = header("Submission status", "");
+  const {data, error} = await sb.rpc("profile_status", {skey: key});
+  if(error || !data){ view.innerHTML += `<div class="err">We could not find that submission.</div>`; return; }
+  const when = new Date(data.submitted_at).toLocaleDateString("en-GB", {day:"numeric", month:"long", year:"numeric"});
+  const stat = {awaiting_email:"Waiting for email confirmation", new:"Received, not yet reviewed", in_review:"In review", confirmed:"Confirmed with you", rejected:"Not accepted", published:"Published to the profile"}[data.status] || human(data.status);
+  view.innerHTML = header("Submission status", `${esc(data.country)}, submitted ${esc(when)}.`) +
+    `<p><span class="pill">${esc(stat)}</span></p>
+     <table class="status"><thead><tr><th>Data point</th><th>Decision</th></tr></thead><tbody>` +
+    (data.fields || []).map(f => `<tr><td>${esc(f.label)}</td><td><span class="pill ${esc(f.decision)}">${esc(human(f.decision))}</span></td></tr>`).join("") +
+    `</tbody></table>
+     <p class="note">Accepted values enter the profile as submitted, marked Unverified until a primary source confirms them.</p>`;
+}
+
+function fieldInput(f){
+  const id = `v_${f.key}`;
+  if(f.value_kind === "enum") return `<select id="${id}"><option value="">Choose</option>${f.enum_values.map(v=>`<option value="${esc(v)}">${esc(human(v))}</option>`).join("")}</select>`;
+  if(f.value_kind === "boolean") return `<select id="${id}"><option value="">Choose</option><option value="yes">Yes</option><option value="no">No</option></select>`;
+  if(f.value_kind === "integer") return `<input id="${id}" type="number" min="0" step="1" inputmode="numeric">`;
+  return `<textarea id="${id}"></textarea>`;
+}
+
+function dataPoint(f){
+  return `<div class="dp" data-key="${esc(f.key)}">
+    <h3>${esc(f.label)}</h3>
+    <div class="field">${fieldInput(f)}</div>
+    <div class="meta">
+      <div class="field"><label for="d_${esc(f.key)}">As of</label><input id="d_${esc(f.key)}" type="date" max="${new Date().toISOString().slice(0,10)}"></div>
+      <div class="field"><label for="s_${esc(f.key)}">Source link</label><input id="s_${esc(f.key)}" type="url" placeholder="https://"></div>
+      <div class="field"><label for="u_${esc(f.key)}">Or attach a document</label><input id="u_${esc(f.key)}" type="file" accept=".pdf,.png,.jpg,.jpeg,.docx,.xlsx"></div>
+    </div>
+  </div>`;
+}
+
+async function showForm(){
+  view.innerHTML = header("Destination partner submission", "Loading the form.");
+  const {data: opts, error} = await sb.rpc("partner_form_options");
+  if(error || !opts){ view.innerHTML = header("Destination partner submission", "") + `<div class="err">The form could not load. Email nandie@farirainandipa.co.zw and we will take your data by hand.</div>`; return; }
+  const typeOptions = TYPES.map(([k,l,on]) => `<option value="${k}"${on?"":" disabled"}>${esc(l)}${on?"":" (coming soon)"}</option>`).join("");
+  view.innerHTML = header("Destination partner submission",
+      "For convention bureaux and other in-country partners who hold first-hand data about a destination. Every data point needs a date it was true on and a source link or document. Nothing you send goes live until our team has reviewed it, and we may email you to confirm a detail.") +
+    `<form id="f" novalidate>
+      <fieldset><legend>You</legend>
+        <div class="frow">
+          <div class="field"><label for="full_name">Full name</label><input id="full_name" autocomplete="name" required></div>
+          <div class="field"><label for="organisation">Organisation</label><input id="organisation" autocomplete="organization" required></div>
+          <div class="field"><label for="role">Role</label><input id="role" autocomplete="organization-title"></div>
+          <div class="field"><label for="work_email">Official work email</label><input id="work_email" type="email" autocomplete="email" required></div>
+          <div class="field"><label for="submitter_type">You are submitting as</label><select id="submitter_type" required>${typeOptions}</select></div>
+          <div class="field"><label for="country_id">Country covered</label><select id="country_id" required><option value="">Choose</option>${opts.countries.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("")}</select></div>
+        </div>
+        <div class="hp" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
+      </fieldset>
+      <fieldset><legend>Data points <small>Fill in the ones you can speak to. Leave the rest blank.</small></legend>
+        <div id="points"></div>
+      </fieldset>
+      <button class="btn" id="go" type="submit">Submit for review</button>
+      <p class="note">We send a confirmation link to your work email; the submission enters the queue once you click it. Documents go to a private store that only the review team can open.</p>
+      <div id="out"></div>
+    </form>`;
+  const typeSel = document.getElementById("submitter_type");
+  const renderPoints = () => {
+    const t = typeSel.value;
+    document.getElementById("points").innerHTML = opts.fields.filter(f => f.allowed_types.includes(t)).map(dataPoint).join("");
+  };
+  typeSel.addEventListener("change", renderPoints);
+  renderPoints();
+
+  const val = id => { const el = document.getElementById(id); if(!el) return null; const x = el.value.trim(); return x === "" ? null : x; };
+  document.getElementById("f").addEventListener("submit", async e => {
+    e.preventDefault();
+    const out = document.getElementById("out"); out.innerHTML = "";
+    const missing = ["full_name","organisation","work_email","submitter_type","country_id"].filter(id => !val(id));
+    if(missing.length){ out.innerHTML = `<div class="err">Please complete ${missing.map(id => document.querySelector('label[for="'+id+'"]').textContent.toLowerCase()).join(", ")}.</div>`; return; }
+    const fields = [], uploads = [], problems = [];
+    for(const dp of document.querySelectorAll("#points .dp")){
+      const key = dp.dataset.key, label = dp.querySelector("h3").textContent;
+      const value = val(`v_${key}`); if(value == null) continue;
+      const as_of = val(`d_${key}`), source_url = val(`s_${key}`), file = document.getElementById(`u_${key}`).files[0] || null;
+      if(!as_of){ problems.push(`${label}: add the date this was true on`); continue; }
+      if(!source_url && !file){ problems.push(`${label}: add a source link or a document`); continue; }
+      if(source_url && !/^https?:\/\//i.test(source_url)){ problems.push(`${label}: the source link must start with http`); continue; }
+      if(file){
+        if(file.size > MAX_FILE){ problems.push(`${label}: the document is over 10 MB`); continue; }
+        if(!FILE_TYPES[file.type]){ problems.push(`${label}: use PDF, PNG, JPG, DOCX or XLSX`); continue; }
+      }
+      const f = {key, value, as_of, source_url};
+      if(file){ f.supporting_file = file.name; uploads.push({key, file}); }
+      fields.push(f);
+    }
+    if(problems.length){ out.innerHTML = `<div class="err">${problems.map(esc).join("<br>")}</div>`; return; }
+    if(!fields.length){ out.innerHTML = `<div class="err">Fill in at least one data point.</div>`; return; }
+    const payload = {full_name: val("full_name"), organisation: val("organisation"), role: val("role"), work_email: val("work_email"),
+      submitter_type: val("submitter_type"), country_id: Number(val("country_id")), website: val("website") || "", fields};
+    const btn = document.getElementById("go"); btn.disabled = true;
+    const {data, error} = await sb.rpc("profile_submit", {payload});
+    if(error || !data || !data.ok){ btn.disabled = false; out.innerHTML = `<div class="err">We could not save that. ${esc(error?.message || "")} Email nandie@farirainandipa.co.zw and we will log it for you.</div>`; return; }
+    const failed = [];
+    for(const u of uploads){
+      if(!data.upload_key) break;
+      const path = `${data.upload_key}/${u.key}/${sanitise(u.file.name)}`;
+      const {error: upErr} = await sb.storage.from(BUCKET).upload(path, u.file, {contentType: u.file.type, upsert: false});
+      if(upErr) failed.push(u.file.name);
+    }
+    const sent = data.email_sent
+      ? `<b>Nearly there.</b> We have sent a confirmation link to ${esc(payload.work_email)}. Click it within 48 hours and the submission enters the review queue.`
+      : `<b>Received. Thank you.</b> We will email ${esc(payload.work_email)} to confirm the submission before it enters the review queue.`;
+    view.innerHTML = header("Destination partner submission", `${fields.length} data point${fields.length === 1 ? "" : "s"} for ${esc(document.querySelector('#country_id option:checked').textContent)}.`) +
+      `<div class="ok">${sent}</div>` +
+      (failed.length ? `<div class="warn">These documents did not upload, so we have the values without them. Reply to our email with the files: ${failed.map(esc).join(", ")}.</div>` : "") +
+      `<p class="note"><a href="partner">Submit more data</a></p>`;
+    window.scrollTo({top: 0, behavior: "smooth"});
+  });
+}
+
+if(qs.get("token")) showVerify(qs.get("token"));
+else if(qs.get("status")) showStatus(qs.get("status"));
+else showForm();
+</script>
+</body>
+</html>
