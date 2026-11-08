@@ -22,6 +22,12 @@
   to = "/pipeline/partner.html"
   status = 200
 
+# Bid Workspace: the bid development app (static file, sign-in required inside the page).
+[[redirects]]
+  from = "/bids"
+  to = "/bids/index.html"
+  status = 200
+
 # SPA fallback: every other path renders the React app shell.
 [[redirects]]
   from = "/*"
