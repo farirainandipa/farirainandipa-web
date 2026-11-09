@@ -121,7 +121,7 @@ export const destinations: Destination[] = [
     pipelineMatches: [],
     comparison: {
       flagshipVenue: 'Kenyatta International Convention Centre, Nairobi',
-      largestPlenary: '[XXXX] theatre',
+      largestPlenary: 'Up to 4,000 (KICC Tsavo Ballroom)', // published figure: kicc.co.ke; Cvent lists 3,500 theatre
       airports: 'Nairobi JKIA (NBO), Mombasa (MBA)',
       bestFor: 'Summits, NGO and UN-linked',
       signatureAddOn: 'Maasai Mara safari',
@@ -176,7 +176,7 @@ export const destinations: Destination[] = [
     pipelineMatches: [],
     comparison: {
       flagshipVenue: 'Kigali Convention Centre',
-      largestPlenary: '[XXXX] theatre',
+      largestPlenary: '2,600 theatre (KCC Auditorium)', // published figure: AIPC member listing
       airports: 'Kigali (KGL)',
       bestFor: 'Association congresses',
       signatureAddOn: 'Gorilla trekking',
@@ -231,7 +231,7 @@ export const destinations: Destination[] = [
     pipelineMatches: [],
     comparison: {
       flagshipVenue: 'CTICC, Durban ICC, Sandton Convention Centre',
-      largestPlenary: '[XXXX] theatre',
+      largestPlenary: '6,000 theatre (Durban ICC)', // published figure: AIPC member listing; CTICC Auditorium 1 is 1,516
       airports: 'Johannesburg (JNB), Cape Town (CPT), Durban (DUR)',
       bestFor: 'Large congresses, exhibitions',
       signatureAddOn: 'Winelands and Big Five',
@@ -286,7 +286,7 @@ export const destinations: Destination[] = [
     pipelineMatches: [],
     comparison: {
       flagshipVenue: 'Mulungushi International Conference Centre, Lusaka',
-      largestPlenary: '[XXXX] theatre',
+      largestPlenary: '2,500 (main hall)', // published figure: ILAE congress venue page; not confirmed by the venue
       airports: 'Lusaka (LUN), Livingstone (LVI)',
       bestFor: 'Regional meetings, incentives',
       signatureAddOn: 'Zambezi and the Falls',
@@ -341,7 +341,7 @@ export const destinations: Destination[] = [
     pipelineMatches: [],
     comparison: {
       flagshipVenue: 'Harare International Conference Centre; Victoria Falls resorts',
-      largestPlenary: '[XXXX] theatre',
+      largestPlenary: '4,500 (HICC main auditorium)', // published figure: rtgafrica.com
       airports: 'Harare (HRE), Victoria Falls (VFA)',
       bestFor: 'Retreats, boutique conferences',
       signatureAddOn: 'Victoria Falls and Hwange',
