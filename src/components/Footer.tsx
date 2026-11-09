@@ -15,7 +15,8 @@ export default function Footer() {
   return (
     <footer className="bg-[#21436A] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 lg:gap-12">
+        {/* At xl the brand and Contact columns get extra width so the email address fits on one line */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[1.3fr_0.8fr_0.9fr_1.1fr_1.3fr] gap-8 lg:gap-12">
           {/* Brand */}
           <div className="lg:col-span-1">
             <img
@@ -126,9 +127,10 @@ export default function Footer() {
                 <Mail className="w-4 h-4 text-[#BCD8D4] flex-shrink-0 mt-0.5" />
                 <a
                   href="mailto:admin@farirainandipa.co.zw"
-                  className="font-['Inter'] text-sm text-white/75 hover:text-[#BCD8D4] transition-colors duration-200 break-all"
+                  className="font-['Inter'] text-sm text-white/75 hover:text-[#BCD8D4] transition-colors duration-200"
                 >
-                  admin@farirainandipa.co.zw
+                  {/* If space ever runs short, break after the @ rather than mid-word */}
+                  admin@<wbr />farirainandipa.co.zw
                 </a>
               </li>
               <li className="flex items-center gap-3">
