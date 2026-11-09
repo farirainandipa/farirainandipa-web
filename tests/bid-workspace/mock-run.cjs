@@ -86,7 +86,11 @@ function rest(url, method, headers, body) {
     await page.click('.subtabs button[data-t="fee"]'); await page.waitForTimeout(200); await page.check('[data-adj="design"]'); await page.waitForTimeout(100); await shot('08-fee-adjusted');
     await page.goto('http://localhost:8787/#clients'); await page.waitForSelector('#neworg'); await shot('09-clients');
     await page.click('#newuser'); await page.waitForSelector('#go'); await shot('10-new-login'); await page.keyboard.press('Escape');
-    await page.goto('http://localhost:8787/#bids'); await page.waitForSelector('#newbid'); await page.click('#newbid'); await page.waitForSelector('#save'); await shot('11-new-bid'); await page.keyboard.press('Escape');
+    await page.goto('http://localhost:8787/#bids'); await page.waitForSelector('#newbid'); await page.click('#newbid'); await page.waitForSelector('#save');
+    await page.setInputFiles('#bidfile', path.join(__dirname, 'aas7.txt')); await page.waitForSelector('#load_reqs', { timeout: 15000 });
+    const filled = await page.evaluate(() => ({ title: document.querySelector('#title').value, event_name: document.querySelector('#event_name').value, issuing_body: document.querySelector('#issuing_body').value, bid_type: document.querySelector('#bid_type').value, country: document.querySelector('#host_country_id').selectedOptions[0]?.text, city: document.querySelector('#host_city').value, deadline: document.querySelector('#submission_deadline').value, event_dates: document.querySelector('#event_dates').value, summary: document.querySelector('#summary').value.slice(0, 120), status: document.querySelector('#bidfile_status').innerText, seeds: document.querySelector('#seedopts').innerText }));
+    console.log('document read ->', JSON.stringify(filled, null, 1));
+    await shot('11-new-bid-from-document'); await page.keyboard.press('Escape');
   }
   await page.goto('http://localhost:8787/#stages'); await page.waitForTimeout(400); await shot('12-stages');
   await ctx.close(); await browser.close(); server.close();

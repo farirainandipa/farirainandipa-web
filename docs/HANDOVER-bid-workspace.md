@@ -51,6 +51,14 @@ build-session original and should be treated as read-only from now on.
 - Source documents on disk: `D:\Farirai Nandipa MICE\Leads\Bids\AAS7_RFP.pdf`, `Leads\AfSAE Letter.docx` (EOI 11 Nov 2026), `Leads\Bids\eLearning Africa 2028\`.
 - Pack originals: `D:\Farirai Nandipa MICE\Bid Development Pack\` (Docs 00–10 .docx + `Bid_Control_Workbook.xlsx`). Workbook tabs 5 (event budget) and 6 (economic impact) are NOT in the app yet.
 
+## Document-driven bid creation (added 9 Nov 2026, 10:30)
+New bid → "Start from the document": upload the RFP / call for bids / host requirements / EOI (PDF, Word, text).
+`analyseBidDocument()` calls `bid-extract` with `mode:'bid'` (AI, when the key is set) and otherwise runs the
+rule-based reader (`heuristicBidFields`, `heuristicExtract`, `heuristicStakeholders`). It fills empty form fields
+only (title, event name, issuing body, bid type, country/city, deadline with a conflict warning, event dates,
+summary), and offers to load the requirement rows and the stakeholders it found. The decision log records the
+source file. Tested on the AAS7 RFP: 37 requirement rows, 7 stakeholders, deadline conflict flagged.
+
 ## Backlog (priority order)
 1. Merge `bid-workspace` to `main`; add https://www.farirainandipa.co.zw/bids to Supabase Auth → URL configuration (redirect allow-list) so password-reset emails work.
 2. Set `ANTHROPIC_API_KEY` secret on the project → AI requirement extraction goes live (fallback rule-based splitter already works).

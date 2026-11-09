@@ -360,7 +360,13 @@ async function renderBids(){
 
 function newBidModal(){
   const consultancy = S.orgs.find(o=>o.kind==='consultancy');
+  const X = { reqs:[], sh:[], source:null };   // what the document reader found
   modal(`<div class="hd"><h2>New bid</h2></div>
+    <div class="card" style="padding:12px 14px;margin-bottom:14px;background:#fbf8f1">
+      <div class="row" style="justify-content:space-between"><div><b>Start from the document</b><div class="small muted">Upload the RFP, call for bids, host requirements or expression of interest (PDF, Word or text). The form, the compliance matrix and the stakeholder list fill themselves. You check everything before it is saved.</div></div>
+      <input type="file" id="bidfile" accept=".pdf,.docx,.txt,.md"></div>
+      <div id="bidfile_status" class="small" style="margin-top:8px"></div>
+    </div>
     <div class="fg">
       <div class="wide"><label class="f">Link to a pipeline event (optional)</label><input class="inp" id="evsearch" placeholder="Type to search the Africa MICE pipeline…"><div id="evres" class="small"></div><input type="hidden" id="event_id"></div>
       <div class="wide"><label class="f">Bid title *</label><input class="inp" id="title" placeholder="e.g. 8th Africa Associations Summit (AAS8) 2027 — Zimbabwe"></div>
@@ -374,25 +380,113 @@ function newBidModal(){
       <div><label class="f">Event dates</label><input class="inp" id="event_dates" placeholder="e.g. Nov 2027"></div>
       <div><label class="f">Bid director</label><input class="inp" id="bid_director" value="Farirai Nandipa"></div>
       <div class="wide"><label class="f">Summary</label><textarea class="inp" id="summary"></textarea></div>
-      <div class="wide"><label><input type="checkbox" id="seed_sh" checked> Pre-load the nine standard stakeholders (Doc 07)</label><br><label><input type="checkbox" id="seed_ms" checked> Generate the production schedule from the deadline (workbook tab 4)</label></div>
+      <div class="wide" id="seedopts"><label><input type="checkbox" id="seed_sh" checked> Pre-load the nine standard stakeholders (Doc 07)</label><br><label><input type="checkbox" id="seed_ms" checked> Generate the production schedule from the deadline (workbook tab 4)</label></div>
     </div>
     <div class="foot"><button class="btn" data-close>Cancel</button><button class="btn primary" id="save">Create bid</button></div>`);
+  const setIfEmpty = (id, val) => { if (val && !$('#'+id).value) $('#'+id).value = val; };
+  $('#bidfile').onchange = async e => {
+    const f = e.target.files[0]; if (!f) return; const st = $('#bidfile_status'); st.textContent = `Reading ${f.name}…`;
+    let text; try { text = await fileToText(f); } catch(ex){ err(ex); st.textContent = 'Could not read that file.'; return; }
+    if (text.trim().length < 80) { st.textContent = 'The file has no readable text (scanned PDF?). Fill the form by hand or paste the text into Requirements → Import after creating the bid.'; return; }
+    st.textContent = 'Reading the document…';
+    const a = await analyseBidDocument(text);
+    const bf = a.bid || {};
+    setIfEmpty('title', bf.title); setIfEmpty('event_name', bf.event_name); setIfEmpty('issuing_body', bf.issuing_body); setIfEmpty('host_city', bf.host_city);
+    setIfEmpty('submission_deadline', bf.submission_deadline); setIfEmpty('event_dates', bf.event_dates); setIfEmpty('summary', bf.summary);
+    if (bf.bid_type && BID_TYPES[bf.bid_type]) $('#bid_type').value = bf.bid_type;
+    if (bf.host_country) { const c = S.countries.find(x=>x.name.toLowerCase()===String(bf.host_country).toLowerCase()); if (c) $('#host_country_id').value = c.id; }
+    X.reqs = a.requirements || []; X.sh = a.stakeholders || []; X.source = f.name;
+    const found = [bf.title&&'title', bf.issuing_body&&'issuing body', bf.bid_type&&'bid type', bf.host_country&&'country', bf.submission_deadline&&'deadline', bf.event_dates&&'event dates'].filter(Boolean);
+    st.innerHTML = `<span class="tag final">${a.ai?'AI read':'Rule-based read'}</span> Found ${found.length?found.join(', '):'no header fields'}.${bf.deadline_note?` · <span class="tag overdue">${esc(bf.deadline_note)}</span>`:''} Check every field below.`;
+    $('#seedopts').innerHTML = `
+      <label><input type="checkbox" id="load_reqs" ${X.reqs.length?'checked':'disabled'}> Load <b>${X.reqs.length}</b> requirement rows found in the document into the compliance matrix (${X.reqs.filter(r=>r.req_type==='mandatory').length} mandatory)</label><br>
+      <label><input type="checkbox" id="load_sh" ${X.sh.length?'checked':'disabled'}> Load <b>${X.sh.length}</b> stakeholders the document points to${X.sh.length?` (${X.sh.map(x=>x.stakeholder).slice(0,4).join(', ')}${X.sh.length>4?'…':''})`:''}</label><br>
+      <label><input type="checkbox" id="seed_sh" ${X.sh.length?'':'checked'}> Also pre-load the nine standard stakeholders (Doc 07)</label><br>
+      <label><input type="checkbox" id="seed_ms" checked> Generate the production schedule from the deadline (workbook tab 4)</label>`;
+  };
   let evT; $('#evsearch').oninput = e => { clearTimeout(evT); const q=e.target.value.trim(); if(q.length<3){$('#evres').innerHTML='';return;}
     evT=setTimeout(async()=>{ const {data}=await sb.from('events').select('id,event_name,organiser,bid_deadline,sector').ilike('event_name',`%${q}%`).limit(8);
       $('#evres').innerHTML = (data||[]).map(ev=>`<div><a href="#" data-ev='${esc(JSON.stringify(ev))}'>${esc(ev.event_name)}</a> <span class="muted">${esc(ev.organiser||'')}${ev.bid_deadline?' · deadline '+fmtD(ev.bid_deadline):''}</span></div>`).join('')||'<span class="muted">No matches</span>';
       $('#evres').querySelectorAll('a').forEach(a=>a.onclick=ev2=>{ev2.preventDefault(); const ev=JSON.parse(a.dataset.ev); $('#event_id').value=ev.id; $('#title').value=$('#title').value||ev.event_name; $('#event_name').value=$('#event_name').value||ev.event_name; $('#issuing_body').value=$('#issuing_body').value||ev.organiser||''; if(ev.bid_deadline)$('#submission_deadline').value=ev.bid_deadline; $('#evres').innerHTML=`<span class="tag">Linked: ${esc(ev.event_name)}</span>`;});
     },300); };
   $('#save').onclick = async () => {
-    const v = id => $('#'+id).value.trim();
+    const v = id => $('#'+id).value.trim(); const chk = id => { const el = $('#'+id); return !!(el && el.checked && !el.disabled); };
     if (!v('title')) return toast('Title is required');
     const row = { org_id: consultancy?.id, client_org_id: v('client_org_id')||null, title:v('title'), event_name:v('event_name')||null, issuing_body:v('issuing_body')||null, bid_type:v('bid_type'),
       host_country_id: v('host_country_id')?+v('host_country_id'):null, host_city:v('host_city')||null, submission_deadline:v('submission_deadline')||null,
-      event_dates:v('event_dates')||null, bid_director:v('bid_director')||null, summary:v('summary')||null, event_id: v('event_id')?+v('event_id'):null, created_by:S.user.email };
-    const { data, error } = await sb.from('bw_bids').insert(row).select().single(); if (error) return err(error);
-    if ($('#seed_sh').checked) await sb.rpc('bw_seed_stakeholders',{p_bid:data.id});
-    if ($('#seed_ms').checked) await sb.rpc('bw_generate_milestones',{p_bid:data.id});
+      event_dates:v('event_dates')||null, bid_director:v('bid_director')||null, summary:v('summary')||null, event_id: v('event_id')?+v('event_id'):null, created_by:S.user.email,
+      decision_log: X.source ? `${today()} — Bid opened from ${X.source}; header fields, ${X.reqs.length} requirement rows and ${X.sh.length} stakeholders read from the document. Verify against the source before relying on them.` : null };
+    $('#save').disabled = true;
+    const { data, error } = await sb.from('bw_bids').insert(row).select().single(); if (error) { $('#save').disabled = false; return err(error); }
+    if (chk('load_reqs') && X.reqs.length) { const { error:e2 } = await sb.rpc('bw_add_requirements', { p_bid:data.id, rows:X.reqs }); if (e2) err(e2); }
+    if (chk('load_sh') && X.sh.length) { const { error:e3 } = await sb.from('bw_stakeholders').insert(X.sh.map((x,i)=>({ bid_id:data.id, seq:100+i, stakeholder:x.stakeholder, signatory:x.signatory||null, template_key:x.template_key||null, ask_level:ASK_LEVELS.includes(x.ask_level)?x.ask_level:'commitment', lead_time_weeks:+x.lead_time_weeks||3, specific_ask:x.specific_ask||null, notes:'Identified from the bid document' }))); if (e3) err(e3); }
+    if (chk('seed_sh')) await sb.rpc('bw_seed_stakeholders',{p_bid:data.id});
+    if (chk('seed_ms')) await sb.rpc('bw_generate_milestones',{p_bid:data.id});
     closeModal(); toast('Bid created'); route('bid', data.id, 'overview');
   };
+}
+
+/* ---------- Document reader: fills a new bid from the RFP / EOI ---------- */
+async function analyseBidDocument(text){
+  try { const j = await aiExtract(text, 'bid'); if (j.ai && j.bid) return j; } catch(e){ console.warn('AI read unavailable', e); }
+  return { ai:false, bid: heuristicBidFields(text), requirements: heuristicExtract(text), stakeholders: heuristicStakeholders(text) };
+}
+const MONTHS = {january:1,february:2,march:3,april:4,may:5,june:6,july:7,august:8,september:9,october:10,november:11,december:12,jan:1,feb:2,mar:3,apr:4,jun:6,jul:7,aug:8,sep:9,sept:9,oct:10,nov:11,dec:12};
+function parseDates(str){
+  const out = []; const pad = n => String(n).padStart(2,'0');
+  for (const m of str.matchAll(/\b(\d{1,2})(?:st|nd|rd|th)?\s+(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept?|Oct|Nov|Dec)\.?,?\s+(20\d\d)\b/gi)) out.push({ iso:`${m[3]}-${pad(MONTHS[m[2].toLowerCase()])}-${pad(m[1])}`, idx:m.index });
+  for (const m of str.matchAll(/\b(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept?|Oct|Nov|Dec)\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(20\d\d)\b/gi)) out.push({ iso:`${m[3]}-${pad(MONTHS[m[1].toLowerCase()])}-${pad(m[2])}`, idx:m.index });
+  for (const m of str.matchAll(/\b(20\d\d)-(\d{2})-(\d{2})\b/g)) out.push({ iso:`${m[1]}-${m[2]}-${m[3]}`, idx:m.index });
+  for (const m of str.matchAll(/\b(\d{1,2})\/(\d{1,2})\/(20\d\d)\b/g)) out.push({ iso:`${m[3]}-${pad(m[2])}-${pad(m[1])}`, idx:m.index });
+  return out.filter(d => !isNaN(new Date(d.iso).getTime()));
+}
+function heuristicBidFields(text){
+  const t = text.replace(/\r/g,''); const lines = t.split('\n').map(l=>l.trim()).filter(Boolean); const low = t.toLowerCase();
+  const bid = {};
+  // type
+  bid.bid_type = /expression of interest|call for expressions/i.test(t) && !/request for proposal/i.test(t) ? 'eoi' : /request for proposal|\brfp\b|tender|terms of reference/i.test(t) ? 'rfp_tender' : /host (city|destination|country)|destination bid/i.test(t) ? 'destination' : 'congress';
+  // event name: shortest line naming an event with a year or ordinal
+  const evLines = lines.filter(l => /(summit|congress|conference|forum|expo|exhibition|convention|symposium|assembly|meeting|festival)/i.test(l) && l.length < 110 && !/^(the )?(deadline|submission|proposal)/i.test(l));
+  const scored = evLines.map(l => ({ l, s: (/\b(20\d\d|\d+(st|nd|rd|th))\b/.test(l)?2:0) + (/^[A-Z0-9]/.test(l)?1:0) - l.length/100 })).sort((a,b)=>b.s-a.s);
+  if (scored.length) bid.event_name = scored[0].l.replace(/^(request for proposal|rfp|call for (bids|proposals|hosts?)|expression of interest)[:\s–—-]*/i,'').replace(/[:\s–—-]+$/,'').trim();
+  // title
+  const head = lines.slice(0, 12).find(l => /(request for proposal|rfp|call for|expression of interest|invitation to|bid)/i.test(l) && l.length < 140);
+  bid.title = bid.event_name ? bid.event_name : (head || lines[0] || '').slice(0, 140);
+  // issuing body
+  const ib = t.match(/(?:issued by|organised by|organized by|on behalf of|convened by|hosted by)\s+(?:the\s+)?([A-Z][A-Za-z&’'\-\s]{3,90}?)(?:[\.,;\n(]|\s+(?:invites|is|seeks|hereby))/) || t.match(/\b(?:The\s+)?([A-Z][A-Za-z&’'\-\s]{3,80}?\b(?:Society|Association|Federation|Union|Council|Institute|Organisation|Organization|Secretariat|Foundation|Alliance|Network|Board|Authority|Commission|Agency)\b(?:\s+of\s+[A-Z][A-Za-z\s]{2,40})?(?:\s*\([A-Z]{2,10}\))?)/);
+  if (ib) bid.issuing_body = ib[1].replace(/\s+/g,' ').replace(/^(issued|organised|organized|hosted|convened) by (the )?/i,'').trim();
+  // country / city
+  const counts = S.countries.map(c => ({ c, n: (low.match(new RegExp('\\b'+c.name.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b','g'))||[]).length })).filter(x=>x.n).sort((a,b)=>b.n-a.n);
+  if (counts.length && counts[0].n >= 2) { bid.host_country = counts[0].c.name; const cm = t.match(new RegExp('\\bin\\s+([A-Z][a-zA-Z\\-]+(?:\\s[A-Z][a-zA-Z\\-]+)?),\\s*'+counts[0].c.name)); if (cm) bid.host_city = cm[1]; }
+  // deadline: dates within 160 chars after a deadline keyword
+  const dl = []; for (const m of t.matchAll(/(deadline|closing date|due date|due by|submit(?:ted)? (?:by|no later than|on or before)|submissions? (?:must be|are) (?:received|made|submitted)|not later than|closes? on)/gi)) { const win = t.slice(m.index, m.index+200); for (const d of parseDates(win)) dl.push(d.iso); }
+  const uniq = [...new Set(dl)];
+  if (uniq.length) { bid.submission_deadline = uniq[0]; if (uniq.length > 1) bid.deadline_note = `Document gives ${uniq.length} different deadline dates (${uniq.map(fmtD).join(', ')}). Confirm with the issuer.`; }
+  // event dates: window after event-date keywords
+  for (const m of t.matchAll(/(event dates?|conference dates?|summit dates?|congress dates?|will (?:be held|take place)|is scheduled (?:for|to take place)|to be held|dates?:)/gi)) { const win = t.slice(m.index, m.index+160); const d = parseDates(win); const my = win.match(/\b(January|February|March|April|May|June|July|August|September|October|November|December)(?:\s*(?:\/|or|-|–|to)\s*(January|February|March|April|May|June|July|August|September|October|November|December))?\s+(20\d\d)\b/i);
+    if (d.length) { bid.event_dates = d.length>1 ? `${fmtD(d[0].iso)} – ${fmtD(d[1].iso)}` : fmtD(d[0].iso); break; } if (my) { bid.event_dates = my[0]; break; } }
+  // summary: from the first sentence that states the purpose, up to ~600 characters
+  const flat = t.replace(/\s+/g,' '); const sents = flat.match(/[^.!?]+[.!?]+/g) || [flat];
+  const caps = x => x.replace(/[^A-Z]/g,'').length / Math.max(1,x.replace(/[^A-Za-z]/g,'').length);
+  let si = sents.findIndex(x => /\b(invites|seeks|is pleased|hereby|is looking for|calls for|is seeking)\b/i.test(x) && x.length > 60 && caps(x) < 0.3);
+  if (si < 0) si = sents.findIndex(x => /(purpose|overview|background|introduction)/i.test(x) && x.length > 60 && caps(x) < 0.3);
+  if (si < 0) si = sents.findIndex(x => x.length > 80 && caps(x) < 0.3);
+  if (si >= 0) { let sm = ''; for (let i=si; i<sents.length && sm.length < 600; i++) sm += sents[i].trim() + ' '; bid.summary = sm.trim(); }
+  return bid;
+}
+function heuristicStakeholders(text){
+  const low = text.toLowerCase(); const out = [];
+  const add = (test, stakeholder, signatory, key, ask, lead, specific) => { if (test.test(low)) out.push({ stakeholder, signatory, template_key:key, ask_level:ask, lead_time_weeks:lead, specific_ask:specific }); };
+  add(/ministry|government|minister|permanent secretary|visa|customs|protocol/, 'Sponsoring ministry', 'Permanent Secretary', 'C1', 'commitment', 6, 'Government support letter: facilitation (visas, customs, protocol) and any named financial or in-kind support');
+  add(/convention bureau|tourism board|tourism authority|subvention|destination marketing/, 'National convention bureau / tourism authority', 'Chief Executive', 'C2', 'commitment', 3, 'Subvention or in-kind support, destination promotion, delegate services');
+  add(/city|municipal|mayor|civic|host city/, 'Host city / municipality', 'Mayor / Town Clerk', 'C3', 'facilitation', 4, 'Civic welcome, permits, city services, participation in the opening');
+  add(/national association|member association|local association|chapter|professional body/, 'National association', 'President', 'C4', 'commitment', 3, 'Endorsement and membership mobilisation; LOC participation');
+  add(/venue|plenary|conference centre|conference center|exhibition space|breakout/, 'Venue', 'Sales Director', 'C5', 'guarantee', 2, 'Written hold or letter of intent for the stated dates with capacities and indicative rates');
+  add(/hotel|accommodation|room block|room rate/, 'Lead hotels', 'Directors of Sales', 'C6', 'commitment', 3, 'Provisional room blocks with indicative rates and distance to venue');
+  add(/airline|airport|flight|carrier|air access/, 'Airline', 'Country Manager', 'C7', 'commitment', 6, 'Official carrier arrangement or delegate fare; route evidence');
+  add(/universit|academic|research institut|faculty|scientific committee/, 'Academic / research partner', 'Vice-Chancellor / Dean', 'C8', 'commitment', 3, 'Content partnership, speakers, legacy commitment');
+  add(/sponsor/, 'Private sector sponsors', 'Marketing Director', 'C9', 'commitment', 5, 'Financial commitment with a stated value');
+  return out;
 }
 
 /* ============================================================
@@ -692,9 +786,9 @@ function classify(t){
   if (/(encouraged|preferred|ideally|where possible|if any|strongly|description of|summary of|details of|strategy)/.test(s)) return 'scored';
   return 'mandatory';
 }
-async function aiExtract(text){
+async function aiExtract(text, mode='requirements'){
   const { data:{ session } } = await sb.auth.getSession();
-  const r = await fetch(`${SUPABASE_URL}/functions/v1/bid-extract`, { method:'POST', headers:{ 'content-type':'application/json', apikey:SUPABASE_KEY, authorization:`Bearer ${session.access_token}` }, body: JSON.stringify({ text }) });
+  const r = await fetch(`${SUPABASE_URL}/functions/v1/bid-extract`, { method:'POST', headers:{ 'content-type':'application/json', apikey:SUPABASE_KEY, authorization:`Bearer ${session.access_token}` }, body: JSON.stringify({ text, mode }) });
   const j = await r.json(); if (!r.ok) throw new Error(j.error||'extract failed'); return j;
 }
 function importModal(){
