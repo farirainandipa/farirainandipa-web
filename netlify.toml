@@ -34,12 +34,13 @@
 
 # The individual destination pages are hidden until their content is ready
 # (destinationPagesLive in src/data/destinations.ts), so send them to the hub.
-# Not forced, so the prerendered /destinations/index.html still serves.
+# ":slug" needs a path segment, so /destinations itself is not matched.
 # Remove this rule when the pages go live.
 [[redirects]]
-  from = "/destinations/*"
+  from = "/destinations/:slug"
   to = "/destinations"
   status = 302
+  force = true
 
 # SPA fallback: every other path renders the React app shell.
 [[redirects]]
