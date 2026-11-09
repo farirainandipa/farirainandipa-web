@@ -2,20 +2,16 @@
   command = "npm run build"
   publish = "dist"
 
-# The Africa MICE Bid Pipeline moved to its own site on 2026-11-09.
-# The public-facing client login link is /bids; it is sent there with path
-# and query kept. The pipeline pages have been removed from this repo.
+# The Africa MICE Bid Pipeline moved to its own site on 2026-11-09. The
+# pipeline pages have been removed from this repo and nothing links to
+# /pipeline here, so no redirect for it is kept.
+
+# Bid Workspace: the bid development app (static file, sign-in required inside the page).
+# The header's "Client Login" link points here.
 [[redirects]]
   from = "/bids"
-  to = "https://africamicedashboard.netlify.app/pipeline/"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/bids/*"
-  to = "https://africamicedashboard.netlify.app/pipeline/:splat"
-  status = 301
-  force = true
+  to = "/bids/index.html"
+  status = 200
 
 # SPA fallback: every other path renders the React app shell.
 [[redirects]]

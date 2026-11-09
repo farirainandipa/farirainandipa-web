@@ -164,6 +164,20 @@ Vault secret is missing, submissions simply wait in `awaiting_email` and an
 admin can verify them by hand. Spec and build notes:
 `docs/HANDOVER-partner-submissions.md`.
 
+**Update Nov 2026 (Bid Workspace, migrations 023 and 024):** the Bid
+Development Pack now runs as an app at `public/bids/index.html`, served at
+`/bids` (netlify.toml redirect) and also from the `bids` edge function. Tables
+are prefixed `bw_` (orgs, members, bids, scores, requirements, stakeholders,
+milestones, documents, messages, activity, letter templates, defaults) and are
+multi-tenant: every bid has an owning org and an optional client org. Admins
+are `allowlist` emails (`bw_is_admin()`); client logins live in `bw_members`
+and see only their org's bids and `client_visible` rows through
+`bw_can_see_bid()`. Scorecards (`bw_scores`) are admin-only. Client logins are
+created by the `bid-admin` edge function; `bid-extract` does AI requirement
+extraction when `ANTHROPIC_API_KEY` is set. Files go to the private `bid-docs`
+bucket. Keep every `bw_*` policy scoped as it is: never add a plain
+`authenticated` policy. Full handover: `docs/HANDOVER-bid-workspace.md`.
+
 When changing schema, add a new file under `supabase/migrations/` (don't edit
 existing ones) and apply it to the linked project. After any DDL change, check
 Supabase security advisors for new RLS/lint warnings.
@@ -172,13 +186,14 @@ Supabase security advisors for new RLS/lint warnings.
 lives on its own site, the Africa MICE Dashboard
 (`github.com/farirainandipa/africa-mice-dashboard-web`, Netlify site
 `africamicedashboard`). The pipeline pages have been removed from this repo
-(`public/pipeline/` is gone); the dashboard repo is the only source. The
-header's "Client Login" link points at `/bids` on this site, which
-`netlify.toml` 301-redirects to the dashboard (path and query kept,
-`force = true`); there were no shared `/pipeline` links to preserve, so no
-`/pipeline` redirect exists here. The `send-submission-verification` emails
-point directly at the new site. The database is unchanged and still shared,
-and migrations stay in this repo.
+(`public/pipeline/` is gone); the dashboard repo is the only source. There
+were no shared `/pipeline` links to preserve, so no `/pipeline` redirect
+exists here. The header's "Client Login" link now points at `/bids`, the
+Bid Workspace app described below (its own client login, unrelated to the
+dashboard's bureau logins), not at the Africa MICE Dashboard. The
+`send-submission-verification` emails still point directly at the dashboard
+site. The database is unchanged and still shared, and migrations stay in
+this repo.
 Migration 023 revoked EXECUTE from `anon` on every function except the
 public-form RPCs (`bid_wins_teaser`, `partner_form_options`, `profile_submit`,
 `profile_verify`, `profile_status`, `submission_upload_allowed`), removed
