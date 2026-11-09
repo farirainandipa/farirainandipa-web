@@ -163,10 +163,10 @@ export default function Destinations() {
           body={`${hub.compare.body} Updated ${hub.comparisonUpdated}.`}
         />
         <div className="overflow-x-auto border border-gray-200 rounded-md bg-white" tabIndex={0} role="region" aria-labelledby="cmp-h">
-          <table className="w-full min-w-[980px] border-collapse text-[15px] leading-normal">
+          <table className="w-full min-w-[860px] border-collapse text-[15px] leading-normal">
             <thead>
               <tr className="bg-navy text-white text-left">
-                {['Destination', 'Flagship venue', 'Largest plenary', 'Main airports', 'Best months', 'Best for', 'Signature add-on'].map((h) => (
+                {['Destination', 'Flagship venue', 'Largest plenary', 'Main airports', 'Best for', 'Signature add-on'].map((h) => (
                   <th key={h} scope="col" className="px-[18px] py-4 font-medium">{h}</th>
                 ))}
               </tr>
@@ -185,7 +185,6 @@ export default function Destinations() {
                   <td className="px-[18px] py-4">{d.comparison.flagshipVenue}</td>
                   <td className="px-[18px] py-4 text-ink-muted">{d.comparison.largestPlenary}</td>
                   <td className="px-[18px] py-4">{d.comparison.airports}</td>
-                  <td className="px-[18px] py-4">{d.comparison.bestMonths}</td>
                   <td className="px-[18px] py-4">{d.comparison.bestFor}</td>
                   <td className="px-[18px] py-4">{d.comparison.signatureAddOn}</td>
                 </tr>

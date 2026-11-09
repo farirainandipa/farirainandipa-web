@@ -44,7 +44,6 @@ export interface Destination {
     flagshipVenue: string;
     largestPlenary: string;
     airports: string;
-    bestMonths: string;
     bestFor: string;
     signatureAddOn: string;
   };
@@ -80,7 +79,6 @@ export const destinations: Destination[] = [
     facts: [
       { label: 'Main airport', value: 'Nairobi JKIA (NBO)' },
       { label: 'Flagship venue', value: 'Kenyatta International Convention Centre' },
-      { label: 'Best months', value: 'Jun to Oct, Jan to Feb' },
       { label: 'Best for', value: 'Summits, NGO and UN-linked meetings' },
     ],
     why: [
@@ -116,7 +114,6 @@ export const destinations: Destination[] = [
       flagshipVenue: 'Kenyatta International Convention Centre, Nairobi',
       largestPlenary: '[XXXX] theatre',
       airports: 'Nairobi JKIA (NBO), Mombasa (MBA)',
-      bestMonths: 'Jun to Oct, Jan to Feb',
       bestFor: 'Summits, NGO and UN-linked',
       signatureAddOn: 'Maasai Mara safari',
     },
@@ -136,7 +133,6 @@ export const destinations: Destination[] = [
     facts: [
       { label: 'Main airport', value: 'Kigali International (KGL)' },
       { label: 'Flagship venue', value: 'Kigali Convention Centre' },
-      { label: 'Best months', value: 'Jun to Sep, Dec to Feb' },
       { label: 'Best for', value: 'Association congresses, summits' },
     ],
     why: [
@@ -172,7 +168,6 @@ export const destinations: Destination[] = [
       flagshipVenue: 'Kigali Convention Centre',
       largestPlenary: '[XXXX] theatre',
       airports: 'Kigali (KGL)',
-      bestMonths: 'Jun to Sep, Dec to Feb',
       bestFor: 'Association congresses',
       signatureAddOn: 'Gorilla trekking',
     },
@@ -192,7 +187,6 @@ export const destinations: Destination[] = [
     facts: [
       { label: 'Main airports', value: 'Johannesburg (JNB), Cape Town (CPT), Durban (DUR)' },
       { label: 'Flagship venues', value: 'CTICC, Durban ICC, Sandton Convention Centre' },
-      { label: 'Best months', value: 'Year-round; Cape Town best Oct to Apr' },
       { label: 'Best for', value: 'Large congresses, exhibitions, incentives' },
     ],
     why: [
@@ -228,7 +222,6 @@ export const destinations: Destination[] = [
       flagshipVenue: 'CTICC, Durban ICC, Sandton Convention Centre',
       largestPlenary: '[XXXX] theatre',
       airports: 'Johannesburg (JNB), Cape Town (CPT), Durban (DUR)',
-      bestMonths: 'Year-round; Cape Town best Oct to Apr',
       bestFor: 'Large congresses, exhibitions',
       signatureAddOn: 'Winelands and Big Five',
     },
@@ -248,7 +241,6 @@ export const destinations: Destination[] = [
     facts: [
       { label: 'Main airports', value: 'Lusaka (LUN), Livingstone (LVI)' },
       { label: 'Flagship venue', value: 'Mulungushi International Conference Centre' },
-      { label: 'Best months', value: 'May to Oct' },
       { label: 'Best for', value: 'Regional meetings, incentives, retreats' },
     ],
     why: [
@@ -284,7 +276,6 @@ export const destinations: Destination[] = [
       flagshipVenue: 'Mulungushi International Conference Centre, Lusaka',
       largestPlenary: '[XXXX] theatre',
       airports: 'Lusaka (LUN), Livingstone (LVI)',
-      bestMonths: 'May to Oct',
       bestFor: 'Regional meetings, incentives',
       signatureAddOn: 'Zambezi and the Falls',
     },
@@ -304,7 +295,6 @@ export const destinations: Destination[] = [
     facts: [
       { label: 'Main airports', value: 'Harare (HRE), Victoria Falls (VFA)' },
       { label: 'Flagship venues', value: 'Harare International Conference Centre; Victoria Falls resorts' },
-      { label: 'Best months', value: 'Apr to Oct' },
       { label: 'Best for', value: 'Retreats, incentives, boutique conferences' },
     ],
     why: [
@@ -340,7 +330,6 @@ export const destinations: Destination[] = [
       flagshipVenue: 'Harare International Conference Centre; Victoria Falls resorts',
       largestPlenary: '[XXXX] theatre',
       airports: 'Harare (HRE), Victoria Falls (VFA)',
-      bestMonths: 'Apr to Oct',
       bestFor: 'Retreats, boutique conferences',
       signatureAddOn: 'Victoria Falls and Hwange',
     },
@@ -386,7 +375,7 @@ export const hub = {
   },
   stats: [
     { value: '5', label: 'African destinations' },
-    { value: 'Since 2009', label: 'In business events' },
+    { value: 'Since 2020', label: 'In business events' },
     { value: 'CEM · CEPA', label: 'Certified exhibition and event professional' },
     { value: 'Pan-African', label: 'From bid development to execution' },
   ],
@@ -402,10 +391,10 @@ export const hub = {
     { price: 'By proposal', title: 'Bid and Site Inspection Advisory', body: 'Bid feasibility, bid coordination and hosted site inspections where I lead your committee through the venues. Destination representation for bureaux.', cta: 'Make an Enquiry', featured: false },
   ],
   pipeline: {
-    eyebrow: 'Africa MICE Bid Pipeline',
+    eyebrow: 'Africa MICE Dashboard',
     title: 'Which congresses could your destination win for 2027 to 2029?',
     body: 'I track international association events that rotate into Africa. Bureaux and associations use the pipeline to bid early, not late.',
-    ctaLabel: 'Client Login',
+    ctaLabel: 'Find out more',
     ctaHref: 'https://africamicedashboard.netlify.app',
   },
   enquiry: {
@@ -413,7 +402,7 @@ export const hub = {
     title: 'Tell me about your event.',
     body: 'You will receive the 2027 Destination Guide straight away. If your brief fits, I will reply within two working days with a suggested next step.',
     talkFirst: 'Prefer to talk first?',
-    contactLine: '+263 777 098 756 · [YOUR EMAIL]',
+    contactLine: '+263 777 098 756 · nandie@farirainandipa.co.zw',
     eventTypeOptions: ['Association congress', 'Corporate meeting', 'Incentive trip', 'Government summit', 'Exhibition'],
     delegateOptions: ['Under 100', '100 to 500', '500 to 1,500', '1,500 or more'],
     datesPlaceholder: 'e.g. Q3 2027, flexible',
@@ -448,7 +437,7 @@ export const destinationTemplate = {
   experiencesEyebrow: 'Beyond the plenary',
   experiencesTitle: 'Experiences delegates remember.',
   programmeEyebrow: 'Sample programme',
-  pipelineEyebrow: 'From the Africa MICE Bid Pipeline',
+  pipelineEyebrow: 'From the Africa MICE Dashboard',
   pipelineTitle: (name: string) => `Congresses ${name} could bid for`,
   pipelineBody: "Associations rotating into Africa in the next three years, matched to this destination's capacity.",
   briefTitle: (name: string) => `Considering ${name} for 2027?`,
