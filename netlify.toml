@@ -2,25 +2,21 @@
   command = "npm run build"
   publish = "dist"
 
-# Serve the standalone Bid Pipeline dashboard (static file, outside the React SPA).
-# This rule comes before the SPA catch-all so /pipeline resolves to the static
-# document and is not rewritten to the app shell.
+# The Africa MICE Bid Pipeline moved to its own site on 2026-11-09.
+# Every /pipeline URL (dashboard, history, partner form and its email
+# verification links, submit form) is sent there with path and query kept.
+# force = true so the old static files in public/pipeline/ are never served.
 [[redirects]]
   from = "/pipeline"
-  to = "/pipeline/index.html"
-  status = 200
+  to = "https://africamicedashboard.netlify.app/pipeline/"
+  status = 301
+  force = true
 
-# Public bid-history teaser (no login): last three hosts per series.
 [[redirects]]
-  from = "/pipeline/history"
-  to = "/pipeline/history.html"
-  status = 200
-
-# Destination partner submission form (no login), also the verify link and status page.
-[[redirects]]
-  from = "/pipeline/partner"
-  to = "/pipeline/partner.html"
-  status = 200
+  from = "/pipeline/*"
+  to = "https://africamicedashboard.netlify.app/pipeline/:splat"
+  status = 301
+  force = true
 
 # SPA fallback: every other path renders the React app shell.
 [[redirects]]
