@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Seo from '../components/Seo';
 import ServicesSchema from '../components/ServicesSchema';
 import ScrollFade from '../components/ScrollFade';
@@ -14,6 +14,9 @@ import {
   ChevronUp,
   MessageSquare,
   ExternalLink,
+  Briefcase,
+  MapPin,
+  ArrowRight,
   LucideIcon,
 } from 'lucide-react';
 import { supabase, Service, ServiceItem } from '../lib/supabase';
@@ -26,6 +29,52 @@ const iconMap: Record<string, LucideIcon> = {
   Shield: Shield,
   GraduationCap: GraduationCap,
 };
+
+// Sector exhibition tours (moved here from the retired Packages page).
+const tradeDelegations = [
+  {
+    sector: 'Mining & Resources',
+    exhibition: 'Mining Indaba, Cape Town, South Africa',
+    region: 'Southern Africa',
+    description:
+      "Africa's largest and most influential mining investment conference. We curate hosted buyer tours connecting mining professionals with project developers and investors.",
+  },
+  {
+    sector: 'Tourism & Hospitality',
+    exhibition: "Africa's Travel Indaba, Durban, South Africa",
+    region: 'Southern Africa',
+    description:
+      "Southern Africa's premier travel trade show. We facilitate exhibition tours for tourism boards, hotel groups, and tour operators seeking African market access.",
+  },
+  {
+    sector: 'Agriculture & Agribusiness',
+    exhibition: 'Agra Agricultural Show, Namibia',
+    region: 'Southern Africa',
+    description:
+      "Southern Africa's leading agricultural exhibition. Ideal for agribusiness companies seeking market intelligence and trade connections across SADC.",
+  },
+  {
+    sector: 'Technology & Innovation',
+    exhibition: 'Africa Tech Festival, Cape Town, South Africa',
+    region: 'Southern Africa',
+    description:
+      "The continent's leading technology, mobile, and fintech event. We coordinate delegation tours for tech companies, start-ups, and digital economy stakeholders.",
+  },
+  {
+    sector: 'Trade & Commerce',
+    exhibition: 'Zimbabwe International Trade Fair (ZITF), Bulawayo',
+    region: 'Zimbabwe / SADC',
+    description:
+      "Zimbabwe's flagship trade show attracting exhibitors and buyers from across Africa. We provide comprehensive support for international delegations attending ZITF.",
+  },
+  {
+    sector: 'Real Estate & Infrastructure',
+    exhibition: 'AfriCities Summit, Various African Cities',
+    region: 'Pan-African',
+    description:
+      'A continental platform for African city leaders, developers, and investors. We organise delegation packages for mayors, urban planners, and infrastructure companies.',
+  },
+];
 
 interface ServiceWithItems extends Service {
   service_items: ServiceItem[];
@@ -110,6 +159,7 @@ export default function Services() {
   const [services, setServices] = useState<ServiceWithItems[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const location = useLocation();
 
   useEffect(() => {
     async function fetchServices() {
@@ -132,6 +182,16 @@ export default function Services() {
 
     fetchServices();
   }, []);
+
+  // ScrollToTop resets to the top on route change, and the services list above
+  // loads asynchronously, so scroll to a hash (e.g. #trade-delegations) once it has.
+  useEffect(() => {
+    if (loading || !location.hash) return;
+    const t = window.setTimeout(() => {
+      document.getElementById(location.hash.slice(1))?.scrollIntoView();
+    }, 50);
+    return () => window.clearTimeout(t);
+  }, [loading, location.hash]);
 
   return (
     <div>
@@ -194,6 +254,65 @@ export default function Services() {
               ))}
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Trade Delegations & Hosted Buyer Programmes */}
+      <section
+        id="trade-delegations"
+        aria-labelledby="trade-delegations-h"
+        className="bg-[#BCD8D4]/15 py-16 lg:py-24 scroll-mt-20"
+      >
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollFade>
+            <h2
+              id="trade-delegations-h"
+              className="font-['Cormorant_Garamond'] text-3xl lg:text-4xl font-semibold text-[#21436A] mb-4"
+            >
+              Trade Delegations & Hosted Buyer Programmes
+            </h2>
+            <p className="font-['Inter'] text-base text-[#3A3A3A] max-w-3xl mb-10 leading-relaxed">
+              We organise targeted sector exhibition tours, giving your delegation focused market access
+              at Africa's leading trade shows and exhibitions. From logistics to matched business meetings,
+              we manage the full tour programme.
+            </p>
+          </ScrollFade>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {tradeDelegations.map((tour) => (
+              <ScrollFade key={tour.exhibition}>
+                <article className="h-full bg-white border border-gray-200 rounded-lg p-6 flex flex-col hover:border-[#BCD8D4] transition-colors duration-300">
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className="w-12 h-12 bg-[#BCD8D4] rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Briefcase className="w-6 h-6 text-[#21436A]" />
+                    </div>
+                    <div>
+                      <p className="font-['Inter'] text-xs font-medium uppercase tracking-wider text-[#3A3A3A]/70">
+                        {tour.sector}
+                      </p>
+                      <h3 className="font-['Cormorant_Garamond'] text-xl font-semibold text-[#21436A] lg:text-2xl">
+                        {tour.exhibition}
+                      </h3>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 text-[#3A3A3A]/70 mb-2">
+                    <MapPin className="w-3.5 h-3.5" />
+                    <span className="font-['Inter'] text-xs">{tour.region}</span>
+                  </div>
+                  <p className="font-['Inter'] text-sm text-[#3A3A3A] leading-relaxed mb-4 flex-1">
+                    {tour.description}
+                  </p>
+                  <Link
+                    to="/contact?service=packages-exhibition-tours"
+                    className="self-start inline-flex items-center gap-2 text-[#21436A] font-['Inter'] text-sm font-medium hover:text-[#BCD8D4] transition-colors duration-200"
+                  >
+                    Enquire about this tour
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </article>
+              </ScrollFade>
+            ))}
+          </div>
         </div>
       </section>
 

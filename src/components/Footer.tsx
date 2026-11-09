@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
 import { Phone, Mail, Globe, Linkedin, Instagram } from 'lucide-react';
+import { destinationPagesLive, destinations } from '../data/destinations';
 
 const quickLinks = [
   { name: 'Home', path: '/' },
   { name: 'About', path: '/about' },
   { name: 'Services', path: '/services' },
-  { name: 'Packages', path: '/packages' },
+  { name: 'Destinations', path: '/destinations' },
   { name: 'Insights', path: '/insights' },
   { name: 'Contact', path: '/contact' },
 ];
@@ -14,7 +15,7 @@ export default function Footer() {
   return (
     <footer className="bg-[#21436A] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 lg:gap-12">
           {/* Brand */}
           <div className="lg:col-span-1">
             <img
@@ -52,6 +53,31 @@ export default function Footer() {
             </ul>
           </div>
 
+          {/* Destinations */}
+          <div>
+            <h3 className="font-['Cormorant_Garamond'] text-lg font-semibold mb-4">
+              <Link to="/destinations" className="hover:text-[#BCD8D4] transition-colors duration-200">
+                Destinations
+              </Link>
+            </h3>
+            <ul className="space-y-2">
+              {destinations.map((d) => (
+                <li key={d.slug}>
+                  {destinationPagesLive ? (
+                    <Link
+                      to={`/destinations/${d.slug}`}
+                      className="font-['Inter'] text-sm text-white/75 hover:text-[#BCD8D4] transition-colors duration-200"
+                    >
+                      {d.name}
+                    </Link>
+                  ) : (
+                    <span className="font-['Inter'] text-sm text-white/75">{d.name}</span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+
           {/* Services */}
           <div>
             <h3 className="font-['Cormorant_Garamond'] text-lg font-semibold mb-4">
@@ -71,11 +97,6 @@ export default function Footer() {
               <li>
                 <Link to="/services" className="font-['Inter'] text-sm text-white/75 hover:text-[#BCD8D4] transition-colors duration-200">
                   Exhibition Management
-                </Link>
-              </li>
-              <li>
-                <Link to="/packages" className="font-['Inter'] text-sm text-white/75 hover:text-[#BCD8D4] transition-colors duration-200">
-                  Packages
                 </Link>
               </li>
               <li>

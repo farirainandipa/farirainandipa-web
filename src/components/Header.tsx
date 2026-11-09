@@ -6,7 +6,7 @@ const navLinks = [
   { name: 'Home', path: '/' },
   { name: 'About', path: '/about' },
   { name: 'Services', path: '/services' },
-  { name: 'Packages', path: '/packages' },
+  { name: 'Destinations', path: '/destinations' },
   { name: 'Insights', path: '/insights' },
   { name: 'Contact', path: '/contact' },
 ];
@@ -15,6 +15,10 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
+
+  // Section links stay active on their child routes (e.g. /destinations/kenya).
+  const isActive = (path: string) =>
+    path === '/' ? location.pathname === '/' : location.pathname === path || location.pathname.startsWith(`${path}/`);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,15 +52,16 @@ export default function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-7">
+          <nav className="hidden lg:flex items-center space-x-5 xl:space-x-7">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
-                className={`font-['Inter'] text-sm font-medium transition-colors duration-200 ${
-                  location.pathname === link.path
-                    ? 'text-[#BCD8D4]'
-                    : 'text-[#21436A] hover:text-[#BCD8D4]'
+                aria-current={isActive(link.path) ? 'page' : undefined}
+                className={`whitespace-nowrap font-['Inter'] text-sm font-medium text-[#21436A] border-b-2 pb-0.5 transition-colors duration-200 ${
+                  isActive(link.path)
+                    ? 'border-[#BCD8D4]'
+                    : 'border-transparent hover:text-[#18324F] hover:border-[#BCD8D4]/60'
                 }`}
               >
                 {link.name}
@@ -65,13 +70,13 @@ export default function Header() {
             {/* The dashboard lives on its own site (Africa MICE Dashboard); /bids redirects there */}
             <a
               href="/bids"
-              className="font-['Inter'] text-sm font-medium text-[#21436A] hover:text-[#BCD8D4] transition-colors duration-200"
+              className="whitespace-nowrap font-['Inter'] text-sm font-medium text-[#21436A] hover:text-[#BCD8D4] transition-colors duration-200"
             >
               Client Login
             </a>
             <Link
               to="/contact"
-              className="bg-[#21436A] text-white px-5 py-2.5 font-['Inter'] text-sm font-medium rounded hover:bg-[#1a3456] transition-colors duration-200"
+              className="whitespace-nowrap bg-[#21436A] text-white px-5 py-2.5 font-['Inter'] text-sm font-medium rounded hover:bg-[#1a3456] transition-colors duration-200"
             >
               Make an Enquiry
             </Link>
@@ -95,10 +100,9 @@ export default function Header() {
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`font-['Inter'] text-sm font-medium py-2 transition-colors duration-200 ${
-                    location.pathname === link.path
-                      ? 'text-[#BCD8D4]'
-                      : 'text-[#21436A]'
+                  aria-current={isActive(link.path) ? 'page' : undefined}
+                  className={`self-start font-['Inter'] text-sm font-medium py-2 text-[#21436A] border-b-2 transition-colors duration-200 ${
+                    isActive(link.path) ? 'border-[#BCD8D4]' : 'border-transparent'
                   }`}
                 >
                   {link.name}

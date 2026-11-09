@@ -2,6 +2,11 @@
   command = "npm run build"
   publish = "dist"
 
+# Deploy previews may build while src/data/destinations.ts still has "[...]"
+# placeholders (see scripts/placeholder-guard.ts). Production builds stay blocked.
+[context.deploy-preview.environment]
+  ALLOW_PLACEHOLDERS = "1"
+
 # The Africa MICE Bid Pipeline moved to its own site on 2026-11-09. The
 # pipeline pages have been removed from this repo and nothing links to
 # /pipeline here, so no redirect for it is kept.
@@ -12,6 +17,30 @@
   from = "/bids"
   to = "/bids/index.html"
   status = 200
+
+# The Packages page was retired; its venues and incentive ideas now live on
+# the Destinations pages (exhibition tours moved to /services#trade-delegations).
+[[redirects]]
+  from = "/packages"
+  to = "/destinations"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/packages/"
+  to = "/destinations"
+  status = 301
+  force = true
+
+# The individual destination pages are hidden until their content is ready
+# (destinationPagesLive in src/data/destinations.ts), so send them to the hub.
+# ":slug" needs a path segment, so /destinations itself is not matched.
+# Remove this rule when the pages go live.
+[[redirects]]
+  from = "/destinations/:slug"
+  to = "/destinations"
+  status = 302
+  force = true
 
 # SPA fallback: every other path renders the React app shell.
 [[redirects]]
