@@ -3,10 +3,23 @@
   publish = "dist"
 
 # The Africa MICE Bid Pipeline moved to its own site on 2026-11-09.
-# Every /pipeline URL (dashboard, history, partner form and its email
-# verification links, submit form) is sent there with path and query kept.
-# The pipeline pages have been removed from this repo; these redirects only
-# keep old links and already-sent emails working.
+# The public-facing client login link is now /bids; it and every other
+# /pipeline URL (history, partner form and its email verification links,
+# submit form) are sent there with path and query kept. The pipeline pages
+# have been removed from this repo; the /pipeline redirects below only keep
+# old links and already-sent emails working.
+[[redirects]]
+  from = "/bids"
+  to = "https://africamicedashboard.netlify.app/pipeline/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/bids/*"
+  to = "https://africamicedashboard.netlify.app/pipeline/:splat"
+  status = 301
+  force = true
+
 [[redirects]]
   from = "/pipeline"
   to = "https://africamicedashboard.netlify.app/pipeline/"
