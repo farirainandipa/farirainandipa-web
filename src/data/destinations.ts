@@ -406,7 +406,7 @@ export const hub = {
     title: 'Which congresses could your destination win for 2027 to 2029?',
     body: 'I track international association events that rotate into Africa. Bureaux and associations use the pipeline to bid early, not late.',
     ctaLabel: 'Client Login',
-    ctaHref: '/pipeline',
+    ctaHref: 'https://africamicedashboard.netlify.app',
   },
   enquiry: {
     eyebrow: 'Planning for 2027?',
