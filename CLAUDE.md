@@ -171,14 +171,14 @@ Supabase security advisors for new RLS/lint warnings.
 **Update 9 Nov 2026 (pipeline moved, migration 023):** the Bid Pipeline now
 lives on its own site, the Africa MICE Dashboard
 (`github.com/farirainandipa/africa-mice-dashboard-web`, Netlify site
-`africamicedashboard`). `netlify.toml` here 301-redirects every `/pipeline`
-URL there (path and query kept, `force = true`) so old links and emails keep
-working. The pipeline pages have been removed from this repo (`public/pipeline/`
-is gone); the dashboard repo is the only source. The header's "Client Login"
-link now points at `/bids` on this site (also 301-redirected to the dashboard
-by `netlify.toml`), so the public-facing nav no longer names `/pipeline`; the
-`send-submission-verification` emails still point directly at the new site.
-The database is unchanged and still shared, and migrations stay in this repo.
+`africamicedashboard`). The pipeline pages have been removed from this repo
+(`public/pipeline/` is gone); the dashboard repo is the only source. The
+header's "Client Login" link points at `/bids` on this site, which
+`netlify.toml` 301-redirects to the dashboard (path and query kept,
+`force = true`); there were no shared `/pipeline` links to preserve, so no
+`/pipeline` redirect exists here. The `send-submission-verification` emails
+point directly at the new site. The database is unchanged and still shared,
+and migrations stay in this repo.
 Migration 023 revoked EXECUTE from `anon` on every function except the
 public-form RPCs (`bid_wins_teaser`, `partner_form_options`, `profile_submit`,
 `profile_verify`, `profile_status`, `submission_upload_allowed`), removed
