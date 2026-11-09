@@ -172,8 +172,10 @@ Supabase security advisors for new RLS/lint warnings.
 lives on its own site, the Africa MICE Dashboard
 (`github.com/farirainandipa/africa-mice-dashboard-web`, Netlify site
 `africamicedashboard`). `netlify.toml` here 301-redirects every `/pipeline`
-URL there (path and query kept, `force = true`), so `public/pipeline/` in this
-repo is no longer served. Make pipeline page changes in the dashboard repo.
+URL there (path and query kept, `force = true`) so old links and emails keep
+working. The pipeline pages have been removed from this repo (`public/pipeline/`
+is gone); the dashboard repo is the only source. The header's "Client Login"
+link and the `send-submission-verification` emails point at the new site.
 The database is unchanged and still shared, and migrations stay in this repo.
 Migration 023 revoked EXECUTE from `anon` on every function except the
 public-form RPCs (`bid_wins_teaser`, `partner_form_options`, `profile_submit`,

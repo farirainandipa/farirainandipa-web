@@ -20,8 +20,8 @@
 
 import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 
-const SITE = "https://www.farirainandipa.co.zw/pipeline/partner";
-const DASHBOARD = "https://www.farirainandipa.co.zw/pipeline";
+const SITE = "https://africamicedashboard.netlify.app/pipeline/partner";
+const DASHBOARD = "https://africamicedashboard.netlify.app/pipeline/";
 const SIGNATURE = "Farirai Nandipa MICE Agency\nAfrica MICE Bid Pipeline";
 
 interface Payload {
