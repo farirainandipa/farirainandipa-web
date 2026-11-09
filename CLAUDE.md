@@ -168,6 +168,21 @@ When changing schema, add a new file under `supabase/migrations/` (don't edit
 existing ones) and apply it to the linked project. After any DDL change, check
 Supabase security advisors for new RLS/lint warnings.
 
+**Update 9 Nov 2026 (pipeline moved, migration 023):** the Bid Pipeline now
+lives on its own site, the Africa MICE Dashboard
+(`github.com/farirainandipa/africa-mice-dashboard-web`, Netlify site
+`africamicedashboard`). `netlify.toml` here 301-redirects every `/pipeline`
+URL there (path and query kept, `force = true`) so old links and emails keep
+working. The pipeline pages have been removed from this repo (`public/pipeline/`
+is gone); the dashboard repo is the only source. The header's "Client Login"
+link and the `send-submission-verification` emails point at the new site.
+The database is unchanged and still shared, and migrations stay in this repo.
+Migration 023 revoked EXECUTE from `anon` on every function except the
+public-form RPCs (`bid_wins_teaser`, `partner_form_options`, `profile_submit`,
+`profile_verify`, `profile_status`, `submission_upload_allowed`), removed
+client EXECUTE on trigger functions, and pinned `search_path` on the `bw_*`
+trigger functions. New SECURITY DEFINER functions must do the same.
+
 ## Deployment
 
 Deployed via Netlify, building from the `main` branch of
