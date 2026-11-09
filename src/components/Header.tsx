@@ -62,9 +62,9 @@ export default function Header() {
                 {link.name}
               </Link>
             ))}
-            {/* The dashboard lives on its own site (Africa MICE Dashboard) */}
+            {/* The dashboard lives on its own site (Africa MICE Dashboard); /bids redirects there */}
             <a
-              href="https://africamicedashboard.netlify.app/pipeline/"
+              href="/bids"
               className="font-['Inter'] text-sm font-medium text-[#21436A] hover:text-[#BCD8D4] transition-colors duration-200"
             >
               Client Login
@@ -104,9 +104,9 @@ export default function Header() {
                   {link.name}
                 </Link>
               ))}
-              {/* The dashboard lives on its own site (Africa MICE Dashboard) */}
+              {/* The dashboard lives on its own site (Africa MICE Dashboard); /bids redirects there */}
               <a
-                href="https://africamicedashboard.netlify.app/pipeline/"
+                href="/bids"
                 className="font-['Inter'] text-sm font-medium py-2 text-[#21436A] hover:text-[#BCD8D4] transition-colors duration-200"
               >
                 Client Login

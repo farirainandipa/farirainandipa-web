@@ -175,7 +175,9 @@ lives on its own site, the Africa MICE Dashboard
 URL there (path and query kept, `force = true`) so old links and emails keep
 working. The pipeline pages have been removed from this repo (`public/pipeline/`
 is gone); the dashboard repo is the only source. The header's "Client Login"
-link and the `send-submission-verification` emails point at the new site.
+link now points at `/bids` on this site (also 301-redirected to the dashboard
+by `netlify.toml`), so the public-facing nav no longer names `/pipeline`; the
+`send-submission-verification` emails still point directly at the new site.
 The database is unchanged and still shared, and migrations stay in this repo.
 Migration 023 revoked EXECUTE from `anon` on every function except the
 public-form RPCs (`bid_wins_teaser`, `partner_form_options`, `profile_submit`,
