@@ -399,15 +399,15 @@ export const hub = {
     { value: 'CEM · CEPA', label: 'Certified exhibition and event professional' },
     { value: 'Pan-African', label: 'From bid development to execution' },
   ],
-  comparisonUpdated: '[MONTH YEAR]',
+  comparisonUpdated: 'November 2026',
   signatureCombos: [
-    { countries: 'Zimbabwe + Zambia', title: 'Victoria Falls Twin-Destination', body: 'Meet on one side of the Falls. Celebrate on the other. A leadership retreat or incentive with two countries, one wonder and no long transfers.', meta: '4 nights · 40 to [XXX] guests' },
+    { countries: 'Zimbabwe + Zambia', title: 'Victoria Falls Twin-Destination', body: 'Meet on one side of the Falls. Celebrate on the other. A leadership retreat or incentive with two countries, one wonder and no long transfers.', meta: '4 nights · 40 to 300 guests' },
     { countries: 'Rwanda', title: 'Kigali Congress + Gorilla Post-tour', body: 'A disciplined congress city, followed by the experience delegates talk about for years. Built for associations that need both.', meta: '3 congress days + 2 post-tour days' },
     { countries: 'Kenya', title: 'Nairobi Summit + Mara Incentive', body: 'Regional summit in the capital, then a short flight to the Maasai Mara for top performers or VIP delegates.', meta: '3 summit days + 2 safari days' },
   ],
   services: [
     { price: 'Free', title: '2027 Destination Guide', body: 'All five destinations in one PDF. Venue snapshots, access notes, best-fit events and seasons.', cta: 'Download the guide', featured: false },
-    { price: '[FEE] · fixed', title: 'Destination Shortlist Report', body: 'Three destinations ranked for your specific event. Venue fit, delegate access, cost bands and the risks nobody puts in a brochure. Delivered in [X] working days.', cta: 'Order a shortlist', featured: true },
+    { price: '$150 · fixed', title: 'Destination Shortlist Report', body: 'Three destinations ranked for your specific event. Venue fit, delegate access, cost bands and the risks nobody puts in a brochure. Delivered in 3 working days.', cta: 'Order a shortlist', featured: true },
     { price: 'By proposal', title: 'Bid and Site Inspection Advisory', body: 'Bid feasibility, bid coordination and hosted site inspections where I lead your committee through the venues. Destination representation for bureaux.', cta: 'Make an Enquiry', featured: false },
   ],
   pipeline: {
