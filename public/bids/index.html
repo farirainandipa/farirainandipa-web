@@ -1,0 +1,1058 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bid Workspace</title>
+<meta name="description" content="Bid Workspace — the working system behind the Bid Development & Commercialisation Pack: bids, compliance matrix, support letters, schedule and client portal.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<style>
+:root{
+  --paper:#f5f7f8; --card:#ffffff; --ink:#3a3a3a; --ink-2:#55585c; --ink-3:#787c82; --line:#e2e6e9; --line-2:#c7ced3;
+  --accent:#21436a; --accent-2:#1a3456; --moss:#3f7d6c; --amber:#c38a1f; --red:#b3261e; --blue:#2f5d8a;
+  --tint-accent:#e4eef0; --tint-moss:#e1efe9; --tint-amber:#f7ecd3; --tint-red:#f7dcd9; --tint-blue:#dfe9f3; --tint-grey:#edf1f3;
+  --r:8px; --shadow:0 1px 2px rgba(16,24,40,.06),0 8px 24px -16px rgba(16,24,40,.22);
+  --font:"Inter",system-ui,sans-serif; --display:"Cormorant Garamond",Georgia,serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.5 var(--font);-webkit-font-smoothing:antialiased}
+::selection{background:#bcd8d4;color:var(--accent-2)}
+a{color:var(--accent-2)}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3{font-family:var(--display);font-weight:600;letter-spacing:-.01em;margin:0;color:var(--accent)}
+h1{font-size:28px;line-height:1.15}h2{font-size:20px}h3{font-size:16px}
+.muted{color:var(--ink-3)}.small{font-size:12.5px}.mono{font-variant-numeric:tabular-nums}
+.hide{display:none!important}
+/* layout */
+.top{position:sticky;top:0;z-index:20;background:rgba(245,247,248,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .in{max-width:1240px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
+.brand .mark{width:28px;height:28px;border-radius:7px;background:var(--accent);color:#fff;display:grid;place-items:center;font-family:var(--display);font-weight:600}
+.brand b{font-family:var(--display);font-weight:600;font-size:17px;color:var(--accent)}
+.brand span{color:var(--ink-3);font-size:12px}
+nav.tabs{display:flex;gap:4px;margin-left:8px}
+nav.tabs button{background:none;border:0;padding:8px 12px;border-radius:8px;cursor:pointer;color:var(--ink-2)}
+nav.tabs button.on{background:var(--tint-grey);color:var(--ink);font-weight:500}
+.spacer{flex:1}
+.who{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--ink-3)}
+.who .pill{background:var(--tint-moss);color:var(--moss);padding:2px 8px;border-radius:99px;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+.who .pill.admin{background:var(--tint-accent);color:var(--accent-2)}
+main{max-width:1240px;margin:0 auto;padding:22px 16px 80px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.grid{display:grid;gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.card .hd{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.card .bd{padding:16px}
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-2);background:var(--card);border-radius:8px;padding:7px 12px;cursor:pointer;font-weight:500;white-space:nowrap}
+.btn:hover{border-color:var(--ink-3)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn.primary:hover{background:var(--accent-2)}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--ink-2)}.btn.ghost:hover{background:var(--tint-grey)}
+.btn.sm{padding:4px 9px;font-size:12.5px;border-radius:7px}
+.btn.danger{color:var(--red)}
+.btn:disabled{opacity:.5;cursor:default}
+/* forms */
+label.f{display:block;font-size:12px;color:var(--ink-3);margin-bottom:4px;font-weight:500}
+.inp,select.inp,textarea.inp{width:100%;border:1px solid var(--line-2);border-radius:8px;padding:8px 10px;background:#fff}
+textarea.inp{min-height:84px;resize:vertical}
+.inp:focus{outline:2px solid #bcd8d4;border-color:var(--accent)}
+.fg{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.fg .wide{grid-column:1/-1}
+/* tags */
+.tag{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11.5px;font-weight:600;background:var(--tint-grey);color:var(--ink-2);white-space:nowrap}
+.tag.mandatory{background:var(--tint-red);color:var(--red)}.tag.scored{background:var(--tint-blue);color:var(--blue)}.tag.administrative{background:var(--tint-amber);color:#8a6010}.tag.informational{background:var(--tint-grey)}
+.tag.final,.tag.received,.tag.done,.tag.won{background:var(--tint-moss);color:var(--moss)}
+.tag.missing,.tag.overdue,.tag.slipped,.tag.lost{background:var(--tint-red);color:var(--red)}
+.tag.requested,.tag.sent,.tag.in_progress,.tag.submitted,.tag.shortlisted{background:var(--tint-amber);color:#8a6010}
+.tag.drafted,.tag.pending{background:var(--tint-blue);color:var(--blue)}
+.tag.internal{background:#2a2f36;color:#eef2f5}.tag.client{background:var(--tint-moss);color:var(--moss)}
+/* tables */
+table{width:100%;border-collapse:collapse}
+th{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-3);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);font-weight:600}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+tr.click{cursor:pointer}tr.click:hover td{background:var(--tint-grey)}
+td select.inline{border:1px solid transparent;background:transparent;border-radius:6px;padding:3px 4px;cursor:pointer}
+td select.inline:hover{border-color:var(--line-2);background:#fff}
+.tbl-wrap{overflow:auto}
+/* counters */
+.counters{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.counter{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.counter .n{font-family:var(--display);font-size:26px;line-height:1;font-weight:600}
+.counter .l{font-size:12px;color:var(--ink-3);margin-top:4px}
+.counter.bad .n{color:var(--red)}.counter.good .n{color:var(--moss)}.counter.warn .n{color:var(--amber)}
+/* stage stepper */
+.stepper{display:grid;grid-template-columns:repeat(8,1fr);gap:4px}
+.step{border:1px solid var(--line);border-radius:8px;padding:8px 6px;text-align:center;font-size:12px;background:var(--card);cursor:pointer;position:relative}
+.step .k{display:block;font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em}
+.step.done{background:var(--tint-moss);border-color:#bfdccd;color:var(--moss)}
+.step.on{background:var(--accent);color:#fff;border-color:var(--accent)}.step.on .k{color:#bcd8d4}
+.step.ro{cursor:default}
+/* bid cards */
+.bidcard{display:grid;grid-template-columns:1fr auto;gap:12px;padding:16px;cursor:pointer}
+.bidcard:hover{background:var(--tint-grey)}
+.bidcard h3{font-size:17px}
+.bidcard .meta{display:flex;gap:14px;flex-wrap:wrap;color:var(--ink-3);font-size:12.5px;margin-top:4px}
+.bidcard .side{text-align:right;min-width:150px}
+.bidcard .days{font-family:var(--display);font-size:24px;font-weight:600}
+.bidcard .days.bad{color:var(--red)}.bidcard .days.warn{color:var(--amber)}
+.flags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+/* detail tabs */
+.subtabs{display:flex;gap:2px;border-bottom:1px solid var(--line);overflow:auto}
+.subtabs button{background:none;border:0;border-bottom:2px solid transparent;padding:10px 12px;cursor:pointer;color:var(--ink-2);white-space:nowrap}
+.subtabs button.on{border-bottom-color:var(--accent);color:var(--ink);font-weight:600}
+.subtabs button .n{background:var(--tint-grey);border-radius:99px;padding:0 6px;font-size:11px;margin-left:4px}
+/* scorecards */
+.score{display:grid;grid-template-columns:1fr 60px 150px 70px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.score .lbl b{display:block;font-weight:500}.score .lbl span{font-size:12px;color:var(--ink-3)}
+.score .w{color:var(--ink-3);font-size:12.5px;text-align:center}
+.score .pts{display:flex;gap:3px}
+.score .pts button{flex:1;border:1px solid var(--line-2);background:#fff;border-radius:6px;padding:5px 0;cursor:pointer}
+.score .pts button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.score .pts button.ovr.on{background:var(--red);border-color:var(--red)}
+.score .wt{text-align:right;font-weight:600}
+.verdict{border-radius:var(--r);padding:16px;margin-top:14px;border:1px solid var(--line)}
+.verdict.strong{background:var(--tint-moss)}.verdict.cond{background:var(--tint-amber)}.verdict.marg{background:var(--tint-grey)}.verdict.decl{background:var(--tint-red)}
+.verdict h3{margin-bottom:4px}
+/* messages */
+.msg{padding:12px 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--card);margin-bottom:10px}
+.msg.internal{background:var(--tint-grey);border-style:dashed}
+.msg .m{display:flex;gap:10px;align-items:center;font-size:12px;color:var(--ink-3);margin-bottom:6px}
+.msg .m b{color:var(--ink-2)}
+/* activity */
+.act{display:grid;grid-template-columns:120px 1fr;gap:8px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:12.5px}
+/* drawer / modal */
+.overlay{position:fixed;inset:0;background:rgba(16,24,38,.4);z-index:50;display:flex;justify-content:flex-end}
+.drawer{width:min(620px,100%);height:100%;background:var(--paper);overflow:auto;padding:20px;box-shadow:-10px 0 30px rgba(0,0,0,.2)}
+.modal-wrap{position:fixed;inset:0;background:rgba(16,24,38,.4);z-index:50;display:grid;place-items:center;padding:16px}
+.modal{width:min(760px,100%);max-height:92vh;overflow:auto;background:var(--paper);border-radius:14px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.drawer .hd,.modal .hd{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.foot{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+/* toast */
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--accent-2);color:#fff;padding:10px 16px;border-radius:99px;font-size:13px;z-index:99;opacity:0;transition:opacity .2s;pointer-events:none}
+#toast.on{opacity:1}
+/* auth */
+.auth{max-width:420px;margin:10vh auto;padding:28px}
+.auth h1{margin-bottom:6px}
+.auth p{color:var(--ink-3);margin:0 0 18px}
+.auth .inp{margin-bottom:10px}
+/* letter preview */
+pre.letter{white-space:pre-wrap;font:13.5px/1.55 var(--font);background:#fff;border:1px solid var(--line);border-radius:8px;padding:16px;max-height:50vh;overflow:auto}
+pre.letter mark{background:#ffe9a8;border-radius:3px}
+.empty{padding:28px;text-align:center;color:var(--ink-3)}
+.kv{display:grid;grid-template-columns:140px 1fr;gap:6px 12px;font-size:13px}
+.kv dt{color:var(--ink-3)}.kv dd{margin:0}
+.alert{padding:10px 14px;border-radius:8px;background:var(--tint-amber);border:1px solid #ecd9a8;font-size:13px}
+.alert.red{background:var(--tint-red);border-color:#e7b7b3}
+@media (max-width:760px){
+  .stepper{grid-template-columns:repeat(4,1fr)}
+  .score{grid-template-columns:1fr 50px 130px 50px}
+  .bidcard{grid-template-columns:1fr}.bidcard .side{text-align:left}
+  nav.tabs{display:none}
+  .kv{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast"></div>
+<script>
+/* ============================================================
+   Bid Workspace — configuration
+   ============================================================ */
+const SUPABASE_URL = "https://upzkvszgoqhoefkiwoep.supabase.co";
+const SUPABASE_KEY = "sb_publishable_7j49ndRbw7OQ8qLScg6qSw_UweRUpz7";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+if (window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+/* ---------- pack reference data (Doc 00 + workbook tabs 1 & 2) ---------- */
+const STAGES = [
+  {k:'qualify',  n:'1 Qualify',  q:'What exactly is being asked for, and is the applicant ready?', tool:'Doc 01 Intake Kit', exit:'Completed readiness assessment and full requirement documents in hand'},
+  {k:'decide',   n:'2 Decide',   q:'Should we pursue this at all?', tool:'Bid/No-Bid Scorecard + Doc 02', exit:'Signed bid/no-bid memo with a named decision-maker'},
+  {k:'contract', n:'3 Contract', q:'What is the work worth and on what terms?', tool:'Complexity & Fee Calculator + Docs 03, 04', exit:'Countersigned agreement and first payment received'},
+  {k:'mobilise', n:'4 Mobilise', q:'What are all the requirements and who supplies each?', tool:'Compliance Matrix + Production Schedule', exit:'Every requirement is a row with an owner and a due date'},
+  {k:'evidence', n:'5 Evidence', q:'What can we actually prove?', tool:'Budget, Impact, Stakeholder tracker + Doc 07', exit:'Every claim carries a source; every third-party document requested'},
+  {k:'draft',    n:'6 Draft',    q:'What is our argument and how is it told?', tool:'Doc 05 or Doc 06 + win-theme worksheet', exit:'Full draft reviewed against the compliance matrix, no gaps'},
+  {k:'submit',   n:'7 Submit & Pitch', q:'Is it compliant, complete, delivered and defensible?', tool:'Doc 09 QA Checklist + Doc 08 Pitch Playbook', exit:'Submission acknowledged in writing by the issuer'},
+  {k:'close',    n:'8 Close',    q:'What did we learn and what happens next?', tool:'Doc 09 Part C Debrief', exit:'Debrief filed, invoice issued, transition scoped or opportunity closed'},
+];
+const BNB_FACTORS = [
+  {key:'eligibility', label:'Eligibility — can every mandatory requirement be met?', weight:3, override:true, hint:'OVERRIDE: a score of 1 declines the bid regardless of the total.'},
+  {key:'time', label:'Time — working days available against work required', weight:3, override:true, hint:'OVERRIDE: a score of 1 declines the bid regardless of the total.'},
+  {key:'competitive', label:'Competitive position — our distinctiveness against the likely field', weight:2},
+  {key:'host_capacity', label:'Host capacity — committee, secretariat, prior experience', weight:2},
+  {key:'stakeholder', label:'Stakeholder support — government, bureau, association backing in place', weight:2},
+  {key:'exposure', label:'Financial exposure — guarantees, subvention, free provision required', weight:2},
+  {key:'client', label:'Client commitment — decision rights, availability, willingness to pay', weight:2},
+  {key:'strategic', label:'Strategic value beyond the fee', weight:1},
+];
+const CX_FACTORS = [
+  {key:'scale', label:'Event scale', weight:2, hint:'5 = 2,000+ delegates, large exhibition, many concurrent streams'},
+  {key:'budget', label:'Budget size', weight:2, hint:'5 = total event budget above USD 2 million'},
+  {key:'geo', label:'Geographic level', weight:2, hint:'5 = global federation congress'},
+  {key:'technical', label:'Technical requirements', weight:2, hint:'5 = prescribed modelling, feasibility studies and technical annexes'},
+  {key:'guarantees', label:'Financial guarantees required', weight:2, hint:'5 = substantial hosting fee, subvention and extensive free provision'},
+  {key:'coordination', label:'Stakeholder coordination', weight:1.5, hint:'5 = multiple ministries, bureau, city and institutional partners to align'},
+  {key:'timeline', label:'Timeline pressure', weight:1.5, hint:'5 = far fewer working days available than the work requires'},
+  {key:'host', label:'Host capacity', weight:1.5, hint:'5 = no secretariat, no committee, no prior bid experience'},
+];
+const BANDS = [
+  {lo:0,  name:'Low complexity', low:7500,  high:12000, profile:'National or single-country bid, modest scale, host already organised'},
+  {lo:21, name:'Moderate complexity', low:12000, high:20000, profile:'Regional or SADC-level congress, some government alignment required'},
+  {lo:41, name:'High complexity', low:20000, high:32000, profile:'Pan-African or continental federation, multi-ministry alignment, guarantees'},
+  {lo:56, name:'Strategic national priority', low:32000, high:45000, profile:'Global federation congress with national sponsorship and guarantees (plus success fee)'},
+];
+const ADJUSTMENTS = [
+  {key:'rush', label:'Rush premium', kind:'pct', value:0.25, note:'% of base'},
+  {key:'pitch', label:'International pitch support', kind:'usd', value:3000},
+  {key:'impact', label:'Economic impact modelling', kind:'usd', value:3500},
+  {key:'design', label:'Bid book design and production', kind:'usd', value:4000},
+  {key:'language', label:'Additional language version', kind:'pct', value:0.40, note:'% of base'},
+  {key:'site', label:'Site inspection coordination', kind:'usd', value:2000},
+];
+const BID_TYPES = {congress:'Association congress', destination:'Destination bid', rfp_tender:'RFP / tender', eoi:'EOI / pre-qualification'};
+const OUTCOMES = ['open','submitted','shortlisted','won','lost','withdrawn','declined'];
+const REQ_TYPES = ['mandatory','scored','administrative','informational'];
+const REQ_STATUS = ['missing','requested','drafted','final','not_applicable'];
+const SH_STATUS = ['not_sent','sent','overdue','received','declined','substituted'];
+const ASK_LEVELS = ['endorsement','facilitation','commitment','guarantee'];
+const MS_STATUS = ['pending','in_progress','done','slipped'];
+const DOC_KINDS = ['requirements','evidence','draft','support_letter','submission','contract','other'];
+
+/* ---------- state ---------- */
+const S = { user:null, role:null, view:'bids', bidId:null, tab:'overview', bids:[], bid:null, countries:[], orgs:[], templates:[], cache:{} };
+
+/* ---------- utils ---------- */
+const $ = (s, el=document) => el.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtD = d => d ? new Date(d + (d.length===10?'T00:00:00':'')).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '—';
+const fmtDT = d => d ? new Date(d).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '';
+const today = () => new Date().toISOString().slice(0,10);
+const daysUntil = d => d ? Math.round((new Date(d+'T00:00:00') - new Date(today()+'T00:00:00'))/86400000) : null;
+const usd = n => 'USD ' + Math.round(n).toLocaleString('en-US');
+const lab = s => String(s||'').replace(/_/g,' ');
+const opt = (list, cur, labels) => list.map(v => `<option value="${v}" ${v===cur?'selected':''}>${esc(labels?labels[v]:lab(v))}</option>`).join('');
+let toastT; function toast(m){ const t=$('#toast'); t.textContent=m; t.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'),2600); }
+function err(e){ console.error(e); toast((e && (e.message||e.error_description||e.error)) || 'Something went wrong'); }
+const isAdmin = () => S.role?.role === 'admin';
+const route = (view, bidId, tab) => { S.view=view; if(bidId!==undefined) S.bidId=bidId; if(tab) S.tab=tab; location.hash = view==='bid' ? `#bid/${S.bidId}/${S.tab}` : `#${view}`; render(); };
+
+/* ---------- auth ---------- */
+async function boot(){
+  const { data:{ session } } = await sb.auth.getSession();
+  S.user = session?.user || null;
+  sb.auth.onAuthStateChange((ev, s) => { const was = !!S.user; S.user = s?.user || null; if (ev === 'PASSWORD_RECOVERY') return setPasswordModal(); if (!!S.user !== was) start(); });
+  start();
+}
+function setPasswordModal(){
+  if (!$('#app').innerHTML) $('#app').innerHTML = '<main></main>';
+  modal(`<div class="hd"><h2>Set a new password</h2></div><input class="inp" type="password" id="np1" placeholder="New password (8+ characters)" autocomplete="new-password"><input class="inp" type="password" id="np2" placeholder="Repeat it" style="margin-top:8px" autocomplete="new-password">
+    <div class="foot"><button class="btn primary" id="setpw">Save password</button></div>`, () => { $('#setpw').onclick = async () => { const a=$('#np1').value, b=$('#np2').value; if (a.length<8) return toast('Use at least 8 characters'); if (a!==b) return toast('Passwords do not match');
+    const { error } = await sb.auth.updateUser({ password:a }); if (error) return err(error); closeModal(); toast('Password updated'); start(); }; });
+}
+async function start(){
+  if (!S.user) { S.role=null; return renderAuth(); }
+  try {
+    const { data, error } = await sb.rpc('bw_my_role'); if (error) throw error;
+    S.role = data;
+    if (S.role.role === 'none') return renderNoAccess();
+    const [c, t] = await Promise.all([ sb.from('countries').select('id,name,iso2').eq('type','country').order('name'), sb.from('bw_letter_templates').select('*').order('sort') ]);
+    S.countries = c.data || []; S.templates = t.data || [];
+    if (isAdmin()) { const o = await sb.from('bw_orgs').select('*').order('name'); S.orgs = o.data || []; }
+    const h = location.hash.replace('#','').split('/');
+    if (h[0]==='bid' && h[1]) { S.view='bid'; S.bidId=h[1]; S.tab=h[2]||'overview'; }
+    else if (h[0]) S.view = h[0];
+    render();
+  } catch(e){ err(e); renderAuth(); }
+}
+function renderAuth(){
+  $('#app').innerHTML = `
+  <main><div class="card auth">
+    <div class="brand" style="margin-bottom:18px"><div class="mark">B</div><div><b>Bid Workspace</b><br><span>Farirai Nandipa MICE Consultancy</span></div></div>
+    <h1>Sign in</h1><p>Bid team and client access. Use the email and password you were given.</p>
+    <form id="authf">
+      <input class="inp" name="email" type="email" placeholder="Email" required autocomplete="username">
+      <input class="inp" name="password" type="password" placeholder="Password" required autocomplete="current-password">
+      <button class="btn primary" style="width:100%;justify-content:center">Sign in</button>
+    </form>
+    <p class="small" style="margin-top:14px"><a href="#" id="forgot">Forgotten your password?</a></p>
+  </div></main>`;
+  $('#authf').onsubmit = async e => { e.preventDefault(); const f=new FormData(e.target);
+    const { error } = await sb.auth.signInWithPassword({ email:f.get('email'), password:f.get('password') }); if (error) err(error); };
+  $('#forgot').onclick = async e => { e.preventDefault(); const email = $('#authf [name=email]').value; if(!email) return toast('Enter your email first');
+    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.href.split('#')[0] }); error ? err(error) : toast('Reset email sent'); };
+}
+function renderNoAccess(){
+  $('#app').innerHTML = `<main><div class="card auth"><h1>No access yet</h1><p>${esc(S.user.email)} is signed in but has not been given access to any bids. Ask the bid team to add you.</p><button class="btn" id="so">Sign out</button></div></main>`;
+  $('#so').onclick = () => sb.auth.signOut();
+}
+
+/* ---------- shell ---------- */
+function shell(inner){
+  const admin = isAdmin();
+  $('#app').innerHTML = `
+  <div class="top"><div class="in">
+    <a class="brand" href="#bids"><div class="mark">B</div><div><b>Bid Workspace</b><br><span>${admin?'Farirai Nandipa MICE Consultancy':esc(S.role.orgs?.[0]?.name||'Client portal')}</span></div></a>
+    <nav class="tabs">
+      <button data-v="bids" class="${S.view==='bids'||S.view==='bid'?'on':''}">${admin?'Bids':'My bids'}</button>
+      ${admin?`<button data-v="clients" class="${S.view==='clients'?'on':''}">Clients &amp; access</button>`:''}
+      <button data-v="stages" class="${S.view==='stages'?'on':''}">Stage reference</button>
+    </nav>
+    <div class="spacer"></div>
+    <div class="who"><span class="pill ${admin?'admin':''}">${admin?'Bid team':'Client'}</span><span>${esc(S.user.email)}</span><button class="btn ghost sm" id="chpw" title="Change password">Password</button><button class="btn ghost sm" id="signout">Sign out</button></div>
+  </div></div>
+  <main>${inner}</main>`;
+  document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => route(b.dataset.v));
+  $('#signout').onclick = () => sb.auth.signOut();
+  $('#chpw').onclick = setPasswordModal;
+}
+function render(){
+  if (S.view==='bid') return renderBid();
+  if (S.view==='clients' && isAdmin()) return renderClients();
+  if (S.view==='stages') return renderStages();
+  return renderBids();
+}
+
+/* ============================================================
+   BIDS LIST
+   ============================================================ */
+async function renderBids(){
+  shell(`<div class="row" style="justify-content:space-between;margin-bottom:16px"><div><h1>${isAdmin()?'Bids':'Your bids'}</h1><div class="muted">Opportunity → qualify → bid. Every bid, its deadline, and what is outstanding.</div></div>
+    ${isAdmin()?'<button class="btn primary" id="newbid">+ New bid</button>':''}</div><div id="list"><div class="empty">Loading…</div></div>`);
+  if (isAdmin()) $('#newbid').onclick = newBidModal;
+  const { data, error } = await sb.rpc('bw_bid_list'); if (error) return err(error);
+  S.bids = data || [];
+  const live = S.bids.filter(b => ['open','submitted','shortlisted'].includes(b.outcome));
+  const closed = S.bids.filter(b => !['open','submitted','shortlisted'].includes(b.outcome));
+  const attn = [];
+  for (const b of live) {
+    if (b.days_left !== null && b.days_left <= 14 && b.days_left >= 0 && b.outcome==='open') attn.push(`<b>${esc(b.title)}</b> — submission in ${b.days_left} day${b.days_left===1?'':'s'}`);
+    if (b.letters_overdue) attn.push(`<b>${esc(b.title)}</b> — ${b.letters_overdue} support letter${b.letters_overdue>1?'s':''} overdue`);
+    if (b.milestones_overdue) attn.push(`<b>${esc(b.title)}</b> — ${b.milestones_overdue} milestone${b.milestones_overdue>1?'s':''} past target date`);
+  }
+  const card = b => {
+    const d = b.days_left; const dcls = d===null||b.outcome!=='open'?'':d<0?'bad':d<=14?'bad':d<=30?'warn':'';
+    return `<div class="card" style="margin-bottom:10px"><div class="bidcard" data-id="${b.id}">
+      <div>
+        <div class="row" style="gap:8px;margin-bottom:4px"><span class="tag">${esc(BID_TYPES[b.bid_type]||b.bid_type)}</span><span class="tag ${b.outcome}">${lab(b.outcome)}</span><span class="tag">Stage ${STAGES.findIndex(s=>s.k===b.stage)+1} · ${lab(b.stage)}</span></div>
+        <h3>${esc(b.title)}</h3>
+        <div class="meta"><span>${esc(b.issuing_body||'')}</span>${b.host_city||b.host_country?`<span>${esc([b.host_city,b.host_country].filter(Boolean).join(', '))}</span>`:''}${b.client_org?`<span>Client: ${esc(b.client_org)}</span>`:''}</div>
+        <div class="flags">
+          ${b.req_total?`<span class="tag ${b.mandatory_open?'missing':'final'}">${b.mandatory_open} mandatory open of ${b.req_total} requirements</span>`:'<span class="tag">No requirements loaded</span>'}
+          ${b.letters_total?`<span class="tag ${b.letters_overdue?'overdue':b.letters_received===b.letters_total?'received':''}">${b.letters_received}/${b.letters_total} letters in · ${b.letters_overdue} overdue</span>`:''}
+          ${b.next_milestone?`<span class="tag">Next: ${esc(b.next_milestone.title)} · ${fmtD(b.next_milestone.target_date)}</span>`:''}
+        </div>
+      </div>
+      <div class="side">
+        <div class="small muted">Submission</div>
+        <div>${fmtD(b.submission_deadline)}</div>
+        ${d!==null?`<div class="days ${dcls} mono">${d<0?`${-d}d ago`:`${d}d`}</div>`:'<div class="days muted">—</div>'}
+      </div></div></div>`;
+  };
+  $('#list').innerHTML = `
+    ${attn.length?`<div class="alert" style="margin-bottom:14px"><b>Needs attention</b><ul style="margin:6px 0 0 18px;padding:0">${attn.map(a=>`<li>${a}</li>`).join('')}</ul></div>`:''}
+    ${live.length?live.map(card).join(''):'<div class="card"><div class="empty">No live bids. ' + (isAdmin()?'Create one from a pipeline event or from scratch.':'') + '</div></div>'}
+    ${closed.length?`<h2 style="margin:22px 0 10px">Closed</h2>${closed.map(card).join('')}`:''}`;
+  document.querySelectorAll('.bidcard').forEach(c => c.onclick = () => route('bid', c.dataset.id, 'overview'));
+}
+
+function newBidModal(){
+  const consultancy = S.orgs.find(o=>o.kind==='consultancy');
+  const X = { reqs:[], sh:[], source:null };   // what the document reader found
+  modal(`<div class="hd"><h2>New bid</h2></div>
+    <div class="card" style="padding:12px 14px;margin-bottom:14px;background:var(--tint-grey)">
+      <div class="row" style="justify-content:space-between"><div><b>Start from the document</b><div class="small muted">Upload the RFP, call for bids, host requirements or expression of interest (PDF, Word or text). The form, the compliance matrix and the stakeholder list fill themselves. You check everything before it is saved.</div></div>
+      <input type="file" id="bidfile" accept=".pdf,.docx,.txt,.md"></div>
+      <div id="bidfile_status" class="small" style="margin-top:8px"></div>
+    </div>
+    <div class="fg">
+      <div class="wide"><label class="f">Link to a pipeline event (optional)</label><input class="inp" id="evsearch" placeholder="Type to search the Africa MICE pipeline…"><div id="evres" class="small"></div><input type="hidden" id="event_id"></div>
+      <div class="wide"><label class="f">Bid title *</label><input class="inp" id="title" placeholder="e.g. 8th Africa Associations Summit (AAS8) 2027 — Zimbabwe"></div>
+      <div><label class="f">Event name (as used in letters)</label><input class="inp" id="event_name" placeholder="e.g. 8th Africa Associations Summit (AAS8)"></div>
+      <div><label class="f">Issuing body</label><input class="inp" id="issuing_body"></div>
+      <div><label class="f">Bid type</label><select class="inp" id="bid_type">${opt(Object.keys(BID_TYPES),'congress',BID_TYPES)}</select></div>
+      <div><label class="f">Host country</label><select class="inp" id="host_country_id"><option value="">—</option>${S.countries.map(c=>`<option value="${c.id}" ${c.iso2==='ZW'?'selected':''}>${esc(c.name)}</option>`).join('')}</select></div>
+      <div><label class="f">Host city</label><input class="inp" id="host_city"></div>
+      <div><label class="f">Client organisation</label><select class="inp" id="client_org_id"><option value="">— none yet —</option>${S.orgs.filter(o=>o.kind!=='consultancy').map(o=>`<option value="${o.id}">${esc(o.name)}</option>`).join('')}</select></div>
+      <div><label class="f">Submission deadline</label><input class="inp" type="date" id="submission_deadline"></div>
+      <div><label class="f">Event dates</label><input class="inp" id="event_dates" placeholder="e.g. Nov 2027"></div>
+      <div><label class="f">Bid director</label><input class="inp" id="bid_director" value="Farirai Nandipa"></div>
+      <div class="wide"><label class="f">Summary</label><textarea class="inp" id="summary"></textarea></div>
+      <div class="wide" id="seedopts"><label><input type="checkbox" id="seed_sh" checked> Pre-load the nine standard stakeholders (Doc 07)</label><br><label><input type="checkbox" id="seed_ms" checked> Generate the production schedule from the deadline (workbook tab 4)</label></div>
+    </div>
+    <div class="foot"><button class="btn" data-close>Cancel</button><button class="btn primary" id="save">Create bid</button></div>`);
+  const setIfEmpty = (id, val) => { if (val && !$('#'+id).value) $('#'+id).value = val; };
+  $('#bidfile').onchange = async e => {
+    const f = e.target.files[0]; if (!f) return; const st = $('#bidfile_status'); st.textContent = `Reading ${f.name}…`;
+    let text; try { text = await fileToText(f); } catch(ex){ err(ex); st.textContent = 'Could not read that file.'; return; }
+    if (text.trim().length < 80) { st.textContent = 'The file has no readable text (scanned PDF?). Fill the form by hand or paste the text into Requirements → Import after creating the bid.'; return; }
+    st.textContent = 'Reading the document…';
+    const a = await analyseBidDocument(text);
+    const bf = a.bid || {};
+    setIfEmpty('title', bf.title); setIfEmpty('event_name', bf.event_name); setIfEmpty('issuing_body', bf.issuing_body); setIfEmpty('host_city', bf.host_city);
+    setIfEmpty('submission_deadline', bf.submission_deadline); setIfEmpty('event_dates', bf.event_dates); setIfEmpty('summary', bf.summary);
+    if (bf.bid_type && BID_TYPES[bf.bid_type]) $('#bid_type').value = bf.bid_type;
+    if (bf.host_country) { const c = S.countries.find(x=>x.name.toLowerCase()===String(bf.host_country).toLowerCase()); if (c) $('#host_country_id').value = c.id; }
+    X.reqs = a.requirements || []; X.sh = a.stakeholders || []; X.source = f.name;
+    const found = [bf.title&&'title', bf.issuing_body&&'issuing body', bf.bid_type&&'bid type', bf.host_country&&'country', bf.submission_deadline&&'deadline', bf.event_dates&&'event dates'].filter(Boolean);
+    st.innerHTML = `<span class="tag final">${a.ai?'AI read':'Rule-based read'}</span> Found ${found.length?found.join(', '):'no header fields'}.${bf.deadline_note?` · <span class="tag overdue">${esc(bf.deadline_note)}</span>`:''} Check every field below.`;
+    $('#seedopts').innerHTML = `
+      <label><input type="checkbox" id="load_reqs" ${X.reqs.length?'checked':'disabled'}> Load <b>${X.reqs.length}</b> requirement rows found in the document into the compliance matrix (${X.reqs.filter(r=>r.req_type==='mandatory').length} mandatory)</label><br>
+      <label><input type="checkbox" id="load_sh" ${X.sh.length?'checked':'disabled'}> Load <b>${X.sh.length}</b> stakeholders the document points to${X.sh.length?` (${X.sh.map(x=>x.stakeholder).slice(0,4).join(', ')}${X.sh.length>4?'…':''})`:''}</label><br>
+      <label><input type="checkbox" id="seed_sh" ${X.sh.length?'':'checked'}> Also pre-load the nine standard stakeholders (Doc 07)</label><br>
+      <label><input type="checkbox" id="seed_ms" checked> Generate the production schedule from the deadline (workbook tab 4)</label>`;
+  };
+  let evT; $('#evsearch').oninput = e => { clearTimeout(evT); const q=e.target.value.trim(); if(q.length<3){$('#evres').innerHTML='';return;}
+    evT=setTimeout(async()=>{ const {data}=await sb.from('events').select('id,event_name,organiser,bid_deadline,sector').ilike('event_name',`%${q}%`).limit(8);
+      $('#evres').innerHTML = (data||[]).map(ev=>`<div><a href="#" data-ev='${esc(JSON.stringify(ev))}'>${esc(ev.event_name)}</a> <span class="muted">${esc(ev.organiser||'')}${ev.bid_deadline?' · deadline '+fmtD(ev.bid_deadline):''}</span></div>`).join('')||'<span class="muted">No matches</span>';
+      $('#evres').querySelectorAll('a').forEach(a=>a.onclick=ev2=>{ev2.preventDefault(); const ev=JSON.parse(a.dataset.ev); $('#event_id').value=ev.id; $('#title').value=$('#title').value||ev.event_name; $('#event_name').value=$('#event_name').value||ev.event_name; $('#issuing_body').value=$('#issuing_body').value||ev.organiser||''; if(ev.bid_deadline)$('#submission_deadline').value=ev.bid_deadline; $('#evres').innerHTML=`<span class="tag">Linked: ${esc(ev.event_name)}</span>`;});
+    },300); };
+  $('#save').onclick = async () => {
+    const v = id => $('#'+id).value.trim(); const chk = id => { const el = $('#'+id); return !!(el && el.checked && !el.disabled); };
+    if (!v('title')) return toast('Title is required');
+    const row = { org_id: consultancy?.id, client_org_id: v('client_org_id')||null, title:v('title'), event_name:v('event_name')||null, issuing_body:v('issuing_body')||null, bid_type:v('bid_type'),
+      host_country_id: v('host_country_id')?+v('host_country_id'):null, host_city:v('host_city')||null, submission_deadline:v('submission_deadline')||null,
+      event_dates:v('event_dates')||null, bid_director:v('bid_director')||null, summary:v('summary')||null, event_id: v('event_id')?+v('event_id'):null, created_by:S.user.email,
+      decision_log: X.source ? `${today()} — Bid opened from ${X.source}; header fields, ${X.reqs.length} requirement rows and ${X.sh.length} stakeholders read from the document. Verify against the source before relying on them.` : null };
+    $('#save').disabled = true;
+    const { data, error } = await sb.from('bw_bids').insert(row).select().single(); if (error) { $('#save').disabled = false; return err(error); }
+    if (chk('load_reqs') && X.reqs.length) { const { error:e2 } = await sb.rpc('bw_add_requirements', { p_bid:data.id, rows:X.reqs }); if (e2) err(e2); }
+    if (chk('load_sh') && X.sh.length) { const { error:e3 } = await sb.from('bw_stakeholders').insert(X.sh.map((x,i)=>({ bid_id:data.id, seq:100+i, stakeholder:x.stakeholder, signatory:x.signatory||null, template_key:x.template_key||null, ask_level:ASK_LEVELS.includes(x.ask_level)?x.ask_level:'commitment', lead_time_weeks:+x.lead_time_weeks||3, specific_ask:x.specific_ask||null, notes:'Identified from the bid document' }))); if (e3) err(e3); }
+    if (chk('seed_sh')) await sb.rpc('bw_seed_stakeholders',{p_bid:data.id});
+    if (chk('seed_ms')) await sb.rpc('bw_generate_milestones',{p_bid:data.id});
+    closeModal(); toast('Bid created'); route('bid', data.id, 'overview');
+  };
+}
+
+/* ---------- Document reader: fills a new bid from the RFP / EOI ---------- */
+async function analyseBidDocument(text){
+  try { const j = await aiExtract(text, 'bid'); if (j.ai && j.bid) return j; } catch(e){ console.warn('AI read unavailable', e); }
+  return { ai:false, bid: heuristicBidFields(text), requirements: heuristicExtract(text), stakeholders: heuristicStakeholders(text) };
+}
+const MONTHS = {january:1,february:2,march:3,april:4,may:5,june:6,july:7,august:8,september:9,october:10,november:11,december:12,jan:1,feb:2,mar:3,apr:4,jun:6,jul:7,aug:8,sep:9,sept:9,oct:10,nov:11,dec:12};
+function parseDates(str){
+  const out = []; const pad = n => String(n).padStart(2,'0');
+  for (const m of str.matchAll(/\b(\d{1,2})(?:st|nd|rd|th)?\s+(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept?|Oct|Nov|Dec)\.?,?\s+(20\d\d)\b/gi)) out.push({ iso:`${m[3]}-${pad(MONTHS[m[2].toLowerCase()])}-${pad(m[1])}`, idx:m.index });
+  for (const m of str.matchAll(/\b(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept?|Oct|Nov|Dec)\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(20\d\d)\b/gi)) out.push({ iso:`${m[3]}-${pad(MONTHS[m[1].toLowerCase()])}-${pad(m[2])}`, idx:m.index });
+  for (const m of str.matchAll(/\b(20\d\d)-(\d{2})-(\d{2})\b/g)) out.push({ iso:`${m[1]}-${m[2]}-${m[3]}`, idx:m.index });
+  for (const m of str.matchAll(/\b(\d{1,2})\/(\d{1,2})\/(20\d\d)\b/g)) out.push({ iso:`${m[3]}-${pad(m[2])}-${pad(m[1])}`, idx:m.index });
+  return out.filter(d => !isNaN(new Date(d.iso).getTime()));
+}
+function heuristicBidFields(text){
+  const t = text.replace(/\r/g,''); const lines = t.split('\n').map(l=>l.trim()).filter(Boolean); const low = t.toLowerCase();
+  const bid = {};
+  // type
+  bid.bid_type = /expression of interest|call for expressions/i.test(t) && !/request for proposal/i.test(t) ? 'eoi' : /request for proposal|\brfp\b|tender|terms of reference/i.test(t) ? 'rfp_tender' : /host (city|destination|country)|destination bid/i.test(t) ? 'destination' : 'congress';
+  // event name: shortest line naming an event with a year or ordinal
+  const evLines = lines.filter(l => /(summit|congress|conference|forum|expo|exhibition|convention|symposium|assembly|meeting|festival)/i.test(l) && l.length < 110 && !/^(the )?(deadline|submission|proposal)/i.test(l));
+  const scored = evLines.map(l => ({ l, s: (/\b(20\d\d|\d+(st|nd|rd|th))\b/.test(l)?2:0) + (/^[A-Z0-9]/.test(l)?1:0) - l.length/100 })).sort((a,b)=>b.s-a.s);
+  if (scored.length) bid.event_name = scored[0].l.replace(/^(request for proposal|rfp|call for (bids|proposals|hosts?)|expression of interest)[:\s–—-]*/i,'').replace(/[:\s–—-]+$/,'').trim();
+  // title
+  const head = lines.slice(0, 12).find(l => /(request for proposal|rfp|call for|expression of interest|invitation to|bid)/i.test(l) && l.length < 140);
+  bid.title = bid.event_name ? bid.event_name : (head || lines[0] || '').slice(0, 140);
+  // issuing body
+  const ib = t.match(/(?:issued by|organised by|organized by|on behalf of|convened by|hosted by)\s+(?:the\s+)?([A-Z][A-Za-z&’'\-\s]{3,90}?)(?:[\.,;\n(]|\s+(?:invites|is|seeks|hereby))/) || t.match(/\b(?:The\s+)?([A-Z][A-Za-z&’'\-\s]{3,80}?\b(?:Society|Association|Federation|Union|Council|Institute|Organisation|Organization|Secretariat|Foundation|Alliance|Network|Board|Authority|Commission|Agency)\b(?:\s+of\s+[A-Z][A-Za-z\s]{2,40})?(?:\s*\([A-Z]{2,10}\))?)/);
+  if (ib) bid.issuing_body = ib[1].replace(/\s+/g,' ').replace(/^(issued|organised|organized|hosted|convened) by (the )?/i,'').trim();
+  // country / city
+  const counts = S.countries.map(c => ({ c, n: (low.match(new RegExp('\\b'+c.name.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b','g'))||[]).length })).filter(x=>x.n).sort((a,b)=>b.n-a.n);
+  if (counts.length && counts[0].n >= 2) { bid.host_country = counts[0].c.name; const cm = t.match(new RegExp('\\bin\\s+([A-Z][a-zA-Z\\-]+(?:\\s[A-Z][a-zA-Z\\-]+)?),\\s*'+counts[0].c.name)); if (cm) bid.host_city = cm[1]; }
+  // deadline: dates within 160 chars after a deadline keyword
+  const dl = []; for (const m of t.matchAll(/(deadline|closing date|due date|due by|submit(?:ted)? (?:by|no later than|on or before)|submissions? (?:must be|are) (?:received|made|submitted)|not later than|closes? on)/gi)) { const win = t.slice(m.index, m.index+200); for (const d of parseDates(win)) dl.push(d.iso); }
+  const uniq = [...new Set(dl)];
+  if (uniq.length) { bid.submission_deadline = uniq[0]; if (uniq.length > 1) bid.deadline_note = `Document gives ${uniq.length} different deadline dates (${uniq.map(fmtD).join(', ')}). Confirm with the issuer.`; }
+  // event dates: window after event-date keywords
+  for (const m of t.matchAll(/(event dates?|conference dates?|summit dates?|congress dates?|will (?:be held|take place)|is scheduled (?:for|to take place)|to be held|dates?:)/gi)) { const win = t.slice(m.index, m.index+160); const d = parseDates(win); const my = win.match(/\b(January|February|March|April|May|June|July|August|September|October|November|December)(?:\s*(?:\/|or|-|–|to)\s*(January|February|March|April|May|June|July|August|September|October|November|December))?\s+(20\d\d)\b/i);
+    if (d.length) { bid.event_dates = d.length>1 ? `${fmtD(d[0].iso)} – ${fmtD(d[1].iso)}` : fmtD(d[0].iso); break; } if (my) { bid.event_dates = my[0]; break; } }
+  // summary: from the first sentence that states the purpose, up to ~600 characters
+  const flat = t.replace(/\s+/g,' '); const sents = flat.match(/[^.!?]+[.!?]+/g) || [flat];
+  const caps = x => x.replace(/[^A-Z]/g,'').length / Math.max(1,x.replace(/[^A-Za-z]/g,'').length);
+  let si = sents.findIndex(x => /\b(invites|seeks|is pleased|hereby|is looking for|calls for|is seeking)\b/i.test(x) && x.length > 60 && caps(x) < 0.3);
+  if (si < 0) si = sents.findIndex(x => /(purpose|overview|background|introduction)/i.test(x) && x.length > 60 && caps(x) < 0.3);
+  if (si < 0) si = sents.findIndex(x => x.length > 80 && caps(x) < 0.3);
+  if (si >= 0) { let sm = ''; for (let i=si; i<sents.length && sm.length < 600; i++) sm += sents[i].trim() + ' '; bid.summary = sm.trim(); }
+  return bid;
+}
+function heuristicStakeholders(text){
+  const low = text.toLowerCase(); const out = [];
+  const add = (test, stakeholder, signatory, key, ask, lead, specific) => { if (test.test(low)) out.push({ stakeholder, signatory, template_key:key, ask_level:ask, lead_time_weeks:lead, specific_ask:specific }); };
+  add(/ministry|government|minister|permanent secretary|visa|customs|protocol/, 'Sponsoring ministry', 'Permanent Secretary', 'C1', 'commitment', 6, 'Government support letter: facilitation (visas, customs, protocol) and any named financial or in-kind support');
+  add(/convention bureau|tourism board|tourism authority|subvention|destination marketing/, 'National convention bureau / tourism authority', 'Chief Executive', 'C2', 'commitment', 3, 'Subvention or in-kind support, destination promotion, delegate services');
+  add(/city|municipal|mayor|civic|host city/, 'Host city / municipality', 'Mayor / Town Clerk', 'C3', 'facilitation', 4, 'Civic welcome, permits, city services, participation in the opening');
+  add(/national association|member association|local association|chapter|professional body/, 'National association', 'President', 'C4', 'commitment', 3, 'Endorsement and membership mobilisation; LOC participation');
+  add(/venue|plenary|conference centre|conference center|exhibition space|breakout/, 'Venue', 'Sales Director', 'C5', 'guarantee', 2, 'Written hold or letter of intent for the stated dates with capacities and indicative rates');
+  add(/hotel|accommodation|room block|room rate/, 'Lead hotels', 'Directors of Sales', 'C6', 'commitment', 3, 'Provisional room blocks with indicative rates and distance to venue');
+  add(/airline|airport|flight|carrier|air access/, 'Airline', 'Country Manager', 'C7', 'commitment', 6, 'Official carrier arrangement or delegate fare; route evidence');
+  add(/universit|academic|research institut|faculty|scientific committee/, 'Academic / research partner', 'Vice-Chancellor / Dean', 'C8', 'commitment', 3, 'Content partnership, speakers, legacy commitment');
+  add(/sponsor/, 'Private sector sponsors', 'Marketing Director', 'C9', 'commitment', 5, 'Financial commitment with a stated value');
+  return out;
+}
+
+/* ============================================================
+   BID DETAIL
+   ============================================================ */
+async function loadBid(){
+  const id = S.bidId;
+  const [b, r, s, m, d, msg, a, sc] = await Promise.all([
+    sb.from('bw_bids').select('*, countries(name), client:bw_orgs!bw_bids_client_org_id_fkey(name)').eq('id',id).single(),
+    sb.from('bw_requirements').select('*').eq('bid_id',id).order('seq'),
+    sb.from('bw_stakeholders').select('*').eq('bid_id',id).order('seq'),
+    sb.from('bw_milestones').select('*').eq('bid_id',id).order('seq'),
+    sb.from('bw_documents').select('*').eq('bid_id',id).order('created_at',{ascending:false}),
+    sb.from('bw_messages').select('*').eq('bid_id',id).order('created_at',{ascending:false}),
+    sb.from('bw_activity').select('*').eq('bid_id',id).order('at',{ascending:false}).limit(40),
+    isAdmin() ? sb.from('bw_scores').select('*').eq('bid_id',id) : Promise.resolve({data:[]}),
+  ]);
+  if (b.error) throw b.error;
+  S.bid = { ...b.data, reqs:r.data||[], sh:s.data||[], ms:m.data||[], docs:d.data||[], msgs:msg.data||[], act:a.data||[], scores:Object.fromEntries((sc.data||[]).map(x=>[x.kind,x])) };
+}
+async function renderBid(){
+  shell(`<div id="bidwrap"><div class="empty">Loading…</div></div>`);
+  try { await loadBid(); } catch(e){ err(e); return route('bids'); }
+  const b = S.bid, admin = isAdmin();
+  const d = daysUntil(b.submission_deadline);
+  const stageIdx = STAGES.findIndex(s=>s.k===b.stage);
+  const mandOpen = b.reqs.filter(r=>r.req_type==='mandatory' && !['final','not_applicable'].includes(r.status)).length;
+  const tabs = [
+    ['overview','Overview'],
+    ...(admin?[['decide','Bid / No-bid'],['fee','Complexity & fee']]:[]),
+    ['requirements','Requirements', b.reqs.length],
+    ['stakeholders','Support letters', b.sh.length],
+    ['schedule','Schedule', b.ms.length],
+    ['documents','Documents', b.docs.length],
+    ['messages','Messages', b.msgs.length],
+  ];
+  $('#bidwrap').innerHTML = `
+    <div class="small" style="margin-bottom:8px"><a href="#bids">← ${admin?'All bids':'My bids'}</a></div>
+    <div class="row" style="justify-content:space-between;align-items:flex-start;margin-bottom:14px">
+      <div style="max-width:760px">
+        <div class="row" style="gap:8px;margin-bottom:6px"><span class="tag">${esc(BID_TYPES[b.bid_type])}</span>
+          ${admin?`<select class="inline" id="outcome" style="border:1px solid var(--line-2);border-radius:6px;padding:2px 6px;background:#fff">${opt(OUTCOMES,b.outcome)}</select>`:`<span class="tag ${b.outcome}">${lab(b.outcome)}</span>`}
+          ${b.client?.name?`<span class="tag">Client: ${esc(b.client.name)}</span>`:''}</div>
+        <h1>${esc(b.title)}</h1>
+        <div class="muted">${esc(b.issuing_body||'')}${b.host_city||b.countries?.name?` · ${esc([b.host_city,b.countries?.name].filter(Boolean).join(', '))}`:''}${b.event_dates?` · Event: ${esc(b.event_dates)}`:''}</div>
+      </div>
+      <div class="card" style="padding:12px 16px;min-width:220px">
+        <div class="small muted">Submission deadline</div>
+        <div class="row" style="gap:8px"><b>${fmtD(b.submission_deadline)}</b>${d!==null?`<span class="tag ${b.outcome!=='open'?'':d<0?'missing':d<=14?'overdue':d<=30?'sent':'final'}">${d<0?`${-d} days ago`:`${d} days left`}</span>`:''}</div>
+        <div class="small muted" style="margin-top:6px">Decision: ${fmtD(b.decision_date)}</div>
+        ${admin?`<button class="btn sm" id="editbid" style="margin-top:8px">Edit details</button>`:''}
+      </div>
+    </div>
+    <div class="stepper" style="margin-bottom:16px">${STAGES.map((s,i)=>`<div class="step ${i<stageIdx?'done':''} ${i===stageIdx?'on':''} ${admin?'':'ro'}" data-k="${s.k}" title="${esc(s.q)}"><span class="k">Stage ${i+1}</span>${esc(s.n.replace(/^\d+ /,''))}</div>`).join('')}</div>
+    <div class="counters" style="margin-bottom:16px">
+      <div class="counter ${mandOpen?'bad':b.reqs.length?'good':''}"><div class="n mono">${mandOpen}</div><div class="l">mandatory requirements not final</div></div>
+      <div class="counter"><div class="n mono">${b.reqs.filter(r=>r.status==='missing').length}</div><div class="l">requirements missing</div></div>
+      <div class="counter ${b.sh.filter(s=>s.status==='overdue').length?'bad':''}"><div class="n mono">${b.sh.filter(s=>s.status==='overdue').length}</div><div class="l">letters overdue</div></div>
+      <div class="counter good"><div class="n mono">${b.sh.filter(s=>s.status==='received').length}<span class="muted" style="font-size:14px">/${b.sh.length}</span></div><div class="l">letters received</div></div>
+      <div class="counter ${b.ms.filter(m=>['pending','in_progress'].includes(m.status)&&m.target_date&&m.target_date<today()).length?'warn':''}"><div class="n mono">${b.ms.filter(m=>['pending','in_progress'].includes(m.status)&&m.target_date&&m.target_date<today()).length}</div><div class="l">milestones past target</div></div>
+    </div>
+    <div class="subtabs">${tabs.map(t=>`<button data-t="${t[0]}" class="${S.tab===t[0]?'on':''}">${t[1]}${t[2]!==undefined?`<span class="n">${t[2]}</span>`:''}</button>`).join('')}</div>
+    <div id="tab" style="margin-top:16px"></div>`;
+  document.querySelectorAll('.subtabs button').forEach(x=>x.onclick=()=>{S.tab=x.dataset.t; location.hash=`#bid/${b.id}/${S.tab}`; document.querySelectorAll('.subtabs button').forEach(y=>y.classList.toggle('on',y===x)); renderTab();});
+  if (admin) {
+    $('#outcome').onchange = async e => { const {error}=await sb.from('bw_bids').update({outcome:e.target.value}).eq('id',b.id); error?err(error):(toast('Outcome updated'),renderBid()); };
+    $('#editbid').onclick = editBidModal;
+    document.querySelectorAll('.step').forEach(s=>s.onclick=async()=>{ const {error}=await sb.from('bw_bids').update({stage:s.dataset.k}).eq('id',b.id); error?err(error):renderBid(); });
+  }
+  renderTab();
+}
+function renderTab(){
+  const t = S.tab, el = $('#tab');
+  if (t==='decide') return tabDecide(el);
+  if (t==='fee') return tabFee(el);
+  if (t==='requirements') return tabRequirements(el);
+  if (t==='stakeholders') return tabStakeholders(el);
+  if (t==='schedule') return tabSchedule(el);
+  if (t==='documents') return tabDocuments(el);
+  if (t==='messages') return tabMessages(el);
+  return tabOverview(el);
+}
+async function refresh(){ try { await loadBid(); } catch(e){ return err(e); } renderBid(); }
+
+/* ---------- Overview ---------- */
+function tabOverview(el){
+  const b = S.bid, admin = isAdmin(); const st = STAGES.find(s=>s.k===b.stage);
+  el.innerHTML = `<div class="grid" style="grid-template-columns:1.4fr 1fr">
+    <div class="grid">
+      <div class="card"><div class="hd"><h3>Where this bid is</h3></div><div class="bd">
+        <div class="kv"><dt>Current stage</dt><dd><b>${esc(st.n)}</b> — ${esc(st.q)}</dd><dt>Tool</dt><dd>${esc(st.tool)}</dd><dt>Exit condition</dt><dd>${esc(st.exit)}</dd>
+        <dt>Bid director</dt><dd>${esc(b.bid_director||'—')}</dd><dt>Client sponsor</dt><dd>${esc(b.client_sponsor||'—')}</dd><dt>Venue</dt><dd>${esc(b.venue||'—')}</dd></div></div></div>
+      <div class="card"><div class="hd"><h3>Summary</h3></div><div class="bd" style="white-space:pre-wrap">${esc(b.summary||'—')}</div></div>
+      <div class="card"><div class="hd"><h3>Win themes</h3><span class="small muted">2–4 specific, evidenced reasons why this bidder for this event</span></div><div class="bd" style="white-space:pre-wrap">${esc(b.win_themes||'Not yet developed. Themes are set in Stage 6 once the evidence base exists.')}</div></div>
+      ${admin?`<div class="card"><div class="hd"><h3>Decision log</h3><span class="tag internal">internal</span></div><div class="bd" style="white-space:pre-wrap">${esc(b.decision_log||'—')}</div></div>`:''}
+    </div>
+    <div class="card"><div class="hd"><h3>Activity</h3></div><div class="bd">${b.act.length?b.act.map(a=>`<div class="act"><span class="muted mono">${fmtDT(a.at)}</span><span>${esc(a.summary||a.action)}${admin&&!a.client_visible?' <span class="tag internal" style="font-size:10px">internal</span>':''}</span></div>`).join(''):'<div class="muted">No activity yet.</div>'}</div></div>
+  </div>`;
+}
+function editBidModal(){
+  const b = S.bid;
+  modal(`<div class="hd"><h2>Edit bid</h2></div><div class="fg">
+    <div class="wide"><label class="f">Title</label><input class="inp" id="title" value="${esc(b.title)}"></div>
+    <div><label class="f">Event name (as used in letters)</label><input class="inp" id="event_name" value="${esc(b.event_name||'')}" placeholder="e.g. 8th Africa Associations Summit (AAS8)"></div>
+    <div><label class="f">Issuing body</label><input class="inp" id="issuing_body" value="${esc(b.issuing_body||'')}"></div>
+    <div><label class="f">Bid type</label><select class="inp" id="bid_type">${opt(Object.keys(BID_TYPES),b.bid_type,BID_TYPES)}</select></div>
+    <div><label class="f">Host country</label><select class="inp" id="host_country_id"><option value="">—</option>${S.countries.map(c=>`<option value="${c.id}" ${c.id===b.host_country_id?'selected':''}>${esc(c.name)}</option>`).join('')}</select></div>
+    <div><label class="f">Host city</label><input class="inp" id="host_city" value="${esc(b.host_city||'')}"></div>
+    <div><label class="f">Venue</label><input class="inp" id="venue" value="${esc(b.venue||'')}"></div>
+    <div><label class="f">Client organisation</label><select class="inp" id="client_org_id"><option value="">— none —</option>${S.orgs.filter(o=>o.kind!=='consultancy').map(o=>`<option value="${o.id}" ${o.id===b.client_org_id?'selected':''}>${esc(o.name)}</option>`).join('')}</select></div>
+    <div><label class="f">Submission deadline</label><input class="inp" type="date" id="submission_deadline" value="${b.submission_deadline||''}"></div>
+    <div><label class="f">Decision date</label><input class="inp" type="date" id="decision_date" value="${b.decision_date||''}"></div>
+    <div><label class="f">Event dates</label><input class="inp" id="event_dates" value="${esc(b.event_dates||'')}"></div>
+    <div><label class="f">Bid director</label><input class="inp" id="bid_director" value="${esc(b.bid_director||'')}"></div>
+    <div><label class="f">Client sponsor</label><input class="inp" id="client_sponsor" value="${esc(b.client_sponsor||'')}"></div>
+    <div class="wide"><label class="f">Summary (client-visible)</label><textarea class="inp" id="summary">${esc(b.summary||'')}</textarea></div>
+    <div class="wide"><label class="f">Win themes (client-visible)</label><textarea class="inp" id="win_themes">${esc(b.win_themes||'')}</textarea></div>
+    <div class="wide"><label class="f">Decision log (internal)</label><textarea class="inp" id="decision_log">${esc(b.decision_log||'')}</textarea></div>
+    <div class="wide"><label><input type="checkbox" id="client_visible" ${b.client_visible?'checked':''}> Visible to the client organisation</label></div>
+  </div><div class="foot"><button class="btn danger" id="del">Delete bid</button><span class="spacer"></span><button class="btn" data-close>Cancel</button><button class="btn primary" id="save">Save</button></div>`);
+  $('#save').onclick = async () => {
+    const v = id => $('#'+id).value.trim();
+    const row = { title:v('title'), event_name:v('event_name')||null, issuing_body:v('issuing_body')||null, bid_type:v('bid_type'), host_country_id:v('host_country_id')?+v('host_country_id'):null, host_city:v('host_city')||null, venue:v('venue')||null,
+      client_org_id:v('client_org_id')||null, submission_deadline:v('submission_deadline')||null, decision_date:v('decision_date')||null, event_dates:v('event_dates')||null, bid_director:v('bid_director')||null,
+      client_sponsor:v('client_sponsor')||null, summary:v('summary')||null, win_themes:v('win_themes')||null, decision_log:v('decision_log')||null, client_visible:$('#client_visible').checked };
+    const { error } = await sb.from('bw_bids').update(row).eq('id',b.id); if (error) return err(error);
+    closeModal(); toast('Saved'); refresh();
+  };
+  $('#del').onclick = async () => { if (!confirm('Delete this bid and everything in it? This cannot be undone.')) return; const {error}=await sb.from('bw_bids').delete().eq('id',b.id); if(error) return err(error); closeModal(); route('bids'); };
+}
+
+/* ---------- Scorecards ---------- */
+function scoreRows(factors, saved){
+  return factors.map(f => { const s = saved?.find(x=>x.key===f.key); return {...f, score: s?.score ?? 3, basis: s?.basis ?? ''}; });
+}
+function scoreWidget(id, rows, onChange){
+  return `<div id="${id}">${rows.map(r=>`<div class="score" data-k="${r.key}">
+    <div class="lbl"><b>${esc(r.label)}</b><span>${esc(r.hint||'')}</span><input class="inp" style="margin-top:6px;padding:5px 8px;font-size:12.5px" placeholder="Basis for the score (evidence, not instinct)" data-basis value="${esc(r.basis)}"></div>
+    <div class="w">×${r.weight}</div>
+    <div class="pts">${[1,2,3,4,5].map(n=>`<button data-n="${n}" class="${r.score===n?'on':''} ${r.override&&n===1?'ovr':''}">${n}</button>`).join('')}</div>
+    <div class="wt mono">${(r.weight*r.score).toFixed(1).replace(/\.0$/,'')}</div></div>`).join('')}</div>`;
+}
+function bindScore(id, rows, rerender){
+  const el = $('#'+id);
+  el.querySelectorAll('.score').forEach(div => { const r = rows.find(x=>x.key===div.dataset.k);
+    div.querySelectorAll('.pts button').forEach(b => b.onclick = () => { r.score = +b.dataset.n; rerender(); });
+    div.querySelector('[data-basis]').onchange = e => { r.basis = e.target.value; }; });
+}
+async function saveScore(kind, factors, extra){
+  const { error } = await sb.from('bw_scores').upsert({ bid_id:S.bid.id, kind, factors: factors.map(({key,label,weight,score,basis})=>({key,label,weight,score,basis})), extra: extra||{}, updated_at: new Date().toISOString() });
+  if (error) return err(error); toast('Scorecard saved');
+}
+function tabDecide(el){
+  const saved = S.bid.scores.bid_no_bid; const rows = scoreRows(BNB_FACTORS, saved?.factors);
+  const notes = { v: saved?.notes || '' };
+  const draw = () => {
+    const total = rows.reduce((a,r)=>a+r.weight*r.score,0); const ovr = rows.some(r=>r.override && r.score===1);
+    const v = ovr ? ['decl','DECLINE — override triggered','Eligibility or time scored 1. The total is irrelevant.'] : total>=68 ? ['strong','STRONG PURSUE — commit resources','Move to Stage 3.'] : total>=51 ? ['cond','PURSUE WITH CONDITIONS','Each condition must be named, owned and dated in the decision memo.'] : total>=34 ? ['marg','MARGINAL','Pursue only where strategic value is exceptional and the cost is contained.'] : ['decl','DECLINE OR DEFER','Record the reasons. A deferred opportunity often returns in the next cycle.'];
+    el.innerHTML = `<div class="card"><div class="hd"><h3>Bid / No-Bid Scorecard</h3><span class="small muted">Workbook tab 1 · Stage 2 Decide · max 85</span><span class="spacer"></span><span class="tag internal">internal</span></div><div class="bd">
+      ${scoreWidget('bnb', rows)}
+      <div class="row" style="justify-content:flex-end;margin-top:10px;font-weight:600">Weighted total <span class="mono" style="font-family:var(--display);font-size:24px;margin-left:10px">${total}</span><span class="muted" style="margin-left:6px">/ 85 (${Math.round(total/85*100)}%)</span></div>
+      <div class="verdict ${v[0]}"><h3>${v[1]}</h3><div>${v[2]}</div></div>
+      <label class="f" style="margin-top:14px">Memo notes — mandatory requirements not currently met, workarounds, conditions (Doc 02)</label><textarea class="inp" id="bnbnotes">${esc(notes.v)}</textarea>
+      <div class="foot"><button class="btn primary" id="save">Save scorecard</button></div></div></div>`;
+    bindScore('bnb', rows, draw);
+    $('#bnbnotes').onchange = e => notes.v = e.target.value;
+    $('#save').onclick = async () => { await sb.from('bw_scores').upsert({ bid_id:S.bid.id, kind:'bid_no_bid', factors: rows.map(({key,label,weight,score,basis})=>({key,label,weight,score,basis})), notes: notes.v, updated_at:new Date().toISOString() }).then(({error})=>error?err(error):toast('Scorecard saved')); };
+  };
+  draw();
+}
+function tabFee(el){
+  const saved = S.bid.scores.complexity; const rows = scoreRows(CX_FACTORS, saved?.factors);
+  const ex = Object.assign({ adj:{}, fee_quoted:0, success_fee:0, hours:0, disbursements:0 }, saved?.extra||{});
+  const draw = () => {
+    const total = rows.reduce((a,r)=>a+r.weight*r.score,0);
+    const band = [...BANDS].reverse().find(b=>total>=b.lo);
+    let lo = band.low, hi = band.high; const lines = [];
+    for (const a of ADJUSTMENTS) { if (!ex.adj[a.key]) continue; const vl = a.kind==='pct'? band.low*a.value : a.value, vh = a.kind==='pct'? band.high*a.value : a.value; lo+=vl; hi+=vh; lines.push([a.label, vl, vh]); }
+    const pos = !ex.fee_quoted ? 'not yet quoted' : ex.fee_quoted<lo ? 'BELOW the calculated range — justify or requalify' : ex.fee_quoted>hi ? 'ABOVE the calculated range — justify' : 'within the calculated range';
+    el.innerHTML = `<div class="grid" style="grid-template-columns:1.3fr 1fr">
+      <div class="card"><div class="hd"><h3>Complexity &amp; Fee Calculator</h3><span class="small muted">Workbook tab 2 · Stage 3 Contract · max 70</span><span class="spacer"></span><span class="tag internal">internal</span></div><div class="bd">
+        ${scoreWidget('cx', rows)}
+        <div class="row" style="justify-content:flex-end;margin-top:10px;font-weight:600">Weighted total <span class="mono" style="font-family:var(--display);font-size:24px;margin-left:10px">${total}</span><span class="muted" style="margin-left:6px">/ 70</span></div>
+        <div class="verdict ${band.lo>=56?'decl':band.lo>=41?'marg':band.lo>=21?'cond':'strong'}"><h3>${esc(band.name)}</h3><div>Base ${usd(band.low)} – ${usd(band.high)}. ${esc(band.profile)}</div></div>
+      </div></div>
+      <div class="grid">
+        <div class="card"><div class="hd"><h3>Adjustments</h3></div><div class="bd">
+          ${ADJUSTMENTS.map(a=>`<label style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line)"><span><input type="checkbox" data-adj="${a.key}" ${ex.adj[a.key]?'checked':''}> ${esc(a.label)}</span><span class="muted small">${a.kind==='pct'?Math.round(a.value*100)+'% of base':usd(a.value)}</span></label>`).join('')}
+          <div style="margin-top:12px"><div class="small muted">Indicative fee range</div><div style="font-family:var(--display);font-size:22px;font-weight:600">${usd(lo)} – ${usd(hi)}</div>
+          ${lines.map(l=>`<div class="small muted">+ ${esc(l[0])}: ${usd(l[1])}${l[1]!==l[2]?' – '+usd(l[2]):''}</div>`).join('')}</div>
+        </div></div>
+        <div class="card"><div class="hd"><h3>Quote &amp; calibration</h3></div><div class="bd fg">
+          <div><label class="f">Fee quoted to client (USD)</label><input class="inp" type="number" id="fee_quoted" value="${ex.fee_quoted||''}"></div>
+          <div><label class="f">Success fee quoted (USD)</label><input class="inp" type="number" id="success_fee" value="${ex.success_fee||''}"></div>
+          <div class="wide"><span class="tag ${pos.startsWith('within')?'final':pos.startsWith('not')?'':'missing'}">${esc(pos)}</span></div>
+          <div><label class="f">Hours actually delivered (at debrief)</label><input class="inp" type="number" id="hours" value="${ex.hours||''}"></div>
+          <div><label class="f">Disbursements recovered (USD)</label><input class="inp" type="number" id="disbursements" value="${ex.disbursements||''}"></div>
+          <div class="wide small muted">Effective hourly recovery: <b>${ex.hours? usd(ex.fee_quoted/ex.hours)+'/hr':'—'}</b>. After three engagements, re-base the band table rather than discounting the client.</div>
+          <div class="wide foot"><button class="btn primary" id="save">Save</button></div>
+        </div></div>
+      </div></div>`;
+    bindScore('cx', rows, draw);
+    el.querySelectorAll('[data-adj]').forEach(c=>c.onchange=()=>{ ex.adj[c.dataset.adj]=c.checked; draw(); });
+    ['fee_quoted','success_fee','hours','disbursements'].forEach(k=>$('#'+k).onchange=e=>{ ex[k]=+e.target.value||0; draw(); });
+    $('#save').onclick = () => saveScore('complexity', rows, ex);
+  };
+  draw();
+}
+
+/* ---------- Requirements (compliance matrix) ---------- */
+function tabRequirements(el){
+  const b = S.bid, admin = isAdmin(); const R = b.reqs;
+  const c = { total:R.length, mand:R.filter(r=>r.req_type==='mandatory').length, mandOpen:R.filter(r=>r.req_type==='mandatory'&&!['final','not_applicable'].includes(r.status)).length, missing:R.filter(r=>r.status==='missing').length, requested:R.filter(r=>r.status==='requested').length, adminOpen:R.filter(r=>r.req_type==='administrative'&&!['final','not_applicable'].includes(r.status)).length };
+  el.innerHTML = `
+    <div class="counters" style="margin-bottom:14px">
+      <div class="counter"><div class="n mono">${c.total}</div><div class="l">total requirements</div></div>
+      <div class="counter"><div class="n mono">${c.mand}</div><div class="l">mandatory</div></div>
+      <div class="counter ${c.mandOpen?'bad':''}"><div class="n mono">${c.mandOpen}</div><div class="l">mandatory not final</div></div>
+      <div class="counter ${c.missing?'bad':''}"><div class="n mono">${c.missing}</div><div class="l">missing</div></div>
+      <div class="counter warn"><div class="n mono">${c.requested}</div><div class="l">requested, not returned</div></div>
+      <div class="counter ${c.adminOpen?'warn':''}"><div class="n mono">${c.adminOpen}</div><div class="l">administrative not final</div></div>
+    </div>
+    <div class="card"><div class="hd"><h3>Compliance matrix</h3><span class="small muted">One row per requirement, in the issuer's wording. This is the project plan.</span><span class="spacer"></span>
+      ${admin?`<button class="btn sm" id="importreq">Import from RFP / document</button><button class="btn sm primary" id="addreq">+ Add row</button>`:''}</div>
+      <div class="tbl-wrap">${R.length?`<table><thead><tr><th>#</th><th>Clause</th><th style="min-width:320px">Requirement</th><th>Type</th><th>Response location</th><th>Input from</th><th>Status</th><th>Due</th></tr></thead><tbody>
+        ${R.map((r,i)=>`<tr class="click" data-id="${r.id}"><td class="mono muted">${i+1}</td><td class="mono">${esc(r.clause_ref||'')}</td><td>${esc(r.requirement)}${r.notes?`<div class="small muted">${esc(r.notes)}</div>`:''}${admin&&!r.client_visible?' <span class="tag internal" style="font-size:10px">internal</span>':''}</td>
+          <td><span class="tag ${r.req_type}">${r.req_type}${r.points?` · ${r.points}pt`:''}</span></td><td>${esc(r.response_location||'')}</td><td>${esc(r.input_from||'')}</td>
+          <td>${admin?`<select class="inline" data-st="${r.id}">${opt(REQ_STATUS,r.status)}</select>`:`<span class="tag ${r.status}">${lab(r.status)}</span>`}</td><td class="mono ${r.due&&r.due<today()&&r.status!=='final'?'':''}">${fmtD(r.due)}</td></tr>`).join('')}
+      </tbody></table>`:`<div class="empty">No requirements yet. ${admin?'Import the RFP or bid manual, or add rows by hand.':''}</div>`}</div></div>`;
+  if (!admin) return;
+  $('#addreq').onclick = () => reqDrawer(null);
+  $('#importreq').onclick = importModal;
+  el.querySelectorAll('tr.click').forEach(tr=>tr.onclick=e=>{ if (e.target.tagName==='SELECT') return; reqDrawer(R.find(r=>r.id===tr.dataset.id)); });
+  el.querySelectorAll('[data-st]').forEach(s=>s.onchange=async()=>{ const {error}=await sb.from('bw_requirements').update({status:s.value}).eq('id',s.dataset.st); error?err(error):refresh(); });
+}
+function reqDrawer(r){
+  const n = r || { req_type:'mandatory', status:'missing', client_visible:true };
+  drawer(`<div class="hd"><h2>${r?'Requirement':'New requirement'}</h2></div><div class="fg">
+    <div><label class="f">Clause ref</label><input class="inp" id="clause_ref" value="${esc(n.clause_ref||'')}" placeholder="e.g. S3.2(b)"></div>
+    <div><label class="f">Type</label><select class="inp" id="req_type">${opt(REQ_TYPES,n.req_type)}</select></div>
+    <div class="wide"><label class="f">Requirement — quote the issuer's wording</label><textarea class="inp" id="requirement">${esc(n.requirement||'')}</textarea></div>
+    <div><label class="f">Points (if scored)</label><input class="inp" type="number" id="points" value="${n.points??''}"></div>
+    <div><label class="f">Status</label><select class="inp" id="status">${opt(REQ_STATUS,n.status)}</select></div>
+    <div><label class="f">Response location</label><input class="inp" id="response_location" value="${esc(n.response_location||'')}" placeholder="Section 5 / Appendix 2"></div>
+    <div><label class="f">Input needed from</label><input class="inp" id="input_from" value="${esc(n.input_from||'')}" placeholder="Client — Ministry"></div>
+    <div><label class="f">Due</label><input class="inp" type="date" id="due" value="${n.due||''}"></div>
+    <div><label class="f">&nbsp;</label><label><input type="checkbox" id="client_visible" ${n.client_visible?'checked':''}> Visible to client</label></div>
+    <div class="wide"><label class="f">Notes</label><textarea class="inp" id="notes">${esc(n.notes||'')}</textarea></div>
+  </div><div class="foot">${r?'<button class="btn danger" id="del">Delete</button><span class="spacer"></span>':''}<button class="btn" data-close>Cancel</button><button class="btn primary" id="save">Save</button></div>`);
+  $('#save').onclick = async () => {
+    const v = id => $('#'+id).value.trim();
+    const row = { bid_id:S.bid.id, clause_ref:v('clause_ref')||null, req_type:v('req_type'), requirement:v('requirement'), points:v('points')?+v('points'):null, status:v('status'), response_location:v('response_location')||null, input_from:v('input_from')||null, due:v('due')||null, client_visible:$('#client_visible').checked, notes:v('notes')||null };
+    if (!row.requirement) return toast('Requirement text is required');
+    if (!r) row.seq = (Math.max(0,...S.bid.reqs.map(x=>x.seq))+1);
+    const q = r ? sb.from('bw_requirements').update(row).eq('id',r.id) : sb.from('bw_requirements').insert(row);
+    const { error } = await q; if (error) return err(error); closeModal(); refresh();
+  };
+  if (r) $('#del').onclick = async () => { if(!confirm('Delete this requirement?')) return; const {error}=await sb.from('bw_requirements').delete().eq('id',r.id); if(error) return err(error); closeModal(); refresh(); };
+}
+
+/* ---------- Requirement extraction ---------- */
+async function fileToText(file){
+  const name = file.name.toLowerCase();
+  if (name.endsWith('.pdf')) {
+    if (!window.pdfjsLib) throw new Error('PDF reader did not load');
+    const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise; let out = [];
+    for (let i=1;i<=pdf.numPages;i++){ const pg = await pdf.getPage(i); const tc = await pg.getTextContent(); let line='', lastY=null;
+      for (const it of tc.items){ if (lastY!==null && Math.abs(it.transform[5]-lastY)>2){ out.push(line); line=''; } line += it.str + (it.hasEOL?'':' '); lastY = it.transform[5]; } out.push(line); }
+    return out.join('\n');
+  }
+  if (name.endsWith('.docx')) { if (!window.mammoth) throw new Error('Word reader did not load'); const r = await mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() }); return r.value; }
+  return await file.text();
+}
+function heuristicExtract(text){
+  const lines = text.split(/\r?\n/).map(l=>l.replace(/\s+/g,' ').trim()).filter(Boolean);
+  const rows = []; let section = '', sectionTitle = '';
+  const isHeading = l => /^(\d+(\.\d+)*)\.?\s+[A-Z][^.]{2,60}$/.test(l) && l.length < 80;
+  const bullet = /^([•\-–*▪●o]|\(?[a-z]\)|\(?[ivx]+\)|\d+[\.)])\s+/i;
+  let buf = null;
+  const flush = () => { if (!buf) return; const t = buf.text.trim(); if (t.length >= 25) rows.push({ clause_ref: buf.ref, requirement: t, req_type: classify(t), response_location: sectionTitle||null }); buf=null; };
+  for (const l of lines) {
+    if (isHeading(l)) { flush(); section = l.match(/^(\d+(\.\d+)*)/)[1]; sectionTitle = l; continue; }
+    const m = l.match(/^(\d+(\.\d+){1,3})\s+(.*)$/);
+    if (m && m[3].length > 25) { flush(); buf = { ref:m[1], text:m[3] }; continue; }
+    if (bullet.test(l)) { flush(); buf = { ref: section||null, text: l.replace(bullet,'') }; continue; }
+    if (buf) { if (/[.;:]$/.test(buf.text) && /^[A-Z]/.test(l)) { flush(); buf = /(must|shall|should|required|provide|submit|include|confirm)/i.test(l) ? { ref:section||null, text:l } : null; } else buf.text += ' ' + l; continue; }
+    if (/(must|shall|required|mandatory|should|are expected to|is expected to|provide|submit|include|confirm)/i.test(l) && l.length > 30 && l.length < 400) buf = { ref: section||null, text:l };
+  }
+  flush();
+  return rows;
+}
+function classify(t){
+  const s = t.toLowerCase();
+  if (/(page|font|format|file|pdf|electronic|email|submit|submission|deadline|signed|signature|form\b|copies|language)/.test(s) && !/(venue|hotel|airport|visa)/.test(s)) return 'administrative';
+  if (/(criteri|evaluat|assess|weight|points)/.test(s)) return 'informational';
+  if (/(must|shall|mandatory|required|written confirmation|confirmation of|itemised|comprehensive)/.test(s)) return 'mandatory';
+  if (/(encouraged|preferred|ideally|where possible|if any|strongly|description of|summary of|details of|strategy)/.test(s)) return 'scored';
+  return 'mandatory';
+}
+async function aiExtract(text, mode='requirements'){
+  const { data:{ session } } = await sb.auth.getSession();
+  const r = await fetch(`${SUPABASE_URL}/functions/v1/bid-extract`, { method:'POST', headers:{ 'content-type':'application/json', apikey:SUPABASE_KEY, authorization:`Bearer ${session.access_token}` }, body: JSON.stringify({ text, mode }) });
+  const j = await r.json(); if (!r.ok) throw new Error(j.error||'extract failed'); return j;
+}
+function importModal(){
+  modal(`<div class="hd"><h2>Import requirements</h2></div>
+    <p class="muted" style="margin-top:0">Drop the RFP, bid manual or host requirements (PDF, Word or text). The text is read in your browser and split into candidate requirement rows for you to check before anything is added. Nothing is saved until you confirm.</p>
+    <div class="row"><input type="file" id="rfile" accept=".pdf,.docx,.txt,.md"><span class="muted small">or paste below</span></div>
+    <textarea class="inp" id="rtext" style="min-height:140px;margin-top:10px" placeholder="Paste requirement text here…"></textarea>
+    <div class="row" style="margin-top:10px"><button class="btn primary" id="go">Extract rows</button><span id="status" class="muted small"></span></div>
+    <div id="preview" style="margin-top:14px"></div>`);
+  $('#rfile').onchange = async e => { const f = e.target.files[0]; if (!f) return; $('#status').textContent='Reading '+f.name+'…'; try { $('#rtext').value = await fileToText(f); $('#status').textContent = `${$('#rtext').value.length.toLocaleString()} characters read from ${f.name}`; } catch(ex){ err(ex); $('#status').textContent='Could not read the file — paste the text instead.'; } };
+  $('#go').onclick = async () => {
+    const text = $('#rtext').value.trim(); if (text.length < 40) return toast('Add some text first');
+    $('#status').textContent = 'Extracting…'; let rows = [], source = 'rules';
+    try { const j = await aiExtract(text); if (j.ai && j.rows?.length) { rows = j.rows; source = 'AI'; } } catch(e){ console.warn('AI extract unavailable', e); }
+    if (!rows.length) rows = heuristicExtract(text);
+    $('#status').textContent = `${rows.length} candidate rows (${source==='AI'?'AI-extracted':'rule-based split'}). Untick anything that is not a requirement; fix types before importing.`;
+    if (!rows.length) { $('#preview').innerHTML = '<div class="empty">Nothing recognisable as a requirement. Try pasting a cleaner section of the document.</div>'; return; }
+    $('#preview').innerHTML = `<div class="tbl-wrap" style="max-height:45vh;overflow:auto"><table><thead><tr><th></th><th>Clause</th><th>Requirement</th><th>Type</th></tr></thead><tbody>
+      ${rows.map((r,i)=>`<tr><td><input type="checkbox" checked data-i="${i}"></td><td><input class="inp" style="width:80px;padding:4px" data-ref="${i}" value="${esc(r.clause_ref||'')}"></td><td><textarea class="inp" style="min-height:48px;padding:4px" data-req="${i}">${esc(r.requirement)}</textarea></td><td><select class="inp" style="padding:4px" data-type="${i}">${opt(REQ_TYPES,r.req_type||'mandatory')}</select></td></tr>`).join('')}
+    </tbody></table></div><div class="foot"><button class="btn" data-close>Cancel</button><button class="btn primary" id="doimport">Add selected rows to the matrix</button></div>`;
+    $('#doimport').onclick = async () => {
+      const sel = [...$('#preview').querySelectorAll('[data-i]')].filter(c=>c.checked).map(c=>{ const i=c.dataset.i; return { clause_ref: $(`[data-ref="${i}"]`).value.trim()||null, requirement: $(`[data-req="${i}"]`).value.trim(), req_type: $(`[data-type="${i}"]`).value, response_location: rows[i].response_location||null, input_from: rows[i].input_from||null }; }).filter(r=>r.requirement);
+      if (!sel.length) return toast('Nothing selected');
+      const { data, error } = await sb.rpc('bw_add_requirements', { p_bid:S.bid.id, rows: sel }); if (error) return err(error);
+      closeModal(); toast(`${data} requirements added`); refresh();
+    };
+  };
+}
+
+/* ---------- Stakeholders & support letters ---------- */
+function tabStakeholders(el){
+  const b = S.bid, admin = isAdmin(); const SH = b.sh;
+  const cnt = s => SH.filter(x=>x.status===s).length;
+  el.innerHTML = `
+    <div class="counters" style="margin-bottom:14px">
+      <div class="counter"><div class="n mono">${SH.length}</div><div class="l">total requests</div></div>
+      <div class="counter"><div class="n mono">${cnt('not_sent')}</div><div class="l">not yet sent</div></div>
+      <div class="counter warn"><div class="n mono">${cnt('sent')}</div><div class="l">sent, awaiting</div></div>
+      <div class="counter ${cnt('overdue')?'bad':''}"><div class="n mono">${cnt('overdue')}</div><div class="l">overdue</div></div>
+      <div class="counter good"><div class="n mono">${cnt('received')}</div><div class="l">received</div></div>
+    </div>
+    <div class="card"><div class="hd"><h3>Stakeholder &amp; dependency tracker</h3><span class="small muted">The critical path. Chase 1 at day 10, chase 2 at day 17, due back = sent + lead time.</span><span class="spacer"></span>
+      ${admin?`<button class="btn sm" id="seedsh">Load the nine standard stakeholders</button><button class="btn sm primary" id="addsh">+ Add</button>`:''}</div>
+      <div class="tbl-wrap">${SH.length?`<table><thead><tr><th>#</th><th>Stakeholder</th><th>Signatory</th><th>Ask</th><th>Lead</th><th>Sent</th><th>Due back</th><th>Chase 1</th><th>Chase 2</th><th>Status</th>${admin?'<th></th>':''}</tr></thead><tbody>
+        ${SH.map((s,i)=>`<tr class="click" data-id="${s.id}"><td class="mono muted">${i+1}</td><td><b>${esc(s.stakeholder)}</b>${s.specific_ask?`<div class="small muted">${esc(s.specific_ask)}</div>`:''}${admin&&!s.client_visible?' <span class="tag internal" style="font-size:10px">internal</span>':''}</td><td>${esc(s.signatory||'')}</td><td><span class="tag">${s.ask_level}</span></td><td class="mono">${s.lead_time_weeks}w</td>
+          <td class="mono">${fmtD(s.sent_on)}</td><td class="mono ${s.due_back&&s.due_back<today()&&!['received','declined','substituted'].includes(s.status)?'':''}">${fmtD(s.due_back)}</td><td class="mono">${fmtD(s.chase1_on)}</td><td class="mono">${fmtD(s.chase2_on)}</td>
+          <td>${admin?`<select class="inline" data-st="${s.id}">${opt(SH_STATUS,s.status)}</select>`:`<span class="tag ${s.status}">${lab(s.status)}</span>`}</td>
+          ${admin?`<td>${s.template_key?`<button class="btn sm" data-letter="${s.id}">Letter</button>`:''}</td>`:''}</tr>`).join('')}
+      </tbody></table>`:`<div class="empty">No stakeholders tracked yet.</div>`}</div></div>
+    <div class="card" style="margin-top:14px"><div class="hd"><h3>Chase ladder (Doc 07 Part D)</h3></div><div class="bd small">
+      <div class="kv"><dt>Day 0</dt><dd>Request — email to the handling official with the drafted letter and the bid brief attached</dd><dt>Day 3</dt><dd>Confirm receipt by telephone; identify the drafting officer</dd><dt>Day 10</dt><dd>Chase 1 — polite email restating the deadline, re-attaching the draft, offering to visit</dd><dt>Day 17</dt><dd>Chase 2 — telephone the handling official; offer to attend in person</dd><dt>Day 24</dt><dd>Client escalation — client sponsor contacts their counterpart at principal level</dd><dt>Day 31</dt><dd>Senior escalation — board member, patron or the convention bureau</dd><dt>Deadline −3 wks</dt><dd>Substitute an alternative signatory and note the substitution</dd><dt>Deadline −1 wk</dt><dd>Submit without, stating the position honestly with evidence the request was made</dd></div></div></div>`;
+  if (!admin) return;
+  $('#addsh').onclick = () => shDrawer(null);
+  $('#seedsh').onclick = async () => { const {data,error}=await sb.rpc('bw_seed_stakeholders',{p_bid:b.id}); error?err(error):(toast(`${data} stakeholders added`),refresh()); };
+  el.querySelectorAll('tr.click').forEach(tr=>tr.onclick=e=>{ if (['SELECT','BUTTON'].includes(e.target.tagName)) return; shDrawer(SH.find(s=>s.id===tr.dataset.id)); });
+  el.querySelectorAll('[data-st]').forEach(s=>s.onchange=async()=>{ const patch={status:s.value}; if(s.value==='received') patch.received_on=today(); if(s.value==='sent'&&!SH.find(x=>x.id===s.dataset.st).sent_on) patch.sent_on=today(); const {error}=await sb.from('bw_stakeholders').update(patch).eq('id',s.dataset.st); error?err(error):refresh(); });
+  el.querySelectorAll('[data-letter]').forEach(bt=>bt.onclick=()=>letterModal(SH.find(s=>s.id===bt.dataset.letter)));
+}
+function shDrawer(s){
+  const n = s || { ask_level:'commitment', lead_time_weeks:3, status:'not_sent', client_visible:true };
+  drawer(`<div class="hd"><h2>${s?'Stakeholder':'New stakeholder'}</h2></div><div class="fg">
+    <div class="wide"><label class="f">Stakeholder</label><input class="inp" id="stakeholder" value="${esc(n.stakeholder||'')}"></div>
+    <div><label class="f">Signatory / office</label><input class="inp" id="signatory" value="${esc(n.signatory||'')}"></div>
+    <div><label class="f">Letter template</label><select class="inp" id="template_key"><option value="">—</option>${S.templates.filter(t=>t.key!=='C0').map(t=>`<option value="${t.key}" ${t.key===n.template_key?'selected':''}>${t.key} · ${esc(t.title)}</option>`).join('')}</select></div>
+    <div><label class="f">Ask level</label><select class="inp" id="ask_level">${opt(ASK_LEVELS,n.ask_level)}</select></div>
+    <div><label class="f">Lead time (weeks)</label><input class="inp" type="number" step="0.5" id="lead_time_weeks" value="${n.lead_time_weeks}"></div>
+    <div class="wide"><label class="f">Specific ask — what exactly must the letter commit to?</label><textarea class="inp" id="specific_ask">${esc(n.specific_ask||'')}</textarea></div>
+    <div><label class="f">Drafted on</label><input class="inp" type="date" id="drafted_on" value="${n.drafted_on||''}"></div>
+    <div><label class="f">Sent on</label><input class="inp" type="date" id="sent_on" value="${n.sent_on||''}"></div>
+    <div><label class="f">Due back</label><input class="inp" type="date" id="due_back" value="${n.due_back||''}"></div>
+    <div><label class="f">Received on</label><input class="inp" type="date" id="received_on" value="${n.received_on||''}"></div>
+    <div><label class="f">Chase 1</label><input class="inp" type="date" id="chase1_on" value="${n.chase1_on||''}"></div>
+    <div><label class="f">Chase 2</label><input class="inp" type="date" id="chase2_on" value="${n.chase2_on||''}"></div>
+    <div><label class="f">Status</label><select class="inp" id="status">${opt(SH_STATUS,n.status)}</select></div>
+    <div><label class="f">&nbsp;</label><label><input type="checkbox" id="client_visible" ${n.client_visible?'checked':''}> Visible to client</label></div>
+    <div class="wide"><label class="f">Route in / escalation</label><input class="inp" id="escalation_route" value="${esc(n.escalation_route||'')}"></div>
+    <div class="wide"><label class="f">Notes</label><textarea class="inp" id="notes">${esc(n.notes||'')}</textarea></div>
+  </div><div class="foot">${s?'<button class="btn danger" id="del">Delete</button><span class="spacer"></span>':''}<button class="btn" data-close>Cancel</button><button class="btn primary" id="save">Save</button></div>`);
+  $('#save').onclick = async () => {
+    const v = id => $('#'+id).value.trim();
+    const row = { bid_id:S.bid.id, stakeholder:v('stakeholder'), signatory:v('signatory')||null, template_key:v('template_key')||null, ask_level:v('ask_level'), lead_time_weeks:+v('lead_time_weeks')||3, specific_ask:v('specific_ask')||null,
+      drafted_on:v('drafted_on')||null, sent_on:v('sent_on')||null, due_back:v('due_back')||null, received_on:v('received_on')||null, chase1_on:v('chase1_on')||null, chase2_on:v('chase2_on')||null, status:v('status'), escalation_route:v('escalation_route')||null, notes:v('notes')||null, client_visible:$('#client_visible').checked };
+    if (!row.stakeholder) return toast('Stakeholder name is required');
+    if (!s) row.seq = Math.max(0,...S.bid.sh.map(x=>x.seq))+1;
+    const { error } = await (s ? sb.from('bw_stakeholders').update(row).eq('id',s.id) : sb.from('bw_stakeholders').insert(row)); if (error) return err(error); closeModal(); refresh();
+  };
+  if (s) $('#del').onclick = async () => { if(!confirm('Delete this stakeholder?')) return; const {error}=await sb.from('bw_stakeholders').delete().eq('id',s.id); if(error) return err(error); closeModal(); refresh(); };
+}
+function mergeLetter(body, s){
+  const b = S.bid; const year = (b.event_dates||'').match(/20\d\d/)?.[0] || (b.submission_deadline||'').slice(0,4) || '[year]';
+  const country = b.countries?.name || '[country]'; const city = (b.host_city||'[city]').replace(/\s*\(.*?\)\s*/g,'');
+  const ev = (b.event_name || b.title.split(' — ')[0]).trim();
+  if (ev.includes(year)) body = body.split('[event name] in [city] in [year]').join(`${ev} in ${city}`).split('[EVENT NAME] [YEAR]').join(ev.toUpperCase()).split('[event name] [year]').join(ev);
+  const map = { '[event name]': ev, '[EVENT NAME]': ev.toUpperCase(), '[year]': year, '[YEAR]': year, '[city]': city, '[CITY]': city.toUpperCase(), '[country]': country, '[COUNTRY]': country.toUpperCase(), '[country/city]': country,
+    '[issuing body]': b.issuing_body||'[issuing body]', '[Issuing body]': b.issuing_body||'[Issuing body]', '[client organisation]': b.client?.name||'[client organisation]', '[Client organisation]': b.client?.name||'[Client organisation]',
+    '[association name]': b.issuing_body||'[association name]', '[Date]': new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}), '[Specific ask 1]': s?.specific_ask||'[Specific ask 1]', '[office/minister]': s?.signatory||'[office/minister]', '[office]': s?.stakeholder||'[office]', '[Name, title, organisation]': `${b.bid_director||'[Name]'}, Bid Director, ${S.orgs.find(o=>o.kind==='consultancy')?.name||'[organisation]'}` };
+  let out = body; for (const [k,v] of Object.entries(map)) out = out.split(k).join(v);
+  if (b.submission_deadline) { const d = new Date(b.submission_deadline+'T00:00:00'); const early = new Date(d); early.setDate(d.getDate()-14);
+    out = out.replace('[date — two weeks before your real deadline]', early.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})).replace('on [date].', 'on '+d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+'.'); }
+  return out;
+}
+function letterModal(s){
+  const tpls = S.templates; let key = s.template_key || 'C1';
+  const draw = () => {
+    const t = tpls.find(x=>x.key===key); const cover = tpls.find(x=>x.key==='C0');
+    const body = mergeLetter(t.body, s), coverTxt = mergeLetter(cover.body, s);
+    const hl = txt => esc(txt).replace(/\[[^\]]+\]/g, m=>`<mark>${m}</mark>`);
+    modal(`<div class="hd"><h2>Support letter — ${esc(s.stakeholder)}</h2></div>
+      <div class="row" style="margin-bottom:10px"><select class="inp" id="tsel" style="max-width:420px">${tpls.filter(x=>x.key!=='C0').map(x=>`<option value="${x.key}" ${x.key===key?'selected':''}>${x.key} · ${esc(x.title)}</option>`).join('')}</select><span class="small muted">Signed by: ${esc(t.signed_by||'')}</span></div>
+      <p class="small muted" style="margin:0 0 8px">Drafted in the signatory's voice, on their letterhead, asking for something specific. <mark>Highlighted</mark> fields still need filling. Send the covering email to the handling official, not the signatory.</p>
+      <h3 style="margin:10px 0 6px">Letter for signature</h3><pre class="letter" id="ltxt">${hl(body)}</pre>
+      <h3 style="margin:14px 0 6px">Covering request email (C0)</h3><pre class="letter" id="ctxt" style="max-height:26vh">${hl(coverTxt)}</pre>
+      <div class="foot"><button class="btn" id="copyl">Copy letter</button><button class="btn" id="copyc">Copy email</button><button class="btn" id="dl">Download for Word (.doc)</button><span class="spacer"></span><button class="btn" data-close>Close</button><button class="btn primary" id="drafted">Mark drafted today</button></div>`);
+    $('#tsel').onchange = e => { key = e.target.value; closeModal(); draw(); };
+    $('#copyl').onclick = () => navigator.clipboard.writeText(body).then(()=>toast('Letter copied'));
+    $('#copyc').onclick = () => navigator.clipboard.writeText(coverTxt).then(()=>toast('Email copied'));
+    $('#dl').onclick = () => { const html = `<html><head><meta charset="utf-8"><style>body{font-family:Calibri,Arial;font-size:11pt;line-height:1.45}</style></head><body>${body.split('\n').map(l=>`<p>${esc(l)||'&nbsp;'}</p>`).join('')}</body></html>`;
+      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([html],{type:'application/msword'})); a.download = `${key}_${s.stakeholder.replace(/[^a-z0-9]+/gi,'_')}_${S.bid.title.slice(0,30).replace(/[^a-z0-9]+/gi,'_')}.doc`; a.click(); };
+    $('#drafted').onclick = async () => { const {error}=await sb.from('bw_stakeholders').update({drafted_on:today(), template_key:key}).eq('id',s.id); if(error) return err(error); closeModal(); toast('Marked drafted'); refresh(); };
+  };
+  draw();
+}
+
+/* ---------- Schedule ---------- */
+function tabSchedule(el){
+  const b = S.bid, admin = isAdmin(); const M = b.ms;
+  el.innerHTML = `<div class="card"><div class="hd"><h3>Production schedule</h3><span class="small muted">Milestones set backwards from the submission deadline${b.submission_deadline?` (${fmtD(b.submission_deadline)})`:' — set the deadline first'}. Amber rows control the deadline.</span><span class="spacer"></span>
+    ${admin?`<button class="btn sm" id="genms">Generate from the 12-week template</button><button class="btn sm primary" id="addms">+ Add</button>`:''}</div>
+    <div class="tbl-wrap">${M.length?`<table><thead><tr><th>#</th><th>Milestone</th><th>Days before</th><th>Target</th><th>From today</th><th>Owner</th><th>Status</th></tr></thead><tbody>
+      ${M.map((m,i)=>{ const dd = daysUntil(m.target_date); const late = dd!==null && dd<0 && ['pending','in_progress'].includes(m.status);
+        return `<tr class="click" data-id="${m.id}" style="${m.controls_deadline?'background:var(--tint-amber)':''}"><td class="mono muted">${i+1}</td><td>${m.controls_deadline?'<b>':''}${esc(m.title)}${m.controls_deadline?'</b>':''}${m.note?`<div class="small muted">${esc(m.note)}</div>`:''}</td><td class="mono">${m.days_before_deadline??''}</td><td class="mono">${fmtD(m.target_date)}</td><td class="mono" style="color:${late?'var(--red)':'inherit'}">${dd===null?'':dd<0?`${-dd}d ago`:`${dd}d`}</td><td>${esc(m.owner||'')}</td>
+        <td>${admin?`<select class="inline" data-st="${m.id}">${opt(MS_STATUS,m.status)}</select>`:`<span class="tag ${m.status}">${lab(m.status)}</span>`}</td></tr>`; }).join('')}
+    </tbody></table>`:`<div class="empty">No milestones yet.${admin?' Set the submission deadline, then generate the schedule.':''}</div>`}</div>
+    <div class="bd small muted">Default offsets assume a twelve-week engagement. For a shorter window, compress the drafting phase — never the third-party request date, which is set by other people's calendars. Minimum submission buffer: 48 hours.</div></div>`;
+  if (!admin) return;
+  $('#genms').onclick = async () => { const {data,error}=await sb.rpc('bw_generate_milestones',{p_bid:b.id}); error?err(error):(toast(`${data} milestones added`),refresh()); };
+  $('#addms').onclick = () => msDrawer(null);
+  el.querySelectorAll('tr.click').forEach(tr=>tr.onclick=e=>{ if (e.target.tagName==='SELECT') return; msDrawer(M.find(m=>m.id===tr.dataset.id)); });
+  el.querySelectorAll('[data-st]').forEach(s=>s.onchange=async()=>{ const {error}=await sb.from('bw_milestones').update({status:s.value}).eq('id',s.dataset.st); error?err(error):refresh(); });
+}
+function msDrawer(m){
+  const n = m || { status:'pending', client_visible:true };
+  drawer(`<div class="hd"><h2>${m?'Milestone':'New milestone'}</h2></div><div class="fg">
+    <div class="wide"><label class="f">Milestone</label><input class="inp" id="title" value="${esc(n.title||'')}"></div>
+    <div><label class="f">Days before deadline</label><input class="inp" type="number" id="days_before_deadline" value="${n.days_before_deadline??''}"></div>
+    <div><label class="f">Target date (override)</label><input class="inp" type="date" id="target_date" value="${n.target_date||''}"></div>
+    <div><label class="f">Owner</label><input class="inp" id="owner" value="${esc(n.owner||'')}"></div>
+    <div><label class="f">Status</label><select class="inp" id="status">${opt(MS_STATUS,n.status)}</select></div>
+    <div class="wide"><label class="f">Note</label><textarea class="inp" id="note">${esc(n.note||'')}</textarea></div>
+    <div><label><input type="checkbox" id="controls_deadline" ${n.controls_deadline?'checked':''}> Controls the deadline</label></div>
+    <div><label><input type="checkbox" id="client_visible" ${n.client_visible?'checked':''}> Visible to client</label></div>
+  </div><div class="foot">${m?'<button class="btn danger" id="del">Delete</button><span class="spacer"></span>':''}<button class="btn" data-close>Cancel</button><button class="btn primary" id="save">Save</button></div>`);
+  $('#save').onclick = async () => {
+    const v = id => $('#'+id).value.trim(); const dbd = v('days_before_deadline')===''?null:+v('days_before_deadline');
+    let target = v('target_date')||null; if (!target && dbd!==null && S.bid.submission_deadline) { const d = new Date(S.bid.submission_deadline+'T00:00:00'); d.setDate(d.getDate()-dbd); target = d.toISOString().slice(0,10); }
+    const row = { bid_id:S.bid.id, title:v('title'), days_before_deadline:dbd, target_date:target, owner:v('owner')||null, status:v('status'), note:v('note')||null, controls_deadline:$('#controls_deadline').checked, client_visible:$('#client_visible').checked };
+    if (!row.title) return toast('Title is required'); if (!m) row.seq = Math.max(0,...S.bid.ms.map(x=>x.seq))+1;
+    const { error } = await (m ? sb.from('bw_milestones').update(row).eq('id',m.id) : sb.from('bw_milestones').insert(row)); if (error) return err(error); closeModal(); refresh();
+  };
+  if (m) $('#del').onclick = async () => { if(!confirm('Delete this milestone?')) return; const {error}=await sb.from('bw_milestones').delete().eq('id',m.id); if(error) return err(error); closeModal(); refresh(); };
+}
+
+/* ---------- Documents ---------- */
+function tabDocuments(el){
+  const b = S.bid, admin = isAdmin();
+  el.innerHTML = `<div class="card"><div class="hd"><h3>Documents</h3><span class="small muted">Requirement documents, evidence, drafts, signed letters, the submission.</span><span class="spacer"></span>
+      <button class="btn sm" id="adddoc">+ Upload / link</button></div>
+    <div class="tbl-wrap">${b.docs.length?`<table><thead><tr><th>Name</th><th>Kind</th><th>Added</th><th>By</th><th>Note</th><th></th></tr></thead><tbody>
+      ${b.docs.map(d=>`<tr><td><b>${esc(d.name)}</b>${admin&&!d.client_visible?' <span class="tag internal" style="font-size:10px">internal</span>':''}</td><td><span class="tag">${lab(d.kind)}</span></td><td class="mono small">${fmtDT(d.created_at)}</td><td class="small">${esc((d.uploaded_by||'').split('@')[0])}</td><td class="small muted">${esc(d.note||'')}</td>
+        <td style="white-space:nowrap">${d.storage_path?`<button class="btn sm" data-open="${d.id}">Open</button>`:d.external_url?`<a class="btn sm" href="${esc(d.external_url)}" target="_blank" rel="noopener">Open link</a>`:''}${admin?`<button class="btn sm ghost danger" data-del="${d.id}">✕</button>`:''}</td></tr>`).join('')}
+    </tbody></table>`:'<div class="empty">No documents yet.</div>'}</div></div>`;
+  $('#adddoc').onclick = () => modal(`<div class="hd"><h2>Add document</h2></div><div class="fg">
+      <div class="wide"><label class="f">File (up to 50 MB)</label><input type="file" id="dfile"></div>
+      <div class="wide"><label class="f">…or a link (SharePoint, Drive, issuer page)</label><input class="inp" id="durl" placeholder="https://"></div>
+      <div><label class="f">Name</label><input class="inp" id="dname"></div>
+      <div><label class="f">Kind</label><select class="inp" id="dkind">${opt(DOC_KINDS,'other')}</select></div>
+      <div class="wide"><label class="f">Note</label><input class="inp" id="dnote"></div>
+      ${admin?`<div class="wide"><label><input type="checkbox" id="dvis" checked> Visible to client</label></div>`:''}
+    </div><div class="foot"><button class="btn" data-close>Cancel</button><button class="btn primary" id="save">Add</button></div>`, () => {
+      $('#dfile').onchange = e => { if (e.target.files[0] && !$('#dname').value) $('#dname').value = e.target.files[0].name; };
+      $('#save').onclick = async () => {
+        const f = $('#dfile').files[0], url = $('#durl').value.trim(); const name = $('#dname').value.trim() || f?.name; if (!name) return toast('Give it a name'); if (!f && !url) return toast('Choose a file or paste a link');
+        const row = { bid_id:b.id, name, kind:$('#dkind').value, note:$('#dnote').value.trim()||null, uploaded_by:S.user.email, client_visible: admin ? $('#dvis').checked : true, external_url: url||null };
+        if (f) { const path = `${b.id}/${Date.now()}_${f.name.replace(/[^a-zA-Z0-9._-]+/g,'_')}`; $('#save').disabled = true; $('#save').textContent='Uploading…';
+          const { error } = await sb.storage.from('bid-docs').upload(path, f); if (error) { $('#save').disabled=false; $('#save').textContent='Add'; return err(error); } row.storage_path = path; row.size_bytes = f.size; }
+        const { error } = await sb.from('bw_documents').insert(row); if (error) return err(error); closeModal(); toast('Document added'); refresh();
+      }; });
+  el.querySelectorAll('[data-open]').forEach(x=>x.onclick=async()=>{ const d=b.docs.find(y=>y.id===x.dataset.open); const {data,error}=await sb.storage.from('bid-docs').createSignedUrl(d.storage_path,600); if(error) return err(error); window.open(data.signedUrl,'_blank'); });
+  el.querySelectorAll('[data-del]').forEach(x=>x.onclick=async()=>{ const d=b.docs.find(y=>y.id===x.dataset.del); if(!confirm(`Remove "${d.name}"?`)) return; if(d.storage_path) await sb.storage.from('bid-docs').remove([d.storage_path]); const {error}=await sb.from('bw_documents').delete().eq('id',d.id); error?err(error):refresh(); });
+}
+
+/* ---------- Messages ---------- */
+function tabMessages(el){
+  const b = S.bid, admin = isAdmin();
+  el.innerHTML = `<div class="grid" style="grid-template-columns:1fr 1.2fr">
+    <div class="card"><div class="hd"><h3>Post an update</h3></div><div class="bd">
+      <textarea class="inp" id="mbody" style="min-height:120px" placeholder="${admin?'Progress note, decision, request to the client…':'Question or update for the bid team…'}"></textarea>
+      <div class="row" style="margin-top:10px;justify-content:space-between">
+        ${admin?`<label class="small"><select class="inp" id="mvis" style="width:auto;display:inline-block;padding:5px 8px"><option value="client">Client-visible</option><option value="internal">Internal only</option></select></label>`:'<span class="small muted">Visible to the bid team and your organisation.</span>'}
+        <button class="btn primary" id="post">Post</button></div></div></div>
+    <div><h3 style="margin-bottom:10px">Correspondence</h3>${b.msgs.length?b.msgs.map(m=>`<div class="msg ${m.visibility}"><div class="m"><b>${esc(m.author_name||m.author_email||'')}</b><span>${fmtDT(m.created_at)}</span><span class="tag ${m.visibility}">${m.visibility}</span></div><div style="white-space:pre-wrap">${esc(m.body)}</div></div>`).join(''):'<div class="empty">No messages yet.</div>'}</div></div>`;
+  $('#post').onclick = async () => { const body = $('#mbody').value.trim(); if (!body) return;
+    const { error } = await sb.from('bw_messages').insert({ bid_id:b.id, body, visibility: admin ? $('#mvis').value : 'client', author_id:S.user.id, author_email:S.user.email, author_name: admin ? (S.bid.bid_director||S.user.email) : (S.role.orgs?.[0]?.name||S.user.email) });
+    if (error) return err(error); toast('Posted'); refresh(); };
+}
+
+/* ============================================================
+   CLIENTS & ACCESS (admin)
+   ============================================================ */
+async function renderClients(){
+  shell(`<div class="row" style="justify-content:space-between;margin-bottom:16px"><div><h1>Clients &amp; access</h1><div class="muted">Each client organisation sees only its own bids, and only what is marked client-visible.</div></div>
+    <div class="row"><button class="btn" id="neworg">+ Organisation</button><button class="btn primary" id="newuser">+ Client login</button></div></div><div id="orgs"><div class="empty">Loading…</div></div>`);
+  const [o, m] = await Promise.all([ sb.from('bw_orgs').select('*, countries(name)').order('name'), sb.from('bw_members').select('*').order('created_at') ]);
+  S.orgs = o.data || []; const members = m.data || [];
+  $('#orgs').innerHTML = S.orgs.map(org => `<div class="card" style="margin-bottom:10px"><div class="hd"><h3>${esc(org.name)}</h3><span class="tag">${org.kind}</span><span class="small muted">${esc(org.countries?.name||'')}${org.contact_name?' · '+esc(org.contact_name):''}</span><span class="spacer"></span><button class="btn sm" data-edit="${org.id}">Edit</button></div>
+    <div class="bd">${members.filter(x=>x.org_id===org.id).length?`<table><thead><tr><th>Login</th><th>Role</th><th>Last seen</th><th>Status</th><th></th></tr></thead><tbody>${members.filter(x=>x.org_id===org.id).map(u=>`<tr><td>${esc(u.email)}</td><td>${u.role}</td><td class="small mono">${fmtDT(u.last_seen_at)||'—'}</td><td><span class="tag ${u.active?'final':'missing'}">${u.active?'active':'disabled'}</span></td><td style="white-space:nowrap"><button class="btn sm" data-reset="${u.user_id}">Reset password</button> <button class="btn sm ghost" data-toggle="${u.user_id}" data-active="${u.active}">${u.active?'Disable':'Enable'}</button></td></tr>`).join('')}</tbody></table>`:`<span class="muted small">No logins yet.</span>`}</div></div>`).join('') || '<div class="empty">No organisations yet.</div>';
+  $('#neworg').onclick = () => orgModal(null);
+  document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>orgModal(S.orgs.find(o=>o.id===b.dataset.edit)));
+  $('#newuser').onclick = () => modal(`<div class="hd"><h2>Create a client login</h2></div><div class="fg">
+      <div class="wide"><label class="f">Organisation</label><select class="inp" id="org_id">${S.orgs.filter(o=>o.kind!=='consultancy').map(o=>`<option value="${o.id}">${esc(o.name)}</option>`).join('')}</select></div>
+      <div class="wide"><label class="f">Email</label><input class="inp" type="email" id="email"></div>
+      <div class="wide small muted">A temporary password is generated and shown once. Share it with the person directly; they can change it from the sign-in screen.</div>
+    </div><div class="foot"><button class="btn" data-close>Cancel</button><button class="btn primary" id="go">Create</button></div>`, () => { $('#go').onclick = async () => {
+      const r = await adminCall({ action:'create', org_id:$('#org_id').value, email:$('#email').value.trim() }); if (!r) return;
+      closeModal(); modal(`<div class="hd"><h2>Login created</h2></div><p>Send these to the client:</p><div class="kv"><dt>Sign-in page</dt><dd>${esc(location.href.split('#')[0])}</dd><dt>Email</dt><dd>${esc(r.email)}</dd><dt>Temporary password</dt><dd><code>${esc(r.temp_password)}</code></dd></div><div class="foot"><button class="btn primary" data-close>Done</button></div>`, ()=>{}, renderClients); }; });
+  document.querySelectorAll('[data-reset]').forEach(b=>b.onclick=async()=>{ if(!confirm('Reset this password?')) return; const r=await adminCall({action:'reset_password',user_id:b.dataset.reset}); if(r) modal(`<div class="hd"><h2>Password reset</h2></div><div class="kv"><dt>Email</dt><dd>${esc(r.email)}</dd><dt>Temporary password</dt><dd><code>${esc(r.temp_password)}</code></dd></div><div class="foot"><button class="btn primary" data-close>Done</button></div>`); });
+  document.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=async()=>{ const r=await adminCall({action:'set_active',user_id:b.dataset.toggle,active:b.dataset.active!=='true'}); if(r) renderClients(); });
+}
+function orgModal(o){
+  const n = o || { kind:'client' };
+  modal(`<div class="hd"><h2>${o?'Edit organisation':'New organisation'}</h2></div><div class="fg">
+    <div class="wide"><label class="f">Name</label><input class="inp" id="name" value="${esc(n.name||'')}"></div>
+    <div><label class="f">Kind</label><select class="inp" id="kind">${opt(['client','bureau','partner','consultancy'],n.kind)}</select></div>
+    <div><label class="f">Country</label><select class="inp" id="country_id"><option value="">—</option>${S.countries.map(c=>`<option value="${c.id}" ${c.id===n.country_id?'selected':''}>${esc(c.name)}</option>`).join('')}</select></div>
+    <div><label class="f">Contact name</label><input class="inp" id="contact_name" value="${esc(n.contact_name||'')}"></div>
+    <div><label class="f">Contact email</label><input class="inp" id="contact_email" value="${esc(n.contact_email||'')}"></div>
+    <div class="wide"><label class="f">Notes</label><textarea class="inp" id="notes">${esc(n.notes||'')}</textarea></div>
+  </div><div class="foot"><button class="btn" data-close>Cancel</button><button class="btn primary" id="save">Save</button></div>`, () => { $('#save').onclick = async () => {
+    const v = id => $('#'+id).value.trim(); const row = { name:v('name'), kind:v('kind'), country_id:v('country_id')?+v('country_id'):null, contact_name:v('contact_name')||null, contact_email:v('contact_email')||null, notes:v('notes')||null }; if (!row.name) return toast('Name is required');
+    const { error } = await (o ? sb.from('bw_orgs').update(row).eq('id',o.id) : sb.from('bw_orgs').insert(row)); if (error) return err(error); closeModal(); renderClients(); }; });
+}
+async function adminCall(body){
+  const { data:{ session } } = await sb.auth.getSession();
+  const r = await fetch(`${SUPABASE_URL}/functions/v1/bid-admin`, { method:'POST', headers:{ 'content-type':'application/json', apikey:SUPABASE_KEY, authorization:`Bearer ${session.access_token}` }, body: JSON.stringify(body) });
+  const j = await r.json(); if (!r.ok || j.error) { err(new Error(j.error||'Request failed')); return null; } return j;
+}
+
+/* ============================================================
+   STAGE REFERENCE
+   ============================================================ */
+function renderStages(){
+  shell(`<h1>The eight stages</h1><div class="muted" style="margin-bottom:16px">Bids are won on compliance first and persuasion second. Nothing in Stage 6 begins until the compliance matrix in Stage 4 is complete.</div>
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">${STAGES.map((s,i)=>`<div class="card"><div class="hd"><span class="tag">Stage ${i+1}</span><h3>${esc(s.n.replace(/^\d+ /,''))}</h3></div><div class="bd small"><div class="kv"><dt>Question</dt><dd>${esc(s.q)}</dd><dt>Primary tool</dt><dd>${esc(s.tool)}</dd><dt>Exit condition</dt><dd>${esc(s.exit)}</dd></div></div></div>`).join('')}</div>
+    <div class="card" style="margin-top:16px"><div class="hd"><h3>Evidence discipline</h3></div><div class="bd small"><ul style="margin:0;padding-left:18px"><li>Every factual claim carries a source and the date it was checked.</li><li>No invented statistics. Where a number cannot be verified, write "to confirm" and keep it on the compliance matrix.</li><li>Quote requirement wording from the source document with its clause number.</li><li>State known weaknesses plainly and answer them.</li><li>Size claims to the evidence. Keep one version of every number.</li><li>Never fabricate, paraphrase or characterise support that has not been given in writing.</li></ul></div></div>`);
+}
+
+/* ---------- modal / drawer helpers ---------- */
+function modal(html, after, onClose){ closeModal(); const w=document.createElement('div'); w.className='modal-wrap'; w.innerHTML=`<div class="modal">${html}</div>`; w.id='ovl'; w.onclick=e=>{ if(e.target===w) closeModal(onClose); }; document.body.appendChild(w); w.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>closeModal(onClose)); if (after) after(); }
+function drawer(html, after){ closeModal(); const w=document.createElement('div'); w.className='overlay'; w.innerHTML=`<div class="drawer">${html}</div>`; w.id='ovl'; w.onclick=e=>{ if(e.target===w) closeModal(); }; document.body.appendChild(w); w.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>closeModal()); if (after) after(); }
+function closeModal(cb){ const o=$('#ovl'); if(o) o.remove(); if (cb) cb(); }
+document.addEventListener('keydown', e => { if (e.key==='Escape') closeModal(); });
+window.addEventListener('hashchange', () => { if (!S.user) return; const h = location.hash.replace('#','').split('/'); if (h[0]==='bid' && h[1]) { if (S.view==='bid' && S.bidId===h[1]) return; S.view='bid'; S.bidId=h[1]; S.tab=h[2]||'overview'; render(); } else if (h[0] && h[0]!==S.view) { S.view=h[0]; render(); } });
+boot();
+</script>
+</body>
+</html>

@@ -7,12 +7,15 @@
 [context.deploy-preview.environment]
   ALLOW_PLACEHOLDERS = "1"
 
-# Serve the standalone Bid Pipeline dashboard (static file, outside the React SPA).
-# This rule comes before the SPA catch-all so /pipeline resolves to the static
-# document and is not rewritten to the app shell.
+# The Africa MICE Bid Pipeline moved to its own site on 2026-11-09. The
+# pipeline pages have been removed from this repo and nothing links to
+# /pipeline here, so no redirect for it is kept.
+
+# Bid Workspace: the bid development app (static file, sign-in required inside the page).
+# The header's "Client Login" link points here.
 [[redirects]]
-  from = "/pipeline"
-  to = "/pipeline/index.html"
+  from = "/bids"
+  to = "/bids/index.html"
   status = 200
 
 # The Packages page was retired; its venues and incentive ideas now live on

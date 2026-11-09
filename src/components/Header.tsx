@@ -67,9 +67,9 @@ export default function Header() {
                 {link.name}
               </Link>
             ))}
-            {/* Standalone dashboard served outside the SPA, so use a plain anchor for a full page load */}
+            {/* The dashboard lives on its own site (Africa MICE Dashboard); /bids redirects there */}
             <a
-              href="/pipeline"
+              href="/bids"
               className="whitespace-nowrap font-['Inter'] text-sm font-medium text-[#21436A] hover:text-[#BCD8D4] transition-colors duration-200"
             >
               Client Login
@@ -108,9 +108,9 @@ export default function Header() {
                   {link.name}
                 </Link>
               ))}
-              {/* Standalone dashboard served outside the SPA, so use a plain anchor for a full page load */}
+              {/* The dashboard lives on its own site (Africa MICE Dashboard); /bids redirects there */}
               <a
-                href="/pipeline"
+                href="/bids"
                 className="font-['Inter'] text-sm font-medium py-2 text-[#21436A] hover:text-[#BCD8D4] transition-colors duration-200"
               >
                 Client Login

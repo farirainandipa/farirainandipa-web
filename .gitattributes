@@ -1,3 +1,0 @@
-# Keep the standalone dashboard byte-identical to the verified production copy
-# (md5 847725eadda7f1f3394f80cae0c5a33d); never rewrite its line endings.
-public/pipeline/index.html -text
