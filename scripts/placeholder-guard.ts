@@ -38,7 +38,7 @@ export default function placeholderGuard(): Plugin {
         findPlaceholders(content.EVENT_TYPE_LABELS, 'EVENT_TYPE_LABELS', found);
         content.destinations.forEach((d, i) => {
           const { name, cities, bestFor, comparison } = d;
-          findPlaceholders({ name, cities, bestFor, card: d.photos.card, comparison }, `destinations[${i}]`, found);
+          findPlaceholders({ name, cities, bestFor, card: d.photos.card, cardAlt: d.photos.cardAlt, comparison }, `destinations[${i}]`, found);
         });
       }
       if (found.length === 0) return;

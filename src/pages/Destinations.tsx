@@ -72,9 +72,9 @@ export default function Destinations() {
             </div>
           </div>
           <div className="flex-[1_1_440px] min-w-0 grid grid-cols-2 gap-3">
-            <PhotoSlot photo={hub.heroPhotos.main} alt="Farirai Nandipa on a venue walk-through" className="col-span-2 h-[220px] sm:h-[280px]" />
-            <PhotoSlot photo={hub.heroPhotos.left} alt="Plenary hall" className="h-[140px] sm:h-[170px]" />
-            <PhotoSlot photo={hub.heroPhotos.right} alt="Incentive experience" className="h-[140px] sm:h-[170px]" />
+            <PhotoSlot photo={hub.heroPhotos.main} alt={hub.heroPhotoAlts.main} className="col-span-2 h-[220px] sm:h-[280px]" />
+            <PhotoSlot photo={hub.heroPhotos.left} alt={hub.heroPhotoAlts.left} className="h-[140px] sm:h-[170px]" />
+            <PhotoSlot photo={hub.heroPhotos.right} alt={hub.heroPhotoAlts.right} className="h-[140px] sm:h-[170px]" />
           </div>
         </div>
       </section>
@@ -128,7 +128,7 @@ export default function Destinations() {
             {visible.map((d) => (
               <li key={d.slug} className="flex">
                 <CardShell slug={d.slug}>
-                  <PhotoSlot photo={d.photos.card} alt={d.name} className="h-[210px]" square />
+                  <PhotoSlot photo={d.photos.card} alt={d.photos.cardAlt} className="h-[210px]" square />
                   <div className="px-6 pt-[22px] pb-[26px] flex flex-col gap-2.5 flex-grow">
                     <span className="text-xs font-semibold uppercase tracking-[0.1em] text-ink-muted">{d.cities}</span>
                     <h3 className="font-['Cormorant_Garamond'] font-semibold text-[34px] leading-none text-navy">{d.name}</h3>

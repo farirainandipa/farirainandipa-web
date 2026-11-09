@@ -31,7 +31,7 @@ export interface Destination {
   bestFor: string;          // one line, used on hub cards
   headline: string;         // italic line under the H1; also the meta description
   intro: string;
-  photos: { hero: string; card: string };
+  photos: { hero: string; card: string; cardAlt: string };
   facts: Fact[];
   why: Reason[];
   venues: Venue[];
@@ -82,7 +82,8 @@ export const destinations: Destination[] = [
     intro: 'Nairobi hosts UN offices, regional headquarters and a deep pool of event suppliers. When a summit needs diplomacy, delegates and connectivity in one city, it lands here.',
     photos: {
       hero: '[Photo: KICC or a Nairobi venue from the site visit]',
-      card: '[Photo: Nairobi site visit]',
+      card: '/images/destinations/kenya-card.jpg', // Unsplash License, unsplash.com/photos/7XA8SJ5ODq4
+      cardAlt: 'A giraffe in Nairobi National Park with the city skyline behind',
     },
     facts: [
       { label: 'Main airport', value: 'Nairobi JKIA (NBO)' },
@@ -136,7 +137,8 @@ export const destinations: Destination[] = [
     intro: 'Kigali has made hosting part of its national brand. It is compact, safe and well organised. Associations choose it when the event cannot afford to go wrong.',
     photos: {
       hero: '[Photo: Kigali, partner-supplied]',
-      card: '[Photo: Kigali, partner-supplied]',
+      card: '/images/destinations/rwanda-card.jpg', // Unsplash License, unsplash.com/photos/VikU8k-XJ54
+      cardAlt: 'Kigali seen from a hilltop',
     },
     facts: [
       { label: 'Main airport', value: 'Kigali International (KGL)' },
@@ -190,7 +192,8 @@ export const destinations: Destination[] = [
     intro: 'Three convention cities, deep hotel stock and suppliers who have delivered world congresses. When the delegate count is large, South Africa is the benchmark.',
     photos: {
       hero: '[Photo: CTICC or another venue from the site visit]',
-      card: '[Photo: Cape Town site visit]',
+      card: '/images/destinations/south-africa-card.jpg', // Unsplash License, unsplash.com/photos/1GgWbP74phY
+      cardAlt: 'Aerial view of Cape Town and Table Mountain',
     },
     facts: [
       { label: 'Main airports', value: 'Johannesburg (JNB), Cape Town (CPT), Durban (DUR)' },
@@ -244,7 +247,8 @@ export const destinations: Destination[] = [
     intro: 'Lusaka carries regional government and corporate meetings. Livingstone delivers the incentive. Together they give budget-conscious groups more for their money.',
     photos: {
       hero: '[Photo: Livingstone or Lusaka venue from the site visit]',
-      card: '[Photo: Livingstone site visit]',
+      card: '/images/destinations/zambia-card.jpg', // Unsplash License, unsplash.com/photos/lqBM9IsXhiY
+      cardAlt: 'The Victoria Falls Bridge over the Zambezi gorge',
     },
     facts: [
       { label: 'Main airports', value: 'Lusaka (LUN), Livingstone (LVI)' },
@@ -298,7 +302,8 @@ export const destinations: Destination[] = [
     intro: 'Victoria Falls is the incentive Africa sells best. Harare carries the national meetings and government agenda. This is my home market, and I know it from the inside.',
     photos: {
       hero: '[Photo: Victoria Falls venue from the site visit]',
-      card: '[Photo: Victoria Falls site visit]',
+      card: '/images/destinations/zimbabwe-card.jpg', // Unsplash License, unsplash.com/photos/ELO9ynmwmBE
+      cardAlt: 'Victoria Falls',
     },
     facts: [
       { label: 'Main airports', value: 'Harare (HRE), Victoria Falls (VFA)' },
@@ -354,10 +359,17 @@ export const hub = {
   intro: 'Most destination decisions in Africa are made from brochures. That is how congresses end up in the wrong city. I have walked the venues, timed the transfers and met the bureaux. Tell me about your event. I will tell you where it belongs.',
   primaryCta: 'Get the 2027 Destination Guide',
   secondaryCta: 'Compare destinations',
+  // Stock stand-ins (Unsplash License) until own photos are ready:
+  // main Q_KdjKxntH8, left 6vAjp0pscX0, right nf7W_hn6DKQ (unsplash.com/photos/<id>).
   heroPhotos: {
-    main: '[Photo: you on a venue walk-through]',
-    left: '[Photo: plenary hall]',
-    right: '[Photo: incentive experience]',
+    main: '/images/destinations/hub-main.jpg',
+    left: '/images/destinations/hub-plenary.jpg',
+    right: '/images/destinations/hub-incentive.jpg',
+  },
+  heroPhotoAlts: {
+    main: 'A conference room set with round tables and three projection screens',
+    left: 'A speaker on stage before a large plenary audience',
+    right: 'Elephants seen from an open safari vehicle',
   },
   portfolio: {
     eyebrow: 'The portfolio',
