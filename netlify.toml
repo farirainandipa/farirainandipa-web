@@ -32,6 +32,15 @@
   status = 301
   force = true
 
+# The individual destination pages are hidden until their content is ready
+# (destinationPagesLive in src/data/destinations.ts), so send them to the hub.
+# Not forced, so the prerendered /destinations/index.html still serves.
+# Remove this rule when the pages go live.
+[[redirects]]
+  from = "/destinations/*"
+  to = "/destinations"
+  status = 302
+
 # SPA fallback: every other path renders the React app shell.
 [[redirects]]
   from = "/*"

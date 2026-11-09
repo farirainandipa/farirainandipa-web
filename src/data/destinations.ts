@@ -63,6 +63,14 @@ const venue = (name: string, city: string, type: string): Venue => ({
   roomsNearby: '[XXX] within 15 min',
 });
 
+// While false, only the /destinations hub is live: the /destinations/:slug
+// pages are not routed or prerendered, hub cards and footer entries are not
+// links, and the placeholder guard checks only what the hub shows.
+// Set to true (add the five URLs back to public/sitemap.xml and remove the
+// /destinations/* redirect in netlify.toml) once each
+// destination's content is ready.
+export const destinationPagesLive = false;
+
 export const destinations: Destination[] = [
   {
     slug: 'kenya',

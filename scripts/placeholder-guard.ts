@@ -1,7 +1,7 @@
 import type { Plugin } from 'vite';
 import * as content from '../src/data/destinations';
 
-// Fails the production build while any string in src/data/destinations.ts
+// Fails the production build while any live string in src/data/destinations.ts
 // still contains "[", the marker for owner-to-fill placeholders such as
 // "[XXXX] theatre" or "[MON YYYY]". Set ALLOW_PLACEHOLDERS=1 to build anyway
 // (local previews only; never set it in Netlify).
@@ -25,9 +25,21 @@ export default function placeholderGuard(): Plugin {
     apply: 'build',
     buildStart() {
       const found: string[] = [];
-      for (const [name, value] of Object.entries(content)) {
-        if (name === 'getDestination') continue;
-        findPlaceholders(value, name, found);
+      if (content.destinationPagesLive) {
+        for (const [name, value] of Object.entries(content)) {
+          if (name === 'getDestination') continue;
+          findPlaceholders(value, name, found);
+        }
+      } else {
+        // Only the hub is live, so check just what it shows: the hub copy,
+        // the guide, and each destination's card and comparison row.
+        findPlaceholders(content.hub, 'hub', found);
+        findPlaceholders(content.guide, 'guide', found);
+        findPlaceholders(content.EVENT_TYPE_LABELS, 'EVENT_TYPE_LABELS', found);
+        content.destinations.forEach((d, i) => {
+          const { name, cities, bestFor, comparison } = d;
+          findPlaceholders({ name, cities, bestFor, card: d.photos.card, comparison }, `destinations[${i}]`, found);
+        });
       }
       if (found.length === 0) return;
 

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Phone, Mail, Globe, Linkedin, Instagram } from 'lucide-react';
-import { destinations } from '../data/destinations';
+import { destinationPagesLive, destinations } from '../data/destinations';
 
 const quickLinks = [
   { name: 'Home', path: '/' },
@@ -63,12 +63,16 @@ export default function Footer() {
             <ul className="space-y-2">
               {destinations.map((d) => (
                 <li key={d.slug}>
-                  <Link
-                    to={`/destinations/${d.slug}`}
-                    className="font-['Inter'] text-sm text-white/75 hover:text-[#BCD8D4] transition-colors duration-200"
-                  >
-                    {d.name}
-                  </Link>
+                  {destinationPagesLive ? (
+                    <Link
+                      to={`/destinations/${d.slug}`}
+                      className="font-['Inter'] text-sm text-white/75 hover:text-[#BCD8D4] transition-colors duration-200"
+                    >
+                      {d.name}
+                    </Link>
+                  ) : (
+                    <span className="font-['Inter'] text-sm text-white/75">{d.name}</span>
+                  )}
                 </li>
               ))}
             </ul>

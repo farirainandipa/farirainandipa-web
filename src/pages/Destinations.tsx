@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ArrowRight, AlertCircle } from 'lucide-react';
 import Seo from '../components/Seo';
 import {
   EVENT_TYPE_LABELS,
+  destinationPagesLive,
   destinations,
   hub,
   type EventType,
@@ -126,10 +127,7 @@ export default function Destinations() {
           <ul className="grid grid-cols-[repeat(auto-fill,minmax(min(340px,100%),1fr))] gap-6">
             {visible.map((d) => (
               <li key={d.slug} className="flex">
-                <Link
-                  to={`/destinations/${d.slug}`}
-                  className="group flex flex-col w-full bg-white border border-gray-200 rounded-md overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.05)] hover:shadow-md transition-shadow duration-200 focus-visible:outline-navy"
-                >
+                <CardShell slug={d.slug}>
                   <PhotoSlot photo={d.photos.card} alt={d.name} className="h-[210px]" square />
                   <div className="px-6 pt-[22px] pb-[26px] flex flex-col gap-2.5 flex-grow">
                     <span className="text-xs font-semibold uppercase tracking-[0.1em] text-ink-muted">{d.cities}</span>
@@ -142,12 +140,14 @@ export default function Destinations() {
                         </span>
                       ))}
                     </div>
-                    <span className="mt-auto pt-3 flex items-center gap-2 font-medium text-[15px] text-navy group-hover:text-navy-dark">
-                      Explore {d.name}
-                      <ArrowRight className="w-[18px] h-[18px] transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true" />
-                    </span>
+                    {destinationPagesLive && (
+                      <span className="mt-auto pt-3 flex items-center gap-2 font-medium text-[15px] text-navy group-hover:text-navy-dark">
+                        Explore {d.name}
+                        <ArrowRight className="w-[18px] h-[18px] transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true" />
+                      </span>
+                    )}
                   </div>
-                </Link>
+                </CardShell>
               </li>
             ))}
           </ul>
@@ -175,12 +175,16 @@ export default function Destinations() {
               {destinations.map((d) => (
                 <tr key={d.slug} className="border-t border-gray-200">
                   <th scope="row" className="px-[18px] py-4 text-left">
-                    <Link
-                      to={`/destinations/${d.slug}`}
-                      className="font-['Cormorant_Garamond'] text-xl font-bold text-navy underline underline-offset-4 decoration-mint hover:text-navy-dark"
-                    >
-                      {d.name}
-                    </Link>
+                    {destinationPagesLive ? (
+                      <Link
+                        to={`/destinations/${d.slug}`}
+                        className="font-['Cormorant_Garamond'] text-xl font-bold text-navy underline underline-offset-4 decoration-mint hover:text-navy-dark"
+                      >
+                        {d.name}
+                      </Link>
+                    ) : (
+                      <span className="font-['Cormorant_Garamond'] text-xl font-bold text-navy">{d.name}</span>
+                    )}
                   </th>
                   <td className="px-[18px] py-4">{d.comparison.flagshipVenue}</td>
                   <td className="px-[18px] py-4 text-ink-muted">{d.comparison.largestPlenary}</td>
@@ -268,6 +272,20 @@ export default function Destinations() {
 }
 
 const labelClass = 'flex flex-col gap-1.5 text-sm font-medium text-navy';
+
+// A destination card links to its page only once destination pages are live.
+function CardShell({ slug, children }: { slug: string; children: ReactNode }) {
+  const base = 'flex flex-col w-full bg-white border border-gray-200 rounded-md overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.05)]';
+  if (!destinationPagesLive) return <div className={base}>{children}</div>;
+  return (
+    <Link
+      to={`/destinations/${slug}`}
+      className={`group ${base} hover:shadow-md transition-shadow duration-200 focus-visible:outline-navy`}
+    >
+      {children}
+    </Link>
+  );
+}
 
 function EnquiryForm() {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'invalid' | 'error'>('idle');
